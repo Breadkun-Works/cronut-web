@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import styles from '../style/PopUpMap.module.scss';
+import styles from '../../styles/PopUpMap.module.scss';
 import classNames from 'classnames/bind';
 
 declare global {

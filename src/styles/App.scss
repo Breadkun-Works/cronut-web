@@ -1,0 +1,42 @@
+@use '_utilities.scss' as u;
+
+// 웹폰트(둥근모꼴)
+@font-face {
+  font-family: 'DungGeunMo';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  background-color: u.$gray-09;
+  -webkit-scroll-behavior: smooth;
+  scroll-behavior: smooth; // 부드러운 스크롤 효과
+  &::-webkit-scrollbar {
+    width: 8px; // 스크롤바의 너비
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 30px;
+    background: u.$gray-08;
+  }
+}
+#root {
+  -webkit-font-smoothing: antialiased; // webkit(크롬, 사파리) 글자 부드럽게
+  -moz-osx-font-smoothing: grayscale; // 파이어폭스 글자 부드럽게
+  font-family: 'DungGeunMo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  color: u.$gray-00;
+  @include u.desktop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+// a태그 설정 초기화
+a,
+a:link,
+a:visited {
+  color: inherit; // color를 부모로 부터 상속
+}
+// button 속성 초기화
+button {
+  all: unset;
+}

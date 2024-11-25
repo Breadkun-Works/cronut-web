@@ -1,0 +1,342 @@
+@use '_utilities.scss' as u;
+
+.meal {
+  @include u.desktop {
+    width: 100%;
+    max-width: 950px;
+  }
+}
+.title {
+  background-color: u.$gray-09;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-bottom: clamp(1px, 3vw, 16px); // 갤럭시 폴드 대응
+  @include u.desktop {
+    margin-bottom: 25px;
+  }
+  .title__icon {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 11.54vw;
+    max-height: 48px; // 갤럭시 폴드 대응
+    width: 11.54vw;
+    max-width: 48px; // 갤럭시 폴드 대응
+    border-radius: clamp(1px, 5.13vw, 22px); // 갤럭시 폴드 대응
+    background-color: $blue-00;
+    margin-left: clamp(1px, 3.85vw, 27px); // 갤럭시 폴드 대응
+    margin-right: clamp(1px, 3.85vw, 16px); // 갤럭시 폴드 대응
+    @include u.desktop {
+      background-color: transparent;
+      height: auto;
+      width: auto;
+      max-height: none;
+      max-width: none;
+      border-radius: 0;
+      margin-left: 30px;
+      margin-right: 10px;
+    }
+    > img {
+      height: 5.64vw;
+      max-height: 22px;
+      @include u.desktop {
+        height: 20px;
+        max-height: none;
+      }
+    }
+  }
+  .title__select {
+    position: relative;
+    display: flex;
+    align-items: center;
+    .title__letter {
+      font-size: clamp(1px, 5.38vw, 25px); // 갤럭시 폴드 대응
+      @include u.desktop {
+        font-size: 20px;
+      }
+    }
+    select {
+      font-size: clamp(1px, 4vw, 15px); // 갤럭시 폴드 대응
+      text-align-last: center; // 중앙정렬
+      -webkit-text-align-last: center; // 아이폰에서도 적용
+      -moz-text-align-last: center;
+      -ms-text-align-last: center;
+      appearance: none;
+      text-decoration: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-color: $gray-08;
+      color: $gray-00;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      cursor: pointer;
+      @include u.desktop {
+        font-size: 20px;
+      }
+    }
+    .title__select-button {
+      width: 2vw;
+      max-width: 10px; // 갤럭시 폴드 대응
+      margin-left: 1.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      @include u.desktop {
+        width: 8px;
+        max-width: none;
+        margin-left: 10px;
+      }
+    }
+  }
+}
+.days {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // 가로 스크롤 기능 자동 동작
+  overflow-y: scroll;
+  // 스크롤바 안보이기
+  -ms-overflow-style: none; //익스플로러
+  scrollbar-width: none; //파이어폭스
+  @include u.desktop {
+    overflow-y: visible;
+    justify-content: left;
+    margin-left: 30px;
+  }
+  &::-webkit-scrollbar {
+    display: none; // 크롬, 사파리, 오페라, 엣지
+  }
+  button + button {
+    margin-left: 2.6vw;
+    @include u.desktop {
+      margin-left: 10px;
+    }
+  }
+  > button:first-child > .day {
+    margin-left: 37vw;
+    @include u.desktop {
+      margin-left: 0;
+    }
+  }
+  > button:last-child > .day {
+    margin-right: 37vw;
+    @include u.desktop {
+      margin-right: 0;
+    }
+  }
+  .day {
+    color: $gray-05;
+    background-color: darken($gray-08, 5%);
+    font-size: 3.6vw;
+    font-weight: 900;
+    padding: 2vw;
+    margin: 1vw 0;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 4.5vw;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    @include u.desktop {
+      font-size: 17px;
+      font-weight: 900;
+      padding: 7px;
+      margin: 0;
+      border-radius: 12px;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .selected-day {
+    color: $gray-00;
+    background-color: $yellow-00;
+    font-size: 4.1vw;
+    padding: 2.8vw;
+    @include u.desktop {
+      font-size: 17px;
+      padding: 7px;
+    }
+  }
+}
+.days + .meal__body {
+  margin-top: 3.33vw;
+  @include u.desktop {
+    margin-top: 20px;
+  }
+}
+.meal__body {
+  padding: 0 3.33vw;
+  @include u.desktop {
+    padding: 0 10px;
+  }
+}
+.meal-categories {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include u.desktop {
+    justify-content: left;
+    margin-left: 30px;
+  }
+  .meal-category {
+    color: $gray-07;
+    font-size: 3.8vw;
+    font-weight: 900;
+    text-align: center;
+    width: 30%;
+    @include u.desktop {
+      font-size: 18px;
+      font-weight: 900;
+      width: 70px;
+      letter-spacing: 5px;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .selected-meal-category {
+    color: $gray-00;
+    font-size: 4.3vw;
+    margin: 0.6vw 0;
+    @include u.desktop {
+      font-size: 18px;
+      margin: 0;
+    }
+  }
+}
+.meal-categories + .meal-menus {
+  margin-top: 3.33vw;
+  @include u.desktop {
+    margin-top: 25px;
+  }
+}
+.meal-menus {
+  @include u.desktop {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .meal-menu + .meal-menu {
+    margin-top: 3.33vw;
+    @include u.desktop {
+      margin-top: 0;
+    }
+  }
+  .meal-menu {
+    display: flex;
+    flex-direction: column;
+    background-color: $gray-08;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    border-radius: 7.7vw;
+    @include u.desktop {
+      border-radius: 35px;
+      margin: 0px 0px 10px 0;
+      width: calc(50% - 5px);
+    }
+    .meal-menu__title--wrapper {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      margin: 4vw 2vw 3.3vw 4vw;
+      @include u.desktop {
+        margin: 15px 0 10px 20px;
+      }
+      .meal-menu__title {
+        display: inline-block;
+        font-size: 3.5vw;
+        padding: 1.8vw 1.3vw 1.3vw 2.6vw;
+        border-radius: 3vw;
+        text-align: center;
+        letter-spacing: 0.4vw;
+        font-weight: 900;
+        @include u.desktop {
+          font-size: 16px;
+          padding: 8px;
+          border-radius: 12px;
+          letter-spacing: 0px;
+        }
+      }
+      .CONVENIENCE1,
+      .CONVENIENCE2 {
+        background-color: #055e68;
+      }
+      .CONVENIENCE3 {
+        background-color: #270082;
+      }
+      .SPECIAL {
+        background-color: #c07f00;
+      }
+      .KOREAN1 {
+        background-color: #4e9f3d;
+      }
+      .KOREAN2 {
+        background-color: $red-00;
+      }
+      .NOODLE {
+        background-color: #711a75;
+      }
+      .meal-menu__name {
+        font-size: 5vw;
+        letter-spacing: 0.5vw;
+        margin-left: 2.1vw;
+        @include u.desktop {
+          font-size: 23px;
+          letter-spacing: 3px;
+          margin-left: 10px;
+        }
+      }
+    }
+    .meal-menu__body {
+      padding: 0 2vw 4vw 2vw;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      @include u.desktop {
+        padding: 0;
+        flex-direction: column;
+      }
+      .meal-menu__image {
+        background-size: cover; // 이미지를 div에 맞게 조절
+        background-position: center; // 이미지를 가운데 정렬
+        width: 33.3vw;
+        height: 26vw;
+        border-radius: 5.1vw;
+        @include u.desktop {
+          width: 90%;
+          height: 280px;
+          border-radius: 30px;
+          margin-bottom: 10px;
+        }
+      }
+      .meal-menu__detaile {
+        width: 51vw;
+        font-size: 3.6vw;
+        letter-spacing: 0.6vw;
+        line-height: 4.6vw;
+        @include u.desktop {
+          width: 85%;
+          font-size: 20px;
+          letter-spacing: 2px;
+          line-height: 25px;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}

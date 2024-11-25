@@ -1,0 +1,21 @@
+$gray-00: #f8f9fa; // 기본글자색
+$gray-05: #adb5bd;
+$gray-06: #868e96;
+$gray-07: #495057;
+$gray-08: #343a40;
+$gray-09: #212529; // 기본배경색
+$blue-00: #404258; // 테마색
+$blue-01: #30475e; // 테마색
+$purple-00: #413543; // 테마색
+$green-00: #2e4f4f; // 테마색
+$red-00: #a80038; // 테마색(로고)
+$yellow-00: #cf7500; // 테마색(로고)
+$brown-00: #5c3d2e; // 테마색
+
+// 반응형 분기점
+$desktop: 768px;
+@mixin desktop {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}

@@ -1,0 +1,18 @@
+@use '_utilities.scss' as u;
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10.26vw;
+  max-height: 43px; // 갤럭시 폴드 대응
+  margin-top: 3.33vw;
+  border-top: 1px solid u.$gray-08;
+  color: u.$gray-06;
+  @include u.desktop {
+    max-height: none;
+    width: 100%;
+    height: 65px;
+    margin-top: 30px;
+  }
+}

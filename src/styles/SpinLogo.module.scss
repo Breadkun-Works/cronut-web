@@ -1,0 +1,37 @@
+@use '_utilities.scss';
+
+.spinLogo {
+  text-align: center;
+}
+.spinLogo__wrap--logoImg {
+  height: 60vmin;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .spinLogo__wrap--logoImg {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+.spinLogo__wrap {
+  background-color: $gray-09;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(15px + 1.5vmin);
+  color: $gray-00;
+}
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spinLogo__wrap > div {
+  margin-top: 5vh;
+}
+.spinLogo__wrap--text + .spinLogo__wrap--text {
+  margin-top: 2vh;
+}

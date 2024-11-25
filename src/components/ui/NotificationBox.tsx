@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../style/NotificationBox.module.scss';
+import styles from '../../styles/NotificationBox.module.scss';
 import classNames from 'classnames/bind';
 
 const ns = classNames.bind(styles);

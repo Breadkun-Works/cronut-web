@@ -1,0 +1,85 @@
+@use '_utilities.scss' as u;
+
+.header {
+  background-color: u.$gray-09;
+  top: 0;
+  display: -webkit-flex; // Safari
+  display: flex;
+  position: sticky;
+  justify-content: space-between;
+  -webkit-align-items: center; // Safari
+  align-items: center;
+  z-index: 80;
+  opacity: 0.97;
+  margin: 0 1.5vw 3vw 1.5vw;
+  height: 18vw;
+  max-height: 80px; // 갤럭시 폴드 대응
+  border-bottom-left-radius: 35px;
+  border-bottom-right-radius: 35px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  @include u.desktop {
+    width: calc(100% - 20px);
+    max-width: 950px;
+    height: 80px;
+    max-height: none;
+    margin: 0 10px 30px 10px;
+    position: inherit;
+  }
+  .header__logo {
+    margin-left: 4vw;
+    height: 11.54vw;
+    max-height: 52px; // 갤럭시 폴드 대응
+    @include u.desktop {
+      margin-left: 30px;
+      height: 40px;
+      max-height: none;
+    }
+  }
+  .header__nav {
+    display: flex;
+    .header__nav--button {
+      @include u.desktop {
+        display: none;
+      }
+      .header__nav--button--img {
+        margin-right: 3.5vw;
+        height: 12.82vw;
+        max-height: 57px; // 갤럭시 폴드 대응
+        transition: all 50ms ease-in-out;
+        -webkit-transition: all 50ms ease-in-out; // Webkit prefix
+        -moz-transition: all 50ms ease-in-out; // Mozilla prefix
+        -o-transition: all 50ms ease-in-out; // Opera prefix
+        -ms-transition: all 50ms ease-in-out; // IE prefix
+        &:hover {
+          cursor: pointer;
+        }
+        &:active {
+          transform: scale(1.5);
+          -webkit-transform: scale(1.5); // Webkit prefix
+          -moz-transform: scale(1.5); // Mozilla prefix
+          -o-transform: scale(1.5); // Opera prefix
+          -ms-transform: scale(1.5); // IE prefix
+        }
+      }
+    }
+    .header__nav--menus {
+      display: none;
+      @include u.desktop {
+        display: flex;
+        margin-right: 80px;
+      }
+      .header__nav--menu + .header__nav--menu {
+        margin-left: 50px;
+      }
+      .header__nav--menu {
+        font-size: 30px;
+        text-decoration: none;
+        color: u.$gray-07;
+      }
+      // 선택된 라우터
+      & .active {
+        color: u.$gray-00;
+      }
+    }
+  }
+}

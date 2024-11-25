@@ -1,6 +1,6 @@
 'use client';
 import React, { useContext, useEffect, useState } from 'react';
-import styles from '../style/Bus.module.scss';
+import styles from '../../../styles/Bus.module.scss';
 import classNames from 'classnames/bind';
 import axios from 'axios';
 import KakaoMap from '@/components/ui/KakaoMap';

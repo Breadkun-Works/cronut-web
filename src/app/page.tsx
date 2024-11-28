@@ -1,7 +1,6 @@
 'use client';
 
 import styles from '../styles/Home.module.scss';
-import '../styles/App.scss';
 import { useEffect, useState } from 'react';
 import { WeatherReturn } from '@/types/home';
 import axios from 'axios';

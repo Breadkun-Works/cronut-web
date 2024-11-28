@@ -1,5 +1,6 @@
+'use client';
 import React from 'react';
-import styles from '../style/Header.module.scss';
+import styles from '../styles/Header.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
 import { useMenuContext } from '@/context/MenuContext';

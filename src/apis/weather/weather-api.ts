@@ -22,7 +22,7 @@ export const fetchWeatherData = async (company: string) => {
     const yesterdayDate = formatDate(addOrSubDays('sub', now, 1), 1);
 
     let baseDate = currentDate; // 조회날짜
-    let baseTime = ''; // 조회시간
+    let baseTime: string; // 조회시간
     // '0200', '0500', '0800', '1100', '1400', '1700', '2000', '2300' 기상청 API 일 8회 업데이트 시간 1시간 후에 조회.
     if (currentTime < 180) {
         baseDate = yesterdayDate;
@@ -54,7 +54,7 @@ export const fetchWeatherData = async (company: string) => {
             }
         );
         const weather = weatherResponse.data.response.body.items.item;
-        const weatherData = weather.reduce(
+        return weather.reduce(
             (acc: { [key in string]: WeatherReturn[] }, curr: WeatherReturn) => {
                 const { category, fcstDate, fcstTime } = curr;
                 //카테고리가 같은 날씨 데이터끼리 묶기
@@ -71,7 +71,6 @@ export const fetchWeatherData = async (company: string) => {
             },
             { SKY: [], POP: [], REH: [], TMP: [] }
         );
-        return weatherData;
     } catch (error) {
         console.log('날씨 가져오기 실패.');
         console.log(error);

@@ -58,6 +58,7 @@ function Bus() {
     };
     // 현재좌표 => 도로명 주소 변환 함수
     const getAddr = (lat: number, lng: number) => {
+        if (typeof window === 'undefined') return;
         const geocoder = new window.kakao.maps.services.Geocoder();
         const coord = new window.kakao.maps.LatLng(lat, lng);
         const callback = (result: any, status: any) => {
@@ -100,6 +101,7 @@ function Bus() {
     }, [setMenuBox]);
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
+        if (typeof window === 'undefined') return;
         window.scrollTo(0, 0);
         updateLocation(); // 현재위치 업데이트 최초 1회 업데이트
         return () => {

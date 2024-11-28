@@ -42,7 +42,7 @@
     width: 11.54vw;
     max-width: 48px; // 갤럭시 폴드 대응
     border-radius: clamp(1px, 5.13vw, 22px); // 갤럭시 폴드 대응
-    background-color: $blue-00;
+    background-color: u.$blue-00;
     margin-left: clamp(1px, 3.85vw, 27px); // 갤럭시 폴드 대응
     margin-right: clamp(1px, 3.85vw, 16px); // 갤럭시 폴드 대응
     @include u.desktop {
@@ -315,7 +315,7 @@
   }
   .home__dust + .home__ultra-dust {
     margin-left: 3.33vw;
-    @include desktop {
+    @include u.desktop {
       margin-left: 10px;
     }
   }
@@ -329,7 +329,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    @include desktop {
+    @include u.desktop {
       width: 50%;
       border-radius: 35px;
       height: 300px;
@@ -344,7 +344,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    @include desktop {
+    @include u.desktop {
       margin-bottom: 25px;
       font-size: clamp(1px, 2.6vw, 23px);
     }
@@ -363,7 +363,7 @@
     .home__ultra-dust--level {
       margin-top: 3.85vw;
       font-size: clamp(1px, 4.36vw, 22px);
-      @include desktop {
+      @include u.desktop {
         margin-top: 25px;
         font-size: clamp(1px, 2.6vw, 23px);
       }
@@ -392,7 +392,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  @include desktop {
+  @include u.desktop {
     display: none;
   }
   & > a,
@@ -446,7 +446,7 @@
 }
 .home__body-sec {
   display: none;
-  @include desktop {
+  @include u.desktop {
     display: flex;
     flex-direction: column;
     margin: 10px 10px 0 10px;

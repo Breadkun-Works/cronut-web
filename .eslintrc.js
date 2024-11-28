@@ -38,7 +38,14 @@ module.exports = {
         // 기타
         'no-unused-vars': 'off', // JavaScript 기본 unused-vars 비활성화 (TS만 사용),
         '@typescript-eslint/indent': 'off', // Prettier가 들여쓰기 처리
-        '@typescript-eslint/no-extra-semi': 'off' // Prettier와 충돌 방지
+        '@typescript-eslint/no-extra-semi': 'off', // Prettier와 충돌 방지,
+        '@typescript-eslint/no-unused-expressions': [
+            'error',
+            {
+                allowShortCircuit: true, // Allows logical AND/OR expressions
+                allowTernary: true // Allows ternary expressions
+            }
+        ]
     },
     settings: {
         react: {

@@ -24,7 +24,8 @@ interface BusStations {
 
 const bs = classNames.bind(styles);
 
-function Bus() {
+function Bus(props: { loaded: boolean }) {
+    const { loaded } = props;
     const { setMenuBox } = useMenuContext();
     const pathname = usePathname(); // 현재 URL 경로: '/bus/[destination]'
     const destination = pathname.split('/')[2]; // 경로에서 "destination" 추출
@@ -109,7 +110,9 @@ function Bus() {
         };
     }, []);
     useEffect(() => {
-        getAddr(latLong.latitude, latLong.longitude); // 현재 도로명 주소 업데이트
+        if (loaded) {
+            getAddr(latLong.latitude, latLong.longitude); // 현재 도로명 주소 업데이트
+        }
     }, [latLong]);
     useEffect(() => {
         localStorage.setItem('recentDestination', selectedValue); // 로컬 스토리지 업데이트
@@ -168,6 +171,30 @@ function Bus() {
         fetchData();
     }, [selectedValue, latLong]);
 
+    const loadKakaoMapScript = () =>
+        new Promise<void>((resolve, reject) => {
+            if (typeof window === 'undefined') {
+                reject('Window is undefined.');
+                return;
+            }
+            if (window.kakao && window.kakao.maps) {
+                resolve(); // Script already loaded
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=YOUR_APP_KEY`;
+            script.async = true;
+            script.onload = () => {
+                window.kakao.maps.load(() => resolve());
+            };
+            script.onerror = () => reject('Failed to load Kakao Maps script.');
+            document.head.appendChild(script);
+        });
+
+    useEffect(() => {
+        loadKakaoMapScript();
+    }, [latLong]);
+
     return (
         <>
             <div className={bs('bus')}>
@@ -182,24 +209,29 @@ function Bus() {
                     <div className={bs('title__letter')}>강촌 퇴근 버스</div>
                 </div>
                 <div className={bs('bus__body')}>
-                    <KakaoMap
-                        mapHeight={'64.1vw'}
-                        mapWidth={'100%'}
-                        mapBorderRadius={'10.26vw'}
-                        latLong={latLong}
-                        levelNum={5}
-                        draggableType={true}
-                        trafficInfo={true}
-                    />
-                    <KakaoMap
-                        mapHeight={'450px'}
-                        mapWidth={'100%'}
-                        mapBorderRadius={'35px'}
-                        latLong={latLong}
-                        levelNum={5}
-                        draggableType={true}
-                        trafficInfo={true}
-                    />
+                    {loaded && (
+                        <KakaoMap
+                            mapHeight={'64.1vw'}
+                            mapWidth={'100%'}
+                            mapBorderRadius={'10.26vw'}
+                            latLong={latLong}
+                            levelNum={5}
+                            draggableType={true}
+                            trafficInfo={true}
+                        />
+                    )}
+                    {loaded && (
+                        <KakaoMap
+                            mapHeight={'450px'}
+                            mapWidth={'100%'}
+                            mapBorderRadius={'35px'}
+                            latLong={latLong}
+                            levelNum={5}
+                            draggableType={true}
+                            trafficInfo={true}
+                        />
+                    )}
+
                     <div className={bs('bus__block1')}>
                         <div className={bs('bus__block1--left')}>
                             <div className={bs('bus__block1--left-title')}>

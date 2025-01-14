@@ -29,7 +29,7 @@ const Meal = () => {
         return weekNumber;
     };
 
-    const [company, setCompany] = useState(localStorage.getItem('recentCompany') || '강촌'); // 강촌, 을지
+    const [company, setCompany] = useState('강촌'); // 강촌, 을지
     const [days, setDays] = useState<string[]>();
     const today = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; // 오늘 요일 표시 => 월:0 ~ 일:6
     const [selectedDay, setSelectedDay] = useState(0); // 기본값 월(0)

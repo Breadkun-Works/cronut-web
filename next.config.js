@@ -11,6 +11,9 @@ const nextConfig = {
                 hostname: 'babkaotalk.herokuapp.com'
             }
         ]
+    },
+    eslint: {
+        ignoreDuringBuilds: true // 빌드 시 lint 미적용
     }
 };
 

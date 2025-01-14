@@ -14,7 +14,7 @@ export const imageReturn = (pmText: string): string => {
     }
 };
 
-export const getWeatherIconPath = (ptyCode: string | undefined, skyCode: string | undefined): string | undefined => {
+export const getWeatherIconPath = (ptyCode: string | undefined, skyCode: string | undefined): string => {
     const sunnyIcon = '/icon/weather/Sunny.webp';
     const cloudyIcon = '/icon/weather/cloudy.webp';
     const overcastIcon = '/icon/weather/overcast.webp';

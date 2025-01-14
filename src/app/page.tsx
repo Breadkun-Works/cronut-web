@@ -11,12 +11,13 @@ import { fetchDustDataTest } from '@/apis/dust/dust-api';
 import { fetchWeatherData } from '@/apis/weather/weather-api';
 import Link from 'next/link';
 import NotificationBox from '@/components/ui/NotificationBox';
+import Image from 'next/image';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
     const { setMenuBox } = useMenuContext();
-    const [company, setCompany] = useState(localStorage.getItem('recentCompany') || '강촌'); // 강촌, 을지
+    const [company, setCompany] = useState(''); // 강촌, 을지
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
     const [weatherRequestCompleted, setWeatherRequestCompleted] = useState(false);
@@ -63,6 +64,9 @@ export default function Home() {
 
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
+        const recentCompany = localStorage.getItem('recentCompany') || '강촌';
+        setCompany(recentCompany);
+
         window.scrollTo(0, 0);
         return () => {
             window.scrollTo(0, 0);
@@ -210,7 +214,7 @@ export default function Home() {
             <div className={hs('home')}>
                 <div className={hs('title')}>
                     <div className={hs('title__icon')}>
-                        <img src="/icon/home-title-icon.webp" alt="title" />
+                        <Image src="/icon/home-title-icon.webp" alt="title" width={22} height={22} />
                     </div>
                     <div className={hs('title__select')}>
                         <div className={hs('title__letter')}>
@@ -220,10 +224,12 @@ export default function Home() {
                             <option value="강촌">더존 강촌캠퍼스</option>
                             <option value="을지">더존 을지타워</option>
                         </select>
-                        <img
+                        <Image
                             className={hs('title__select-button')}
                             src="/icon/home-select-arrow.webp"
                             alt="dropdown-button"
+                            width={10}
+                            height={7.3}
                         />
                     </div>
                 </div>
@@ -232,7 +238,7 @@ export default function Home() {
                         <div className={hs('home__weather--now')}>
                             <div className={hs('home__weather--now-temperature')}>
                                 {PTY?.[0].fcstValue && (
-                                    <img
+                                    <Image
                                         className={hs('home__weather--now-temperature-img')}
                                         src={getWeatherIconPath(PTY?.[0].fcstValue, SKY?.[0].fcstValue)}
                                         alt="weather-icon"
@@ -243,10 +249,12 @@ export default function Home() {
                                 >{`${TMP?.[0].fcstValue.padStart(2, '0') || '-'}°C`}</div>
                             </div>
                             <div className={hs('home__weather--now-rain')}>
-                                <img
+                                <Image
                                     className={hs('home__weather--now-rain-img')}
                                     src="/icon/weather/popPercent.webp"
                                     alt="rain-percent"
+                                    width={21}
+                                    height={21}
                                 />
                                 <div className={hs('home__weather--now-rain-text')}>
                                     {' '}
@@ -262,7 +270,7 @@ export default function Home() {
                                             {getWeatherTime(TMP?.[index + 1].fcstTime || '')}
                                         </div>
                                         {PTY?.[index + 1].fcstValue && (
-                                            <img
+                                            <Image
                                                 className={hs('home__weather--forecast-sky-icon')}
                                                 src={getWeatherIconPath(
                                                     PTY?.[index + 1].fcstValue,
@@ -279,7 +287,7 @@ export default function Home() {
                                         </div>
 
                                         {PTY?.[index + 1].fcstValue && (
-                                            <img
+                                            <Image
                                                 className={hs('home__weather--forecast-rain-img')}
                                                 src="/icon/weather/popPercent.webp"
                                                 alt="rain-percent"
@@ -300,10 +308,12 @@ export default function Home() {
                                 reFreshButtonClick();
                             }}
                         >
-                            <img
+                            <Image
                                 className={hs('refresh-button')}
                                 src="/icon/bus-refresh-button.webp"
                                 alt="refresh-button"
+                                width={45}
+                                height={45}
                             />
                         </button>
                     </div>
@@ -314,10 +324,12 @@ export default function Home() {
                             </div>
                             <div className={hs('home__dust--img-letter-wrapper')}>
                                 {dust.pm10Level !== '통신장애' && (
-                                    <img
+                                    <Image
                                         className={hs('home__dust--img')}
                                         src={imageReturn(dust.pm10Level)}
                                         alt="dust-level-icon"
+                                        width={80}
+                                        height={80}
                                     />
                                 )}
                                 <div className={hs('home__dust--level')}>
@@ -331,10 +343,12 @@ export default function Home() {
                             </div>
                             <div className={hs('home__ultra-dust--img-letter-wrapper')}>
                                 {dust.pm25Level !== '통신장애' && (
-                                    <img
+                                    <Image
                                         className={hs('home__ultra-dust--img')}
                                         src={imageReturn(dust.pm25Level)}
                                         alt="dust-level-icon"
+                                        width={80}
+                                        height={80}
                                     />
                                 )}
                                 <div className={hs('home__ultra-dust--level')}>
@@ -349,11 +363,15 @@ export default function Home() {
                                 <div className={hs('home__link--title')}>식단</div>
                                 <div className={hs('home__link--text')}>구내식당 메뉴</div>
                             </div>
-                            <img
-                                className={hs('home__link--image', '식단')}
-                                src="/icon/home-meal-button.webp"
-                                alt="today meal"
-                            />
+                            <div style={{ position: 'relative', width: '100%', height: '80px', marginTop: '20px' }}>
+                                <Image
+                                    className="home__link--image"
+                                    src="/icon/home-meal-button.webp"
+                                    alt="today meal"
+                                    layout="fill"
+                                    objectFit="contain"
+                                />
+                            </div>
                         </Link>
                         {company === '강촌' && (
                             <>
@@ -362,22 +380,42 @@ export default function Home() {
                                         <div className={hs('home__link--title')}>ORIGINAL</div>
                                         <div className={hs('home__link--text')}>오늘의 빵</div>
                                     </div>
-                                    <img
-                                        className={hs('home__link--image', '빵')}
-                                        src="/icon/home-bread-button.webp"
-                                        alt="today bread"
-                                    />
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            width: '100%',
+                                            height: '80px'
+                                        }}
+                                    >
+                                        <Image
+                                            className={hs('home__link--image', '빵')}
+                                            src="/icon/home-bread-button.webp"
+                                            alt="today bread"
+                                            layout="fill"
+                                            objectFit="contain"
+                                        />
+                                    </div>
                                 </button>
                                 <Link href={'/bus'}>
                                     <div>
                                         <div className={hs('home__link--title')}>버스</div>
                                         <div className={hs('home__link--text')}>퇴근 버스 정보</div>
                                     </div>
-                                    <img
-                                        className={hs('home__link--image', '버스')}
-                                        src="/icon/home-bus-button.webp"
-                                        alt="today bus"
-                                    />
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            width: '100%',
+                                            height: '80px'
+                                        }}
+                                    >
+                                        <Image
+                                            className={hs('home__link--image', '버스')}
+                                            src="/icon/home-bus-button.webp"
+                                            alt="today bus"
+                                            layout="fill"
+                                            objectFit="contain"
+                                        />
+                                    </div>
                                 </Link>
                             </>
                         )}
@@ -386,22 +424,30 @@ export default function Home() {
                                 <div className={hs('home__link--title')}>카페</div>
                                 <div className={hs('home__link--text')}>-서비스 준비중-</div>
                             </div>
-                            <img
-                                className={hs('home__link--image', '카페')}
-                                src="/icon/home-caffe-button.webp"
-                                alt="today cafe"
-                            />
+                            <div style={{ position: 'relative', width: '100%', height: '80px' }}>
+                                <Image
+                                    className={hs('home__link--image')}
+                                    src="/icon/home-caffe-button.webp"
+                                    alt="today cafe"
+                                    layout="fill"
+                                    objectFit="contain"
+                                />
+                            </div>
                         </Link>
                         <Link href={'/omakase'}>
                             <div>
                                 <div className={hs('home__link--title')}>빵돌이오마카세</div>
                                 <div className={hs('home__link--text')}>-서비스 준비중-</div>
                             </div>
-                            <img
-                                className={hs('home__link--image', '빵돌이오마카세')}
-                                src="/icon/home-omakase-button.webp"
-                                alt="today omakase"
-                            />
+                            <div style={{ position: 'relative', width: '100%', height: '80px' }}>
+                                <Image
+                                    className={hs('home__link--image', '빵돌이오마카세')}
+                                    src="/icon/home-omakase-button.webp"
+                                    alt="today omakase"
+                                    layout="fill"
+                                    objectFit="contain"
+                                />
+                            </div>
                         </Link>
                     </div>
                 </div>
@@ -409,7 +455,7 @@ export default function Home() {
                     <div className={hs('home__body-sec')}>
                         <div className={hs('home__body-sec--bread')}>
                             <div className={hs('body-sec__bread--title')}>오늘의 빵</div>
-                            <img
+                            <Image
                                 className={hs('body-sec__bread--img')}
                                 src={
                                     bread?.img
@@ -417,6 +463,8 @@ export default function Home() {
                                         : '/icon/home-bread.webp'
                                 }
                                 alt="todays bread"
+                                width={100}
+                                height={79}
                             />
                             <div className={hs('body-sec__bread--text')}>{bread?.name || '정보가 없습니다.'}</div>
                         </div>
@@ -427,7 +475,7 @@ export default function Home() {
                 <div className={hs('home__pop-up-bread')}>
                     <div className={hs('home__pop-up-bread--mask')} onClick={() => setBreadPopUp(false)} />
                     <div className={hs('home__pop-up-bread--wrapper')}>
-                        <img
+                        <Image
                             className={hs('home__pop-up-bread--img')}
                             src={bread?.img ? `https://babkaotalk.herokuapp.com${bread?.img}` : '/icon/home-bread.webp'}
                             alt="todays bread"

@@ -1,13 +1,14 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../../styles/Bus.module.scss';
 import classNames from 'classnames/bind';
 import axios from 'axios';
 import KakaoMap from '@/components/ui/KakaoMap';
 import PopUpMap from '@/components/ui/PopUpMap';
 import NotificationBox from '@/components/ui/NotificationBox';
-import { usePathname } from 'next/navigation';
 import { useMenuContext } from '@/context/MenuContext';
+import Image from 'next/image';
+import useKakaoLoader from '../../components/UseKakaoLoader';
 
 interface BusStations {
     arrivalTimeH?: number;
@@ -24,14 +25,14 @@ interface BusStations {
 
 const bs = classNames.bind(styles);
 
-function Bus() {
+function Bus({ params }: { params: { destination: string } }) {
+    useKakaoLoader();
+
     const [loaded, setLoaded] = useState(false);
     const { setMenuBox } = useMenuContext();
-    const pathname = usePathname(); // 현재 URL 경로: '/bus/[destination]'
-    const destination = pathname.split('/')[2]; // 경로에서 "destination" 추출
-    const [selectedValue, setSelectedValue] = useState(
-        destination || localStorage.getItem('recentDestination') || '강변1'
-    ); // URL parameter 노선 or 로컬스토리지 or "강변1"(기본)
+
+    const destination = decodeURIComponent(params.destination || ''); // 경로에서 "destination" 추출
+    const [selectedValue, setSelectedValue] = useState(destination || ''); // URL parameter 노선 or 로컬스토리지 or "강변1"(기본)
     const [latLong, setLatLong] = useState({ latitude: 37.756540912483615, longitude: 127.63819968679633 }); // 현재위치 정보 lat&log, 기본값 더존 강촌캠
     const [address, setAddress] = useState({
         region_1depth_name: '강원',
@@ -57,51 +58,14 @@ function Bus() {
             setLatLong({ latitude: position.coords.latitude, longitude: position.coords.longitude })
         );
     };
-    // 현재좌표 => 도로명 주소 변환 함수
-    // const getAddr = (lat: number, lng: number) => {
-    //     if (typeof window === 'undefined') return;
-    //     if (window.kakao.maps) {
-    //         const geocoder = new window.kakao.maps.services.Geocoder();
-    //         const coord = new window.kakao.maps.LatLng(lat, lng);
-    //         const callback = (result: any, status: any) => {
-    //             if (status === window.kakao.maps.services.Status.OK) {
-    //                 // 글자 자르기
-    //                 setAddress({
-    //                     region_1depth_name:
-    //                         result[0].address.region_1depth_name.indexOf(' ') >= 0
-    //                             ? result[0].address.region_1depth_name.slice(
-    //                                   0,
-    //                                   result[0].address.region_1depth_name.indexOf(' ')
-    //                               )
-    //                             : result[0].address.region_1depth_name,
-    //                     region_2depth_name:
-    //                         result[0].address.region_2depth_name.indexOf(' ') >= 0
-    //                             ? result[0].address.region_2depth_name.slice(
-    //                                   0,
-    //                                   result[0].address.region_2depth_name.indexOf(' ')
-    //                               )
-    //                             : result[0].address.region_2depth_name,
-    //                     region_3depth_name:
-    //                         result[0].address.region_3depth_name.indexOf(' ') >= 0
-    //                             ? result[0].address.region_3depth_name.slice(
-    //                                   0,
-    //                                   result[0].address.region_3depth_name.indexOf(' ')
-    //                               )
-    //                             : result[0].address.region_3depth_name
-    //                 });
-    //             }
-    //         };
-    //         geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
-    //     }
-    // };
 
     const getAddr = (lat: number, lng: number) => {
         if (typeof window === 'undefined') return;
 
         // Check if Kakao Maps API is fully loaded before accessing
-        if (window.kakao && window.kakao.maps) {
-            const geocoder = window.kakao.maps.services.Geocoder();
-            const coord = window.kakao.maps.LatLng(lat, lng);
+        if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
+            const geocoder = new window.kakao.maps.services.Geocoder();
+            const coord = new window.kakao.maps.LatLng(lat, lng);
 
             const callback = (result: any, status: any) => {
                 if (status === window.kakao.maps.services.Status.OK) {
@@ -134,8 +98,6 @@ function Bus() {
             };
 
             geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
-        } else {
-            console.error('Kakao Maps is not loaded');
         }
     };
 
@@ -152,21 +114,22 @@ function Bus() {
         if (typeof window === 'undefined') return;
         window.scrollTo(0, 0);
         updateLocation(); // 현재위치 업데이트 최초 1회 업데이트
+        setLoaded(true);
         return () => {
             window.scrollTo(0, 0);
         };
     }, []);
     useEffect(() => {
-        if (loaded) {
-            getAddr(latLong.latitude, latLong.longitude); // 현재 도로명 주소 업데이트
-        }
+        getAddr(latLong.latitude, latLong.longitude); // 현재 도로명 주소 업데이트
     }, [latLong]);
+
+    useEffect(() => {
+        setSelectedValue(destination || localStorage.getItem('recentDestination') || '강변1');
+    }, [destination]);
 
     useEffect(() => {
         localStorage.setItem('recentDestination', selectedValue); // 로컬 스토리지 업데이트
     }, [selectedValue]);
-
-    console.log('123', loaded);
 
     // 서버에서 남은 시간 받아오기 비동기 처리(async & await)
     useEffect(() => {
@@ -222,71 +185,45 @@ function Bus() {
         fetchData();
     }, [selectedValue, latLong]);
 
-    const loadKakaoMapScript = () =>
-        new Promise<void>((resolve, reject) => {
-            if (typeof window === 'undefined') {
-                reject('Window is undefined.');
-                return;
-            }
-            if (window.kakao && window.kakao.maps) {
-                resolve(); // Script already loaded
-                return;
-            }
-            const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.NEXT_PUBLIC_KAKAO_API_KEY}`;
-            script.async = true;
-            script.onload = () => {
-                window.kakao.maps.load(() => resolve());
-            };
-            script.onerror = () => reject('Failed to load Kakao Maps script.');
-            document.head.appendChild(script);
-        });
-
-    useEffect(() => {
-        loadKakaoMapScript().then(() => setLoaded(true));
-    }, [latLong]);
-
     return (
         <>
             <div className={bs('bus')}>
                 <div className={bs('title')}>
                     <div className={bs('title__icon')}>
-                        <img
+                        <Image
                             src="/icon/bus-title-icon.webp"
                             alt="before-button"
+                            width={22}
+                            height={22}
                             style={{ height: '5.64vw', maxHeight: '22px' }}
                         />
                     </div>
                     <div className={bs('title__letter')}>강촌 퇴근 버스</div>
                 </div>
                 <div className={bs('bus__body')}>
-                    {loaded && (
-                        <KakaoMap
-                            mapHeight={'64.1vw'}
-                            mapWidth={'100%'}
-                            mapBorderRadius={'10.26vw'}
-                            latLong={latLong}
-                            levelNum={5}
-                            draggableType={true}
-                            trafficInfo={true}
-                        />
-                    )}
-                    {loaded && (
-                        <KakaoMap
-                            mapHeight={'450px'}
-                            mapWidth={'100%'}
-                            mapBorderRadius={'35px'}
-                            latLong={latLong}
-                            levelNum={5}
-                            draggableType={true}
-                            trafficInfo={true}
-                        />
-                    )}
+                    <KakaoMap
+                        mapHeight={'64.1vw'}
+                        mapWidth={'100%'}
+                        mapBorderRadius={'10.26vw'}
+                        latLong={latLong}
+                        levelNum={5}
+                        draggableType={true}
+                        trafficInfo={true}
+                    />
+                    <KakaoMap
+                        mapHeight={'450px'}
+                        // mapWidth={'100%'}
+                        mapBorderRadius={'35px'}
+                        latLong={latLong}
+                        levelNum={5}
+                        draggableType={true}
+                        trafficInfo={true}
+                    />
 
                     <div className={bs('bus__block1')}>
                         <div className={bs('bus__block1--left')}>
                             <div className={bs('bus__block1--left-title')}>
-                                <img src="/icon/bus-arrival-icon.webp" alt="arrival icon" />
+                                <Image src="/icon/bus-arrival-icon.webp" alt="arrival icon" width={50} height={50} />
                             </div>
                             <div className={bs('bus__block1--left-mainBox')}>{arrivalTime.mainbox}</div>
                             <div className={bs('bus__block1--left-firstLine')}>
@@ -310,16 +247,24 @@ function Bus() {
                                 </div>
                                 <div className={bs('bus__block1--right--refresh-button')}>
                                     <button onClick={() => updateLocation()}>
-                                        <img
+                                        <Image
+                                            width={22}
+                                            height={22}
                                             className={bs('refresh-button')}
                                             src="/icon/bus-refresh-button.webp"
                                             alt="refresh-button"
-                                        ></img>
+                                        />
                                     </button>
                                 </div>
                             </div>
                             <div className={bs('bus__block1--right--arrow')}>
-                                <img className={bs('arrow-img')} src="/icon/arrow-down.webp" alt="아래화살표" />
+                                <Image
+                                    className={bs('arrow-img')}
+                                    src="/icon/arrow-down.webp"
+                                    alt="아래화살표"
+                                    width={14}
+                                    height={18}
+                                />
                             </div>
                             <div className={bs('bus__block1--right--selectbox')}>
                                 <select
@@ -371,10 +316,12 @@ function Bus() {
                                             자세히 보기
                                         </div>
                                     </div>
-                                    <img
+                                    <Image
                                         className={bs('bus__block2--stop-arrow')}
                                         src="/icon/bus-stops-arrow.webp"
                                         alt="down arrow"
+                                        width={50}
+                                        height={50}
                                     />
                                 </div>
                             ))}

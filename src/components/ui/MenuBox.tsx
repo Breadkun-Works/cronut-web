@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styles from '../style/MenuBox.module.scss';
+import styles from '../../styles/MenuBox.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

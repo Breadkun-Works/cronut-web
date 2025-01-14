@@ -12,11 +12,12 @@ import { fetchWeatherData } from '@/apis/weather/weather-api';
 import Link from 'next/link';
 import NotificationBox from '@/components/ui/NotificationBox';
 import Image from 'next/image';
+import MenuBox from '@/components/ui/MenuBox';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    const { setMenuBox } = useMenuContext();
+    const { menuBox, setMenuBox } = useMenuContext();
     const [company, setCompany] = useState(''); // 강촌, 을지
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
@@ -239,9 +240,11 @@ export default function Home() {
                             <div className={hs('home__weather--now-temperature')}>
                                 {PTY?.[0].fcstValue && (
                                     <Image
-                                        className={hs('home__weather--now-temperature-img')}
+                                        // className={hs('home__weather--now-temperature-img')}
                                         src={getWeatherIconPath(PTY?.[0].fcstValue, SKY?.[0].fcstValue)}
                                         alt="weather-icon"
+                                        width={21}
+                                        height={21}
                                     />
                                 )}
                                 <div
@@ -250,14 +253,13 @@ export default function Home() {
                             </div>
                             <div className={hs('home__weather--now-rain')}>
                                 <Image
-                                    className={hs('home__weather--now-rain-img')}
+                                    // className={hs('home__weather--now-rain-img')}
                                     src="/icon/weather/popPercent.webp"
                                     alt="rain-percent"
                                     width={21}
                                     height={21}
                                 />
                                 <div className={hs('home__weather--now-rain-text')}>
-                                    {' '}
                                     {`${RAIN?.[0].fcstValue.padStart(2, '0') || '-'}%`}
                                 </div>
                             </div>
@@ -271,15 +273,17 @@ export default function Home() {
                                         </div>
                                         {PTY?.[index + 1].fcstValue && (
                                             <Image
-                                                className={hs('home__weather--forecast-sky-icon')}
+                                                // className={hs('home__weather--forecast-sky-icon')}
                                                 src={getWeatherIconPath(
                                                     PTY?.[index + 1].fcstValue,
                                                     SKY?.[index + 1].fcstValue
                                                 )}
                                                 alt="weather-icon"
                                                 key={`a${index}`}
+                                                width={21}
+                                                height={21}
                                             />
-                                        )}
+                                        )} 
                                         <div className={hs('home__weather--forecast-temperature')} key={`d${index}`}>
                                             {TMP?.[index + 1].fcstValue
                                                 ? `${TMP?.[index + 1].fcstValue.padStart(2, '0')}°C`
@@ -288,12 +292,15 @@ export default function Home() {
 
                                         {PTY?.[index + 1].fcstValue && (
                                             <Image
-                                                className={hs('home__weather--forecast-rain-img')}
+                                                // className={hs('home__weather--forecast-rain-img')}
                                                 src="/icon/weather/popPercent.webp"
                                                 alt="rain-percent"
                                                 key={`c${index}`}
+                                                objectFit='cover'
+                                                width={21}
+                                                height={21}
                                             />
-                                        )}
+                                        )} 
                                         <div className={hs('home__weather--forecast-rain-text')} key={`t${index}`}>
                                             {RAIN?.[index + 1].fcstValue
                                                 ? `${RAIN?.[index + 1].fcstValue.padStart(2, '0')}%`
@@ -490,6 +497,7 @@ export default function Home() {
                 </div>
             )}
             {notification && <NotificationBox firstText={'기상상태 분석 중.'} secText={'잠시만 기다려 주세요.'} />}
+            {menuBox && <MenuBox setMenuBox={setMenuBox} />}
         </>
     );
 }

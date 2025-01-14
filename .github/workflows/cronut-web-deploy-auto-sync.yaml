@@ -34,6 +34,7 @@ jobs:
           user-email: ${{ secrets.BREADKUN_CRONUT_DEPLOY_EMAIL }}
           commit-message: ${{ github.event.commits[0].message || 'Auto-sync commit' }}
           target-branch: ${{ env.TARGET_BRANCH }}
+          create-target-branch-if-needed: true
       
       - name: Test get variable exported by push-to-another-repository
         run: echo $DESTINATION_CLONED_DIRECTORY

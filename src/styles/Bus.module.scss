@@ -253,7 +253,9 @@ div + .bus__block1 {
   right: 0px;
   z-index: 10;
   display: inline-block;
+  width: 9vw;
   height: 9vw;
+  max-width: 45px;
   max-height: 45px; // 갤럭시 폴드 대응
   transition: all 80ms ease-in-out;
   -webkit-transition: all 80ms ease-in-out; // Webkit prefix

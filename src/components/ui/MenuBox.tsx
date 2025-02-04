@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect } from 'react';
 import styles from '../../styles/MenuBox.module.scss';
 import classNames from 'classnames/bind';
@@ -7,21 +8,26 @@ import { usePathname } from 'next/navigation';
 const ms = classNames.bind(styles);
 
 function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateAction<boolean>> }) {
-    const handleTouchMove = (e: TouchEvent) => e.preventDefault();
-
     const router = usePathname();
 
     useEffect(() => {
-        const parentElement = document.body; // DOM의 body 태그 지정
-        // MenuBox 마운트시,
-        parentElement.style.overflow = 'hidden';
-        parentElement.addEventListener('touchmove', handleTouchMove, { passive: false }); // Touch 디바이스 스크롤 정지
-        // MenuBox 언마운트시,
-        return () => {
-            parentElement.style.overflow = 'visible';
-            parentElement.removeEventListener('touchmove', handleTouchMove); // Touch 디바이스 스크롤 정지 해제
+        const handleTouchMove = (e: TouchEvent) => e.preventDefault();
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setMenuBox(false);
+            }
         };
-    }, []);
+
+        document.body.style.overflow = 'hidden';
+        document.body.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            document.body.style.overflow = 'visible';
+            document.body.removeEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('keyup', handleKeyUp);
+        };
+    }, [setMenuBox]);
 
     return (
         <div className={ms('menu-box')}>

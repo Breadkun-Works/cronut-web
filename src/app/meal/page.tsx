@@ -10,8 +10,6 @@ import { getMealImagePath } from '@/utils/image-return';
 const ms = classNames.bind(styles);
 
 const Meal = () => {
-    const { setMenuBox } = useMenuContext();
-
     const getWeekNumber = (date: Date): number => {
         // 월요일이 0이 되도록 요일을 조정합니다.
         const dayOfWeek = (date.getDay() + 6) % 7;
@@ -66,10 +64,6 @@ const Meal = () => {
             return value[0].split(/[+ (&*]/)[0];
         }
     };
-
-    useEffect(() => {
-        setMenuBox(false); // 메뉴 닫기(이전버튼 클릭시)
-    }, [setMenuBox]);
 
     // 페이지 최상단으로 스크롤링
     useEffect(() => {

@@ -1,10 +1,8 @@
 @use '_utilities.scss' as u;
 
 .meal {
-  @include u.desktop {
-    width: 100%;
-    max-width: 950px;
-  }
+  width: 100%;
+  max-width: 950px;
 }
 .title {
   background-color: u.$gray-09;

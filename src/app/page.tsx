@@ -4,7 +4,6 @@ import styles from '../styles/Home.module.scss';
 import { useEffect, useState } from 'react';
 import { WeatherReturn } from '@/types/home';
 import axios from 'axios';
-import { useMenuContext } from '@/context/MenuContext';
 import classNames from 'classnames/bind';
 import { getWeatherIconPath, imageReturn } from '@/utils/image-return';
 import { fetchDustDataTest } from '@/apis/dust/dust-api';
@@ -12,12 +11,10 @@ import { fetchWeatherData } from '@/apis/weather/weather-api';
 import Link from 'next/link';
 import NotificationBox from '@/components/ui/NotificationBox';
 import Image from 'next/image';
-import MenuBox from '@/components/ui/MenuBox';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    const { menuBox, setMenuBox } = useMenuContext();
     const [company, setCompany] = useState(''); // 강촌, 을지
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
@@ -34,9 +31,6 @@ export default function Home() {
     const [breadPopUp, setBreadPopUp] = useState(false);
     const [bread, setBread] = useState<{ id: string; name: string; img: string } | undefined>();
     const [weather, setWeather] = useState<{ [key in string]: WeatherReturn[] }>({});
-
-    const cancelTokenSource = axios.CancelToken.source(); // 요청 취소 토큰
-
     const { SKY, PTY, RAIN, TMP } = weather; //하늘 / 강수형태 / 강수확률 / 기온
 
     // 회사를 드롭다운에 따라 업데이트하는 함수
@@ -57,12 +51,6 @@ export default function Home() {
         setRefreshButton(!refreshButton);
     };
     const handleTouchMove = (e: TouchEvent) => e.preventDefault(); // 스크롤 정지 함수
-
-    // 메뉴 닫기(이전버튼 클릭시)
-    useEffect(() => {
-        setMenuBox(false);
-    }, [setMenuBox]);
-
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
         const recentCompany = localStorage.getItem('recentCompany') || '강촌';
@@ -88,19 +76,24 @@ export default function Home() {
             pm10Value: '-',
             pm25Value: '-'
         });
-        fetchDustDataTest(company).then(dustResponse => {
-            if (dustResponse) {
-                setDust({
-                    dataTime: dustResponse.dataTime,
-                    stationName: dustResponse.stationName,
-                    pm10Level: dustResponse.pm10Level,
-                    pm25Level: dustResponse.pm25Level,
-                    pm10Value: dustResponse.pm10Value,
-                    pm25Value: dustResponse.pm25Value
-                });
-                setDustRequestCompleted(true);
-            }
-        });
+        fetchDustDataTest(company)
+            .then(dustResponse => {
+                if (dustResponse) {
+                    setDust({
+                        dataTime: dustResponse.dataTime,
+                        stationName: dustResponse.stationName,
+                        pm10Level: dustResponse.pm10Level,
+                        pm25Level: dustResponse.pm25Level,
+                        pm10Value: dustResponse.pm10Value,
+                        pm25Value: dustResponse.pm25Value
+                    });
+                    setDustRequestCompleted(true);
+                }
+            })
+            .catch(error => {
+                console.log('미세먼지 가져오기 재시도 실패.');
+                console.log(error);
+            });
 
         const retryDustData = async (retryCount: number) => {
             try {
@@ -128,7 +121,7 @@ export default function Home() {
         const retryTimer = setTimeout(() => {
             retryDustData(1);
         }, 500);
-
+        const cancelTokenSource = axios.CancelToken.source(); // 요청 취소 토큰
         return () => {
             cancelTokenSource.cancel('Component unmounted');
             clearTimeout(retryTimer);
@@ -165,7 +158,7 @@ export default function Home() {
         const retryTimer = setTimeout(() => {
             retryWeatherData(1);
         }, 500);
-
+        const cancelTokenSource = axios.CancelToken.source(); // 요청 취소 토큰
         return () => {
             cancelTokenSource.cancel('Component unmounted');
             clearTimeout(retryTimer);
@@ -283,7 +276,7 @@ export default function Home() {
                                                 width={21}
                                                 height={21}
                                             />
-                                        )} 
+                                        )}
                                         <div className={hs('home__weather--forecast-temperature')} key={`d${index}`}>
                                             {TMP?.[index + 1].fcstValue
                                                 ? `${TMP?.[index + 1].fcstValue.padStart(2, '0')}°C`
@@ -296,11 +289,11 @@ export default function Home() {
                                                 src="/icon/weather/popPercent.webp"
                                                 alt="rain-percent"
                                                 key={`c${index}`}
-                                                objectFit='cover'
+                                                objectFit="cover"
                                                 width={21}
                                                 height={21}
                                             />
-                                        )} 
+                                        )}
                                         <div className={hs('home__weather--forecast-rain-text')} key={`t${index}`}>
                                             {RAIN?.[index + 1].fcstValue
                                                 ? `${RAIN?.[index + 1].fcstValue.padStart(2, '0')}%`
@@ -497,7 +490,6 @@ export default function Home() {
                 </div>
             )}
             {notification && <NotificationBox firstText={'기상상태 분석 중.'} secText={'잠시만 기다려 주세요.'} />}
-            {menuBox && <MenuBox setMenuBox={setMenuBox} />}
         </>
     );
 }

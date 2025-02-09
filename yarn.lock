@@ -3444,6 +3444,11 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+lucide-react@^0.475.0:
+  version "0.475.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.475.0.tgz#4b7b62c024f153ee4b52a6a0f33f9e72f07156f0"
+  integrity sha512-NJzvVu1HwFVeZ+Gwq2q00KygM1aBhy/ZrhY9FsAgJtpB+E4R7uxRk9M2iKvHa6/vNxZydIB59htha4c2vvwvVg==
+
 lz-string@^1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/lz-string/-/lz-string-1.5.0.tgz"
@@ -4403,6 +4408,11 @@ styled-reset@^4.4.5:
   version "4.5.2"
   resolved "https://registry.npmjs.org/styled-reset/-/styled-reset-4.5.2.tgz"
   integrity sha512-dbAaaVEhweBs2FGfqGBdW6oMcMK8238C2X5KCxBhUQJX92m/QyUfzRADOXhdXiXNkIPELtMCd72YY9eCdORfIw==
+
+styled@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/styled/-/styled-1.0.0.tgz#4b4ff3b5df061016870abfd7177ff6916eaedc60"
+  integrity sha512-mPbinkDY7K//Jxi7hZBNSiUF3Q9LE8NHrlUuQXLHCFZcVJeSXQh/Kn4C7lWf8Obre3iyYHo0OqA3WptZrwST/A==
 
 stylis@4.3.2:
   version "4.3.2"

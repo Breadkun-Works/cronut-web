@@ -23,11 +23,8 @@
 # misc
 .DS_Store
 *.pem
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# 모든 .env 관련 파일 무시
+.env*
 # debug
 npm-debug.log*
 yarn-debug.log*

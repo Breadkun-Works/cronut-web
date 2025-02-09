@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 import Link from 'next/link';
 import { useMenuContext } from '@/context/MenuContext';
 import { usePathname } from 'next/navigation';
-import MenuBox from './ui/MenuBox';
+import MenuBox from './MenuBox';
 
 const hs = classNames.bind(styles);
 

@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
-import styles from '../../styles/MenuBox.module.scss';
+import styles from '../styles/MenuBox.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -36,7 +36,7 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                 <Link
                     className={router === '/' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
                     // className={({ isActive }) => (isActive ? ms('menu-box__menu-active') : ms('menu-box__menu'))}
-                    href={'/'}
+                    href={'/public'}
                     onClick={() => setMenuBox(false)}
                 >
                     HOME

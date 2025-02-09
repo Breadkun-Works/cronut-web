@@ -9,7 +9,7 @@ import { getWeatherIconPath, imageReturn } from '@/utils/image-return';
 import { fetchDustDataTest } from '@/apis/dust/dust-api';
 import { fetchWeatherData } from '@/apis/weather/weather-api';
 import Link from 'next/link';
-import NotificationBox from '@/components/ui/NotificationBox';
+import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
 
 const hs = classNames.bind(styles);

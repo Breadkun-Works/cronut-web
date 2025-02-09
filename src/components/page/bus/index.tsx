@@ -3,9 +3,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from '../../../styles/Bus.module.scss';
 import classNames from 'classnames/bind';
 import axios from 'axios';
-import KakaoMap from '@/components/ui/KakaoMap';
-import PopUpMap from '@/components/ui/PopUpMap';
-import NotificationBox from '@/components/ui/NotificationBox';
+import KakaoMap from '@/components/page/bus/KakaoMap';
+import PopUpMap from '@/components/page/bus/popup/PopUpMap';
+import NotificationBox from '@/components/NotificationBox';
 import { usePathname } from 'next/navigation';
 import { useMenuContext } from '@/context/MenuContext';
 

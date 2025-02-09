@@ -24,7 +24,7 @@ export default function RootLayout({
             <body>
                 <MenuProvider>
                     <Header />
-                    <main>{children}</main>
+                    <main style={{ maxWidth: '950px', margin: '0 auto' }}>{children}</main>
                 </MenuProvider>
             </body>
         </html>

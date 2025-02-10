@@ -6,7 +6,8 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         description: '더존 빵돌이 카페 주문 페이지입니다.',
         openGraph: {
             title: '더존 빵돌이 | 카페 주문',
-            description: '더존 빵돌이 카페 주문 페이지입니다. 주문에 참여해볼까요?'
+            description: '더존 빵돌이 카페 주문 페이지입니다. 주문에 참여해볼까요?',
+            url: `https://breadkun-dev.vercel.app/cafe/cart/${params.id}` // TODO: 환경변수로 수정해야됨
         }
     };
 }

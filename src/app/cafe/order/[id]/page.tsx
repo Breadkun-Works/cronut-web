@@ -15,6 +15,7 @@ const Input = styled.input`
     border-radius: 5px;
     padding: 0 10px;
     box-sizing: border-box;
+    font-size: 16px;
 `;
 
 const ReadOnlyInput = styled.input`
@@ -25,7 +26,6 @@ const ReadOnlyInput = styled.input`
     background-color: #2c2f31;
     text-decoration: underline;
     color: #ccc;
-    font-size: 16px;
 `;
 
 const copyLink = (url: string) => {

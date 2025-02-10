@@ -25,6 +25,7 @@ const ReadOnlyInput = styled.input`
     background-color: #2c2f31;
     text-decoration: underline;
     color: #ccc;
+    font-size: 16px;
 `;
 
 const copyLink = (url: string) => {

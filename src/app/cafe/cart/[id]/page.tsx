@@ -17,6 +17,7 @@ const Input = styled.input`
     border-radius: 5px;
     padding: 0 10px;
     box-sizing: border-box;
+    font-size: 16px;
 `;
 
 const ReadOnlyInput = styled.input`

@@ -7,7 +7,9 @@ import { RefreshCw } from 'lucide-react';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { usePathname } from 'next/navigation';
 import { Copy } from 'lucide-react';
+import { getCookie, setCookie, updateCookie } from '@/utils/cookie';
 
+const PLACEHOLDER = '이름을 입력해주세요.';
 const Input = styled.input`
     width: 100%;
     height: 40px;
@@ -209,6 +211,31 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
         setRandomImage(getRandomProfileImage());
     };
     const [randomImage, setRandomImage] = useState<StaticImport>(getRandomProfileImage());
+    const [userName, setUserName] = useState<string>('');
+    const [userNamePlaceholder, setUserNamePlaceholder] = useState<string>(PLACEHOLDER);
+
+    useEffect(() => {
+        const cookieUserInfo = getCookie('BRKUserInfo');
+        if (cookieUserInfo && cookieUserInfo.name) {
+            setUserNamePlaceholder(cookieUserInfo.name);
+        }
+    }, []);
+
+    const handleOrder = () => {
+        let cookieUserInfo = getCookie('BRKUserInfo');
+
+        if (!cookieUserInfo) {
+            cookieUserInfo = { uuid: crypto.randomUUID() };
+            setCookie('BRKUserInfo', 'uuid', cookieUserInfo.uuid);
+        }
+
+        const nameToUse = userName || userNamePlaceholder;
+
+        if (nameToUse !== PLACEHOLDER) {
+            updateCookie('BRKUserInfo', 'name', nameToUse);
+            alert(`${nameToUse}님의 주문이 완료되었습니다.`);
+        }
+    };
 
     return (
         <div
@@ -261,8 +288,13 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
                 </div>
             </div>
             <div style={{ fontSize: '20px', margin: '20px 0' }}>주문자 이름을 입력해주세요.</div>
-            <Input type="text" placeholder="이름" />
-            <BRKButton>주문하기</BRKButton>
+            <Input
+                type="text"
+                placeholder={userNamePlaceholder}
+                value={userName}
+                onChange={e => setUserName(e.target.value)}
+            />
+            <BRKButton onClick={handleOrder}>주문하기</BRKButton>
         </div>
     );
 };

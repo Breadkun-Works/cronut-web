@@ -11,7 +11,7 @@ import { fetchWeatherData } from '@/apis/weather/weather-api';
 import Link from 'next/link';
 import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
-
+import { getCookie, setCookie, updateCookie } from '@/utils/cookie';
 const hs = classNames.bind(styles);
 
 export default function Home() {
@@ -57,6 +57,10 @@ export default function Home() {
         setCompany(recentCompany);
 
         window.scrollTo(0, 0);
+        const cookieUserInfo = getCookie('BRKUserInfo');
+        if (!cookieUserInfo) {
+            setCookie('BRKUserInfo', 'uuid', crypto.randomUUID());
+        }
         return () => {
             window.scrollTo(0, 0);
         };

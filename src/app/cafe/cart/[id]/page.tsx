@@ -7,7 +7,7 @@ import { RefreshCw } from 'lucide-react';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { usePathname } from 'next/navigation';
 import { Copy } from 'lucide-react';
-import { getCookie, setCookie, updateCookie } from '@/utils/cookie';
+import { getCookie, setCookie } from '@/utils/cookie';
 
 const PLACEHOLDER = '이름을 입력해주세요.';
 const Input = styled.input`
@@ -216,24 +216,24 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     const [userNamePlaceholder, setUserNamePlaceholder] = useState<string>(PLACEHOLDER);
 
     useEffect(() => {
-        const cookieUserInfo = getCookie('BRKUserInfo');
-        if (cookieUserInfo && cookieUserInfo.name) {
-            setUserNamePlaceholder(cookieUserInfo.name);
+        const cookieUserInfo = getCookie('BRK-UUID');
+        if (cookieUserInfo && cookieUserInfo.uuid) {
+            setUserNamePlaceholder(cookieUserInfo.uuid);
         }
     }, []);
 
     const handleOrder = () => {
-        let cookieUserInfo = getCookie('BRKUserInfo');
+        let cookieUserInfo = getCookie('BRK-UUID');
 
         if (!cookieUserInfo) {
             cookieUserInfo = { uuid: crypto.randomUUID() };
-            setCookie('BRKUserInfo', 'uuid', cookieUserInfo.uuid);
+            setCookie('BRK-UUID', 'uuid', cookieUserInfo.uuid);
         }
 
         const nameToUse = userName || userNamePlaceholder;
 
         if (nameToUse !== PLACEHOLDER) {
-            updateCookie('BRKUserInfo', 'name', nameToUse);
+            setCookie('BRK-UserName', 'name', nameToUse);
             alert(`${nameToUse}님의 주문이 완료되었습니다.`);
         }
     };

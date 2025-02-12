@@ -8,24 +8,7 @@ export const CartWrapper = styled.div`
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
-    max-width: 680px'
-`;
-
-export const CartButtonWrapper = styled.button`
-    background-color: #8b4513;
-    border: none;
-    cursor: pointer;
-    border-radius: 50%;
-    padding: 7px;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:active {
-        transform: scale(1.3);
-    }
+    max-width: 680px;
 `;
 
 export const CartButton = styled.button`

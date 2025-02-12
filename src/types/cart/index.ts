@@ -1,5 +1,7 @@
+import { Company } from '@/types/common';
+
 export interface INewCartType {
-    cafeLocation: 'KANGCHON' | 'EULJI';
+    cafeLocation: Company;
     title: string;
     description?: string;
 }

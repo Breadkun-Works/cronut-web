@@ -12,10 +12,15 @@ import Link from 'next/link';
 import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
 import { getCookie, setCookie } from '@/utils/cookie';
+import { useCompanyContext } from '@/context/CompanyContext';
+import CompanySelector from '@/app/CompanySelect';
+import { Company, companyDropdownItem } from '@/types/common';
+
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    const [company, setCompany] = useState(''); // 강촌, 을지
+    // const [company, setCompany] = useState(''); // 강촌, 을지
+    const { company, setCompany } = useCompanyContext(); // company와 setCompany를 가져옵니다.
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
     const [weatherRequestCompleted, setWeatherRequestCompleted] = useState(false);
@@ -33,11 +38,6 @@ export default function Home() {
     const [weather, setWeather] = useState<{ [key in string]: WeatherReturn[] }>({});
     const { SKY, PTY, RAIN, TMP } = weather; //하늘 / 강수형태 / 강수확률 / 기온
 
-    // 회사를 드롭다운에 따라 업데이트하는 함수
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCompany(e.target.value);
-    };
-
     const getWeatherTime = (fcstTime: string): string | undefined => {
         if (fcstTime && +fcstTime < 1200) {
             return `오전${fcstTime.slice(0, 2)}시`;
@@ -53,7 +53,7 @@ export default function Home() {
     const handleTouchMove = (e: TouchEvent) => e.preventDefault(); // 스크롤 정지 함수
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
-        const recentCompany = localStorage.getItem('recentCompany') || '강촌';
+        const recentCompany = (localStorage.getItem('recentCompany') as Company) || Company.KANGCHON;
         setCompany(recentCompany);
 
         window.scrollTo(0, 0);
@@ -202,7 +202,7 @@ export default function Home() {
                 console.log(error);
             }
         }
-        if (company === '강촌') {
+        if (company === Company.KANGCHON) {
             fetchData();
         }
     }, [company]);
@@ -216,12 +216,9 @@ export default function Home() {
                     </div>
                     <div className={hs('title__select')}>
                         <div className={hs('title__letter')}>
-                            {company === '강촌' ? '더존 강촌캠퍼스' : '더존 을지타워'}
+                            {companyDropdownItem.find(c => c.value === company)?.label}
                         </div>
-                        <select value={company} onChange={handleChange} aria-label="회사를 선택해 주세요.">
-                            <option value="강촌">더존 강촌캠퍼스</option>
-                            <option value="을지">더존 을지타워</option>
-                        </select>
+                        <CompanySelector />
                         <Image
                             className={hs('title__select-button')}
                             src="/icon/home-select-arrow.webp"
@@ -377,7 +374,7 @@ export default function Home() {
                                 />
                             </div>
                         </Link>
-                        {company === '강촌' && (
+                        {company === Company.KANGCHON && (
                             <>
                                 <button className={hs('home__link--bread')} onClick={() => setBreadPopUp(true)}>
                                     <div>
@@ -455,7 +452,7 @@ export default function Home() {
                         </Link>
                     </div>
                 </div>
-                {company === '강촌' && (
+                {company === 'KANGCHON' && (
                     <div className={hs('home__body-sec')}>
                         <div className={hs('home__body-sec--bread')}>
                             <div className={hs('body-sec__bread--title')}>오늘의 빵</div>
@@ -470,7 +467,7 @@ export default function Home() {
                                 width={100}
                                 height={79}
                             />
-                            <div className={hs('body-sec__bread--text')}>{bread?.name || '정보가 없습니다.'}</div>
+                            <div className={hs('body-sec__bread--text')}>{bread?.name ?? '정보가 없습니다.'}</div>
                         </div>
                     </div>
                 )}
@@ -485,7 +482,7 @@ export default function Home() {
                             alt="todays bread"
                         />
                         <div className={hs('home__pop-up-bread--text')}>
-                            {bread?.name || '오늘의 빵 정보가 없습니다.'}
+                            {bread?.name ?? '오늘의 빵 정보가 없습니다.'}
                         </div>
                         <span className={hs('home__pop-up-bread--close')} onClick={() => setBreadPopUp(false)}>
                             닫기

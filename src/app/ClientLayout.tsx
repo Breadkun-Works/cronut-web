@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../lib/queryClient';
 import Header from '@/components/Header';
 import { MenuProvider } from '@/context/MenuContext';
+import { CompanyProvider } from '@/context/CompanyContext';
 
 export default function ClientLayout({ children }: Readonly<{ children: ReactNode }>) {
     const [isClient, setIsClient] = useState(false);
@@ -21,7 +22,9 @@ export default function ClientLayout({ children }: Readonly<{ children: ReactNod
         <QueryClientProvider client={queryClient}>
             <MenuProvider>
                 <Header />
-                <main style={{ maxWidth: '950px', margin: '0 auto' }}>{children}</main>
+                <main style={{ maxWidth: '950px', margin: '0 auto' }}>
+                    <CompanyProvider>{children}</CompanyProvider>
+                </main>
             </MenuProvider>
         </QueryClientProvider>
     );

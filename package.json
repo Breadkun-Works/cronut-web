@@ -36,6 +36,8 @@
         "workbox-streams": "^6.5.4"
     },
     "devDependencies": {
+        "@tanstack/react-query": "^5.66.0",
+        "@tanstack/react-query-devtools": "^5.66.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",

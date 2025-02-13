@@ -5,6 +5,10 @@ import { colors } from '@/styles/colors';
 export const PageWrapper = styled.div`
     width: 100%;
     max-width: 950px;
+    .cart-wrapper {
+        display: flex;
+        justify-content: center;
+    }
 `;
 
 export const CartTitle = styled.div`
@@ -109,7 +113,7 @@ export const CartTitle = styled.div`
     }
 `;
 
-export const CartWrapper = styled.div`
+export const CartContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;

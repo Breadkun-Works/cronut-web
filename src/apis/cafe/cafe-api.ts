@@ -5,6 +5,7 @@ import { getCookie } from '@/utils/cookie';
 
 const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> => {
     const cookieUserInfo = getCookie('BRK-UUID');
+    console.log(cookieUserInfo, 'cookieUserInfo');
     const { data } = await axios.post<ICreateCartResponse>(
         // `http://146.56.119.222:65477/api/cafe/carts`,
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/cafe/carts`,
@@ -12,7 +13,7 @@ const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> =
         {
             headers: {
                 Accept: 'application/vnd.breadkun.v1+json',
-                'X-User-UUID': cookieUserInfo.uuid
+                'X-User-UUID': cookieUserInfo.key
             }
         }
     );

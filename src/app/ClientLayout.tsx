@@ -6,9 +6,13 @@ import queryClient from '../lib/queryClient';
 import Header from '@/components/Header';
 import { MenuProvider } from '@/context/MenuContext';
 import { CompanyProvider } from '@/context/CompanyContext';
+import { PageWrapper } from '@/styles/cart/cart.styles';
+import createEmotionCache from '@/lib/createEmotionCache';
+import { CacheProvider } from '@emotion/react';
 
 export default function ClientLayout({ children }: Readonly<{ children: ReactNode }>) {
     const [isClient, setIsClient] = useState(false);
+    const cache = createEmotionCache();
 
     useEffect(() => {
         setIsClient(true); // Indicating client-side rendering
@@ -19,13 +23,17 @@ export default function ClientLayout({ children }: Readonly<{ children: ReactNod
     }
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <MenuProvider>
-                <Header />
-                <main style={{ maxWidth: '950px', margin: '0 auto' }}>
-                    <CompanyProvider>{children}</CompanyProvider>
-                </main>
-            </MenuProvider>
-        </QueryClientProvider>
+        <CacheProvider value={cache}>
+            <QueryClientProvider client={queryClient}>
+                <MenuProvider>
+                    <Header />
+                    <main>
+                        <PageWrapper>
+                            <CompanyProvider>{children}</CompanyProvider>
+                        </PageWrapper>
+                    </main>
+                </MenuProvider>
+            </QueryClientProvider>
+        </CacheProvider>
     );
 }

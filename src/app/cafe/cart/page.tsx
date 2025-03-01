@@ -1,6 +1,5 @@
 'use client';
 import { CartButton, PageWrapper, CartTitle, CartContainer } from '@/styles/cart/cart.styles';
-import styled from 'styled-components';
 import React, { useState } from 'react';
 import { getPlaceholderText, useConditionalTimeout } from '@/utils/util';
 import { useCreateCart } from '@/apis/cafe/cafe-api';
@@ -10,7 +9,8 @@ import Image from 'next/image';
 import { companyDropdownItem } from '@/types/common';
 import NotificationBox from '@/components/NotificationBox';
 import { useRouter } from 'next/navigation';
-import { meta } from 'eslint-plugin-react/lib/rules/jsx-props-no-spread-multi';
+import styled from '@emotion/styled';
+
 const Input = styled.input`
     width: 100%;
     height: 40px;

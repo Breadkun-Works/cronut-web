@@ -1,6 +1,6 @@
-import styled from 'styled-components';
 import { desktop } from '@/styles/mixnis';
 import { colors } from '@/styles/colors';
+import styled from '@emotion/styled';
 
 export const PageWrapper = styled.div`
     width: 100%;

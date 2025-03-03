@@ -1,13 +1,12 @@
 'use client';
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import Image from 'next/image';
-import styled from 'styled-components';
 import { face1, face2, face3, face4 } from './images';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Copy } from 'lucide-react';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { usePathname } from 'next/navigation';
-import { Copy } from 'lucide-react';
 import { getCookie, setCookie } from '@/utils/cookie';
+import styled from '@emotion/styled';
 
 const PLACEHOLDER = '이름을 입력해주세요.';
 const Input = styled.input`

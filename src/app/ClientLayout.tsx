@@ -9,6 +9,8 @@ import { CompanyProvider } from '@/context/CompanyContext';
 import { PageWrapper } from '@/styles/cart/cart.styles';
 import createEmotionCache from '@/lib/createEmotionCache';
 import { CacheProvider } from '@emotion/react';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { MuiTheme } from '@/data';
 
 export default function ClientLayout({ children }: Readonly<{ children: ReactNode }>) {
     const [isClient, setIsClient] = useState(false);
@@ -24,16 +26,19 @@ export default function ClientLayout({ children }: Readonly<{ children: ReactNod
 
     return (
         <CacheProvider value={cache}>
-            <QueryClientProvider client={queryClient}>
-                <MenuProvider>
-                    <Header />
-                    <main>
-                        <PageWrapper>
-                            <CompanyProvider>{children}</CompanyProvider>
-                        </PageWrapper>
-                    </main>
-                </MenuProvider>
-            </QueryClientProvider>
+            <ThemeProvider theme={MuiTheme}>
+                <CssBaseline /> {/* 기본 CSS 리셋 */}
+                <QueryClientProvider client={queryClient}>
+                    <MenuProvider>
+                        <Header />
+                        <main>
+                            <PageWrapper>
+                                <CompanyProvider>{children}</CompanyProvider>
+                            </PageWrapper>
+                        </main>
+                    </MenuProvider>
+                </QueryClientProvider>
+            </ThemeProvider>
         </CacheProvider>
     );
 }

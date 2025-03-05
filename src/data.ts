@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material';
+import { DrinkCategory } from '@/types/common';
 
 export const MuiTheme = createTheme({
     typography: {
@@ -48,8 +49,9 @@ export const MuiTheme = createTheme({
 export const CafeMenuData = [
     {
         name: 'COFFEE',
+        value: DrinkCategory.COFFEE,
         sx: { fontSize: '20px' }
     },
-    { name: 'TEA', sx: { color: 'white', '&.Mui-selected': { color: '#cf7500' }, fontSize: '20px' } },
-    { name: 'BEVERAGE', sx: { color: 'white', '&.Mui-selected': { color: '#cf7500' }, fontSize: '20px' } }
+    { name: 'TEA', value: DrinkCategory.TEA, sx: { fontSize: '20px' } },
+    { name: 'BEVERAGE', value: DrinkCategory.DRINK, sx: { fontSize: '20px' } }
 ];

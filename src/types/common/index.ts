@@ -40,3 +40,14 @@ export enum Company {
     KANGCHON = 'KANGCHON',
     EULJI = 'EULJI'
 }
+
+export enum DrinkTemperature {
+    HOT = 'HOT',
+    COLD = 'COLD'
+}
+
+export enum DrinkCategory {
+    COFFEE = 'COFFEE',
+    TEA = 'TEA',
+    DRINK = 'DRINK'
+}

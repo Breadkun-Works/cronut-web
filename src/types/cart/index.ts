@@ -1,4 +1,12 @@
-import { Company } from '@/types/common';
+import { Company, DrinkTemperature } from '@/types/common';
+
+export interface PaginationType {
+    totalItems?: number;
+    totalPages?: number;
+    pageSize?: number;
+    currentPage?: number;
+    timestamp?: string;
+}
 
 export interface INewCartType {
     cafeLocation: Company;
@@ -8,10 +16,7 @@ export interface INewCartType {
 
 export interface ICreateCartResponse {
     success: boolean;
-    meta: {
-        totalItems: number;
-        timestamp: string;
-    };
+    meta: PaginationType;
     data: {
         cafeCart: {
             id: string;
@@ -24,4 +29,28 @@ export interface ICreateCartResponse {
             status: string;
         };
     };
+}
+
+export interface ICafeMenuResponse {
+    success: boolean;
+    meta: PaginationType;
+    data: Array<ICafeMenuBoardResponse>;
+}
+
+export interface ICafeMenuBoardResponse {
+    cafeLocation: Company;
+    name: string;
+    category: string;
+    options: Array<ICafeMenuOption>;
+}
+
+interface ICafeMenuOption {
+    drinkTemperature: DrinkTemperature;
+    id: number;
+    available: boolean;
+    price: number;
+    deposit: number;
+    description: string | null;
+    imageFileName: string | null;
+    imageUrl: string | null;
 }

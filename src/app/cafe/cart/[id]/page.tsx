@@ -183,7 +183,7 @@ const StyledButton = styled.button`
     }
 `;
 
-export const BRKButton = styled.button`
+const BRKButton = styled.button`
     width: 100%;
     height: 40px;
     font-size: 16px;

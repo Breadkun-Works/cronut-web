@@ -10,15 +10,27 @@ import { companyDropdownItem } from '@/types/common';
 import NotificationBox from '@/components/NotificationBox';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
+import { TextField } from '@mui/material';
 
-const Input = styled.input`
-    width: 100%;
-    height: 40px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 0 10px;
-    box-sizing: border-box;
-`;
+const CssTextField = styled(TextField)({
+    '& .MuiInputBase-root, & .MuiOutlinedInput-root, & .MuiFilledInput-root': {
+        color: '#fff',
+        fontSize: '16px',
+        backgroundColor: '#333',
+        '&:hover': {
+            backgroundColor: '#444'
+        },
+        '&.Mui-focused': {
+            backgroundColor: '#555'
+        }
+    },
+    '& label, & label.Mui-focused': {
+        color: '#fff'
+    },
+    '& .MuiInput-underline:after, & .MuiFilledInput-underline:after': {
+        borderBottomColor: '#fff'
+    }
+});
 
 const CartPage = () => {
     const [newCart, setNewCart] = useState({ title: '', description: '' });
@@ -71,11 +83,24 @@ const CartPage = () => {
                         <br />
                         장바구니 이름을 입력해주세요.
                     </div>
-                    <Input
-                        type="text"
-                        placeholder={getPlaceholderText('이름')}
+                    <CssTextField
+                        label="이름"
                         value={newCart.title}
                         onChange={e => setNewCart({ ...newCart, title: e.target.value })}
+                        sx={{
+                            width: '100%',
+                            mt: 2
+                        }}
+                    />
+                    <CssTextField
+                        label="설명"
+                        variant="filled"
+                        value={newCart.description}
+                        onChange={e => setNewCart({ ...newCart, description: e.target.value })}
+                        sx={{
+                            width: '100%',
+                            mt: 2
+                        }}
                     />
                     <CartButton onClick={handleCreateCart}>주문하기</CartButton>
                 </CartContainer>

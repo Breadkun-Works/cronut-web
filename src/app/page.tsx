@@ -59,7 +59,7 @@ export default function Home() {
         window.scrollTo(0, 0);
         const cookieUserInfo = getCookie('BRK-UUID');
         if (!cookieUserInfo) {
-            setCookie('BRK-UUID', 'uuid', crypto.randomUUID());
+            setCookie('BRK-UUID', crypto.randomUUID());
         }
         return () => {
             window.scrollTo(0, 0);

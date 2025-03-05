@@ -183,7 +183,7 @@ const StyledButton = styled.button`
     }
 `;
 
-const BRKButton = styled.button`
+export const BRKButton = styled.button`
     width: 100%;
     height: 40px;
     font-size: 16px;
@@ -215,9 +215,9 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     const [userNamePlaceholder, setUserNamePlaceholder] = useState<string>(PLACEHOLDER);
 
     useEffect(() => {
-        const cookieUserInfo = getCookie('BRK-UUID');
-        if (cookieUserInfo && cookieUserInfo.uuid) {
-            setUserNamePlaceholder(cookieUserInfo.uuid);
+        const cookieUserInfo = getCookie('BRK-UserName');
+        if (cookieUserInfo) {
+            setUserNamePlaceholder(cookieUserInfo);
         }
     }, []);
 
@@ -225,14 +225,14 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
         let cookieUserInfo = getCookie('BRK-UUID');
 
         if (!cookieUserInfo) {
-            cookieUserInfo = { uuid: crypto.randomUUID() };
-            setCookie('BRK-UUID', 'uuid', cookieUserInfo.uuid);
+            cookieUserInfo = crypto.randomUUID();
+            setCookie('BRK-UUID', cookieUserInfo);
         }
 
         const nameToUse = userName || userNamePlaceholder;
 
         if (nameToUse !== PLACEHOLDER) {
-            setCookie('BRK-UserName', 'name', nameToUse);
+            setCookie('BRK-UserName', nameToUse);
             alert(`${nameToUse}님의 주문이 완료되었습니다.`);
         }
     };

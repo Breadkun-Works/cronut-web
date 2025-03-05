@@ -5,14 +5,10 @@ export const getCookie = (name: string) => {
     return cookies.get(name);
 };
 
-export const setCookie = (cookieName: string, key: string, value: string) => {
+export const setCookie = (cookieName: string, value: string) => {
     const cookies = new Cookies();
-    cookies.set(
-        cookieName,
-        { key: value },
-        {
-            path: '/',
-            secure: true
-        }
-    );
+    cookies.set(cookieName, value, {
+        path: '/',
+        secure: true
+    });
 };

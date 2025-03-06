@@ -5,14 +5,14 @@ import { getCookie } from '@/utils/cookie';
 import { Company, DrinkCategory } from '@/types/common';
 
 const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> => {
-    const cookieUserInfo = getCookie('BRK-UUID');
+    const cookieUUID = getCookie('BRK-UUID');
     const { data } = await axios.post<ICreateCartResponse>(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/cafe/carts`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts`,
         newCart,
         {
             headers: {
                 Accept: 'application/vnd.breadkun.v1+json',
-                'X-User-UUID': cookieUserInfo.key
+                'X-User-UUID': cookieUUID
             }
         }
     );
@@ -32,7 +32,7 @@ const getCafeMenu = async (
     pageInfo: { first: boolean; last: boolean; currentPage: number; nextPage: number | null };
 }> => {
     const data = await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cafe/menus/board`, {
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/menus/board`, {
             params: { page: pageParam, ...query },
             headers: { Accept: 'application/vnd.breadkun.v1+json' }
         })

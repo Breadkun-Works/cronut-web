@@ -40,8 +40,6 @@ const getCafeMenu = async (
 
     const { currentPage, totalPages } = data.meta;
 
-    console.log(totalPages, currentPage);
-
     return {
         records: data.data.cafeMenuBoard,
         pageInfo: {

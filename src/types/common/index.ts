@@ -43,7 +43,7 @@ export enum Company {
 
 export enum DrinkTemperature {
     HOT = 'HOT',
-    COLD = 'COLD'
+    ICED = 'ICED'
 }
 
 export enum DrinkCategory {

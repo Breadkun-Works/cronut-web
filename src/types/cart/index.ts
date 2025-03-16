@@ -44,7 +44,7 @@ export interface ICafeMenuBoardResponse {
     options: Array<ICafeMenuOption>;
 }
 
-interface ICafeMenuOption {
+export interface ICafeMenuOption {
     drinkTemperature: DrinkTemperature;
     id: number;
     available: boolean;

@@ -91,7 +91,6 @@ const CafeMenu = () => {
         const observer = new IntersectionObserver(
             entries => {
                 if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-                    console.log('123123123');
                     fetchNextPage();
                 }
             },
@@ -148,8 +147,6 @@ const CafeMenu = () => {
         };
     }, [open]);
 
-    console.log(data);
-    console.log(dialogWidth);
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Typography

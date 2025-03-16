@@ -1,6 +1,7 @@
 import { desktop } from '@/styles/mixnis';
 import { colors } from '@/styles/colors';
 import styled from '@emotion/styled';
+import { Card, CardMedia, ToggleButtonGroup } from '@mui/material';
 
 export const PageWrapper = styled.div`
     width: 100%;
@@ -138,3 +139,45 @@ export const CartButton = styled.button`
     text-align: center;
     margin: 20px 0;
 `;
+
+export const StyledCard = styled(Card)(({ theme }) => ({
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        border: '1px solid white'
+    }
+}));
+
+export const StyledCardMedia = styled(CardMedia)({
+    height: 0,
+    paddingTop: '56.25%', // 16:9 비율
+    position: 'relative',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.05)'
+    }
+});
+
+export const MenuPopoverToggleButtonGroup = styled(ToggleButtonGroup)({
+    '& .MuiToggleButton-root': {
+        color: '#ffffff',
+        backgroundColor: 'transparent',
+        borderColor: '#ffffff',
+        '&:hover': {
+            backgroundColor: 'transparent'
+        }
+    },
+    display: 'flex',
+    justifyContent: 'center',
+    '& .MuiToggleButton-root.Mui-selected': {
+        backgroundColor: 'white ',
+        color: '#cf7500 ',
+        borderColor: '#ffffff',
+        '&:hover': {
+            backgroundColor: 'white !important'
+        }
+    }
+});

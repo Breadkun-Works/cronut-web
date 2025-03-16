@@ -61,7 +61,8 @@ export const useGetCafeMenuInfinite = (query: {
 }) => {
     return useInfiniteQuery({
         queryKey: ['cafeMenuInfinite', query],
-        queryFn: ({ pageParam }) => getCafeMenu(pageParam, query),
+        refetchOnWindowFocus: false,
+        queryFn: ({ pageParam = 0 }) => getCafeMenu(pageParam, query),
         initialPageParam: 0,
         getNextPageParam: lastPage => lastPage.pageInfo.nextPage
     });

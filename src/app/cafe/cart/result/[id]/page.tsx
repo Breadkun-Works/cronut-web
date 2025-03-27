@@ -20,6 +20,7 @@ import Image from 'next/image';
 import { getCookie } from '@/utils/cookie';
 import { face1 } from '../../[id]/images';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Contributor {
     userId: string;
@@ -49,6 +50,7 @@ interface OrderItem {
 }
 
 export default function OrderConfirmation({ params }: { params: { id: string } }) {
+    const router = useRouter();
     const [openIndices, setOpenIndices] = useState<number[]>([]);
     const [openAll, setOpenAll] = useState<boolean>(false);
     const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -96,11 +98,10 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
         <Box sx={{ minHeight: '100vh', backgroundColor: '#1C1F21', color: 'white', width: '100%', maxWidth: 'md' }}>
             <AppBar position="sticky" sx={{ backgroundColor: '#1C1F21', borderBottom: '1px solid #333' }}>
                 <Toolbar sx={{ height: '75px' }}>
-                    <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-                        <IconButton edge="start" color="inherit" aria-label="back">
-                            <ChevronLeft size={24} />
-                        </IconButton>
-                    </Link>
+                    <IconButton edge="start" color="inherit" aria-label="back" onClick={() => router.back()}>
+                        <ChevronLeft size={24} />
+                    </IconButton>
+
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
                         주문 확인
                     </Typography>
@@ -260,12 +261,6 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
                                                         </Grid>
                                                     </Box>
                                                 </Box>
-
-                                                {uuid === item.createdById && (
-                                                    <IconButton onClick={() => {}} sx={{ ml: 2 }}>
-                                                        <Trash2 />
-                                                    </IconButton>
-                                                )}
                                             </CardContent>
                                         </Card>
                                     </AccordionDetails>

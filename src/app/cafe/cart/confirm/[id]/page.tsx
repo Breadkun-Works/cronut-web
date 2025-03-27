@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, IconButton, Typography, Container, Card, CardMedia, Box, Button, Grid } from '@mui/material';
-import Link from 'next/link';
+import axios from 'axios';
 import { ChevronLeft, Trash2, CupSodaIcon as Cup } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from '@/utils/cookie';
 import { useQuery } from '@tanstack/react-query';
+import { face1 } from '../../[id]/images';
 interface CartItem {
     id: string;
     cafeCartId: string;
@@ -25,6 +26,7 @@ interface CartItem {
     drinkImageFilename: string;
     drinkImageUrl: string;
 }
+import Image from 'next/image';
 
 export default function OrderConfirmation({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -56,15 +58,24 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
     });
 
     useEffect(() => {
-        console.log(cartData);
         if (!isLoading && !error) {
             setCartItems(cartData as CartItem[]);
         }
         setLoading(isLoading);
     }, [cartData, isLoading, error]);
 
-    const removeItem = (id: string) => {
-        setCartItems(cartItems.filter(item => item.id !== id));
+    const deleteCartItem = async (id: string) => {
+        try {
+            const res = await axios.post(`https://api.breadkun.com/api/cafe/carts/items/delete`, { ids: [id] });
+            return res.status === 204;
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const removeItem = async (id: string) => {
+        const res = await deleteCartItem(id);
+        if (res) setCartItems(cartItems.filter(item => item.id !== id));
     };
 
     const totalPrice = cartItems
@@ -101,11 +112,10 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
         >
             <AppBar position="sticky" sx={{ backgroundColor: '#1C1F21', borderBottom: '1px solid #333' }}>
                 <Toolbar sx={{ height: '75px' }}>
-                    <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-                        <IconButton edge="start" color="inherit" aria-label="back">
-                            <ChevronLeft size={24} />
-                        </IconButton>
-                    </Link>
+                    <IconButton edge="start" color="inherit" aria-label="back" onClick={() => router.back()}>
+                        <ChevronLeft size={24} />
+                    </IconButton>
+
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
                         주문 확인
                     </Typography>
@@ -188,7 +198,22 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
                                                             </Typography>
                                                         </Box>
                                                     </Box>
-                                                    <Typography variant="body2" sx={{ color: '#ccc', mt: 2, mb: 1 }}>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                        <Image
+                                                            src={face1}
+                                                            alt={item.createdByName}
+                                                            width={20}
+                                                            height={20}
+                                                            style={{
+                                                                borderRadius: '50%',
+                                                                marginLeft: -2
+                                                            }}
+                                                        />
+                                                        <Typography variant="body2" sx={{ color: '#ccc', ml: 1 }}>
+                                                            {item.createdByName}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Typography variant="body2" sx={{ color: '#ccc', mt: 1, mb: 1 }}>
                                                         개당 {item.drinkPrice?.toLocaleString()}원
                                                     </Typography>
                                                 </Grid>
@@ -241,7 +266,7 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
                 <Container>
                     <Grid container justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
                         <Grid item>
-                            <Typography variant="h6">총 주문 금액</Typography>
+                            <Typography variant="h6">나의 총 주문 금액</Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="h5" fontWeight="bold">
@@ -261,7 +286,7 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
                         onClick={() => router.push(`/cafe/cart/result/${params.id}`)}
                         disabled={cartItems.length === 0}
                     >
-                        주문하기
+                        주문완료하기
                     </Button>
                 </Container>
             </Box>

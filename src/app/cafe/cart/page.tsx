@@ -10,7 +10,22 @@ import { companyDropdownItem } from '@/types/common';
 import NotificationBox from '@/components/NotificationBox';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
-import { TextField } from '@mui/material';
+import {
+    Box,
+    Card,
+    CardContent,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Radio,
+    RadioGroup,
+    Select,
+    TextField,
+    Typography
+} from '@mui/material';
+import Link from 'next/link';
+type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
     '& .MuiInputBase-root, & .MuiOutlinedInput-root, & .MuiFilledInput-root': {
@@ -34,6 +49,10 @@ const CssTextField = styled(TextField)({
 
 const CartPage = () => {
     const [newCart, setNewCart] = useState({ title: '', description: '' });
+    const [paymentType, setPaymentType] = useState<PaymentType>('treat');
+    const [bankName, setBankName] = useState('');
+    const [accountNumber, setAccountNumber] = useState('');
+
     const { company } = useCompanyContext(); // company와 setCompany를 가져옵니다.
     const router = useRouter();
 
@@ -56,6 +75,7 @@ const CartPage = () => {
             ...(newCart.description && { description: newCart.description })
         });
     };
+    const banks = ['국민은행', '신한은행', '우리은행', '하나은행', '농협은행'];
 
     return (
         <PageWrapper>
@@ -99,9 +119,72 @@ const CartPage = () => {
                         onChange={e => setNewCart({ ...newCart, description: e.target.value })}
                         sx={{
                             width: '100%',
-                            mt: 2
+                            my: 2
                         }}
                     />
+                    <Box sx={{ width: '100%', border: '1px solid #383838', borderRadius: 2, p: 2 }}>
+                        <Typography variant="h6" gutterBottom>
+                            결제 방식
+                        </Typography>
+
+                        <RadioGroup
+                            value={paymentType}
+                            onChange={e => setPaymentType(e.target.value as PaymentType)}
+                            row
+                            sx={{ gap: 2, mb: 2 }}
+                        >
+                            <FormControlLabel value="treat" control={<Radio />} label="제가 살게요" />
+                            <FormControlLabel value="dutch" control={<Radio />} label="각자 계산할게요" />
+                        </RadioGroup>
+
+                        {paymentType === 'dutch' && (
+                            <Box sx={{ mt: 2, p: 2, bgcolor: '#1C1F21', borderRadius: 2 }}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                    계좌 정보 입력
+                                </Typography>
+
+                                <FormControl fullWidth sx={{ mt: 2 }}>
+                                    <InputLabel id="bank-label">은행</InputLabel>
+                                    <Select
+                                        labelId="bank-label"
+                                        value={bankName}
+                                        label="은행"
+                                        onChange={e => setBankName(e.target.value)}
+                                        sx={{ bgcolor: '#2C2F31', borderColor: '#383838' }}
+                                        MenuProps={{
+                                            PaperProps: {
+                                                sx: {
+                                                    bgcolor: '#2C2F31',
+                                                    color: 'white'
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        {banks.map(bank => (
+                                            <MenuItem key={bank} value={bank}>
+                                                {bank}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+
+                                <TextField
+                                    fullWidth
+                                    label="계좌번호"
+                                    placeholder="계좌번호를 입력하세요 (- 없이)"
+                                    value={accountNumber}
+                                    onChange={e => setAccountNumber(e.target.value)}
+                                    sx={{
+                                        fontSize: '16px',
+                                        bgcolor: '#2C2F31',
+                                        borderColor: '#383838',
+                                        mt: 2,
+                                        input: { color: 'white' }
+                                    }}
+                                />
+                            </Box>
+                        )}
+                    </Box>
                     <CartButton onClick={handleCreateCart}>주문하기</CartButton>
                 </CartContainer>
             </div>

@@ -27,7 +27,7 @@ const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> =
         {
             headers: {
                 Accept: 'application/vnd.breadkun.v1+json',
-                'X-User-UUID': cookieUUID.key
+                'X-User-UUID': cookieUUID
             }
         }
     );

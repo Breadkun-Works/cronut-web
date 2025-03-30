@@ -151,7 +151,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                 quantity: selectedTempMenu.quantity,
                 imageUrl: selectedTempMenu.imageUrl ?? ''
             },
-            user: { uuid: uuid.key, userName }
+            user: { uuid: uuid, userName }
         });
         if (cartId && selectedTempMenu) {
             addMenuToCart.mutate({
@@ -162,7 +162,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                     quantity: selectedTempMenu.quantity,
                     imageUrl: selectedTempMenu.imageUrl ?? ''
                 },
-                user: { uuid: uuid.key, userName }
+                user: { uuid: uuid, userName }
             });
         }
     };

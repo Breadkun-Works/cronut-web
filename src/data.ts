@@ -3,7 +3,6 @@ import { DrinkCategory } from '@/types/common';
 import { Coffee, CoffeeIcon as Tea, Wine } from 'lucide-react';
 
 export const breakPoints = { xs: 0, sm: 768, md: 960, lg: 1280, xl: 1920 };
-const isDarkMode = localStorage.getItem('themeMode');
 
 export const MuiTheme = createTheme({
     breakpoints: {
@@ -41,13 +40,13 @@ export const MuiTheme = createTheme({
         }
     },
     palette: {
-        mode: isDarkMode ? 'dark' : 'light',
+        mode: 'dark',
         primary: {
-            main: isDarkMode ? '#ff9e44' : '#f09000'
+            main: '#ff9e44'
         },
         background: {
-            default: isDarkMode ? '#212529' : '#ffffff',
-            paper: isDarkMode ? '#343a40' : '#f8f9fa'
+            default: '#212529',
+            paper: '#343a40'
         }
     },
     components: {

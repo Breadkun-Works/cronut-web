@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { face1, face2, face3, face4 } from './images';
 import { RefreshCw, Copy } from 'lucide-react';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
 
@@ -202,6 +202,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     const baseUrl = window.location.origin;
     const currentUrl = baseUrl + usePathname();
     const images = [face1, face2, face3, face4];
+    const router = useRouter();
 
     const getRandomProfileImage = () => {
         const randomImage = images[Math.floor(Math.random() * images.length)];
@@ -217,7 +218,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     useEffect(() => {
         const cookieUserInfo = getCookie('BRK-UserName');
         if (cookieUserInfo) {
-            setUserNamePlaceholder(cookieUserInfo);
+            setUserNamePlaceholder(cookieUserInfo.key);
         }
     }, []);
 
@@ -233,7 +234,8 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
 
         if (nameToUse !== PLACEHOLDER) {
             setCookie('BRK-UserName', nameToUse);
-            alert(`${nameToUse}님의 주문이 완료되었습니다.`);
+            const cookieUUID = getCookie('BRK-UUID');
+            router.push(`/cafe/cart/${params.id}/${cookieUUID.key}/menu`);
         }
     };
 
@@ -292,6 +294,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
                 type="text"
                 placeholder={userNamePlaceholder}
                 value={userName}
+                maxLength={30}
                 onChange={e => setUserName(e.target.value)}
             />
             <BRKButton onClick={handleOrder}>주문하기</BRKButton>

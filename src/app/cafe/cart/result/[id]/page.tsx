@@ -93,7 +93,7 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
     if (error) return <div>Error loading data</div>;
 
     return (
-        <Box sx={{ minHeight: '100vh', backgroundColor: '#1C1F21', color: 'white', width: '100%', maxWidth: 'md' }}>
+        <Box sx={{ minHeight: '100vh', color: 'white', width: '100%', maxWidth: 'md' }}>
             <AppBar position="sticky" sx={{ backgroundColor: '#1C1F21', borderBottom: '1px solid #333' }}>
                 <Toolbar sx={{ height: '75px' }}>
                     <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>

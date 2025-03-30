@@ -1,8 +1,23 @@
 import axios, { AxiosError } from 'axios';
-import { useInfiniteQuery, useMutation, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
-import { ICafeMenuBoardResponse, ICreateCartResponse, INewCartType } from '@/types/cart';
+import {
+    useInfiniteQuery,
+    useMutation,
+    UseMutationOptions,
+    UseMutationResult,
+    useQuery,
+    UseQueryOptions
+} from '@tanstack/react-query';
+import {
+    IAddCartMenuResponse,
+    IAddMenuCartParams,
+    ICafeMenuBoardResponse,
+    ICartInfo,
+    ICreateCartResponse,
+    INewCartType
+} from '@/types/cart';
 import { getCookie } from '@/utils/cookie';
 import { Company, DrinkCategory } from '@/types/common';
+import { utf8ToBase64 } from '@/utils/util';
 
 const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> => {
     const cookieUUID = getCookie('BRK-UUID');
@@ -12,7 +27,7 @@ const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> =
         {
             headers: {
                 Accept: 'application/vnd.breadkun.v1+json',
-                'X-User-UUID': cookieUUID
+                'X-User-UUID': cookieUUID.key
             }
         }
     );
@@ -63,5 +78,48 @@ export const useGetCafeMenuInfinite = (query: {
         queryFn: ({ pageParam = 0 }) => getCafeMenu(pageParam, query),
         initialPageParam: 0,
         getNextPageParam: lastPage => lastPage.pageInfo.nextPage
+    });
+};
+
+const getCartById = async (cartId: string): Promise<ICartInfo> => {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/${cartId}`);
+    return response.data.data.cafeCart; // Adjusted based on the response structure
+};
+
+export const useGetCartById = (
+    cartId: string,
+    options?: UseQueryOptions<ICartInfo> // Specify that the data type is ICartInfo
+) => {
+    return useQuery<ICartInfo>({
+        queryKey: ['cart', cartId],
+        queryFn: () => getCartById(cartId),
+        enabled: !!cartId,
+        ...options
+    });
+};
+
+const addMenuCart = async ({ cafeCartId, cartData, user }: IAddMenuCartParams): Promise<IAddCartMenuResponse> => {
+    console.log(user.uuid, 'uuid!!');
+    const { data } = await axios.post<IAddCartMenuResponse>(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/${cafeCartId}/items`,
+        [cartData],
+        {
+            headers: {
+                Accept: 'application/vnd.breadkun.v1+json',
+                'X-User-UUID': user.uuid,
+                // 'X-User-Name': user.userName
+                'X-User-Name': utf8ToBase64(user.userName)
+            }
+        }
+    );
+    return data;
+};
+
+export const useAddMenuCart = (
+    options?: Omit<UseMutationOptions<IAddCartMenuResponse, Error, IAddMenuCartParams, unknown>, 'mutationFn'>
+) => {
+    return useMutation<IAddCartMenuResponse, Error, IAddMenuCartParams, unknown>({
+        mutationFn: addMenuCart,
+        ...options
     });
 };

@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
+import React, { useRef, useState, useEffect, useLayoutEffect, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { face1, face2, face3, face4 } from './images';
 import { RefreshCw, Copy } from 'lucide-react';
@@ -9,6 +9,21 @@ import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
 
 const PLACEHOLDER = '이름을 입력해주세요.';
+// const Input = styled.input`
+//     width: 100%;
+//     height: 40px;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//     padding: 0 10px;
+//     box-sizing: border-box;
+//     font-size: 16px;
+// `;
+
+const InputWrapper = styled.div`
+    position: relative;
+    width: 100%;
+`;
+
 const Input = styled.input`
     width: 100%;
     height: 40px;
@@ -17,6 +32,15 @@ const Input = styled.input`
     padding: 0 10px;
     box-sizing: border-box;
     font-size: 16px;
+`;
+
+const UserNameCount = styled.div`
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #555;
 `;
 
 const ReadOnlyInput = styled.input`
@@ -235,7 +259,14 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
         if (nameToUse !== PLACEHOLDER) {
             setCookie('BRK-UserName', nameToUse);
             const cookieUUID = getCookie('BRK-UUID');
-            router.push(`/cafe/cart/${params.id}/${cookieUUID.key}/menu`);
+            router.push(`/cafe/cart/${params.id}/${cookieUUID}/menu`);
+        }
+    };
+
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        if (value.length <= 30) {
+            setUserName(value); // 최대 길이를 넘지 않도록 값 업데이트
         }
     };
 
@@ -290,13 +321,20 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
                 </div>
             </div>
             <div style={{ fontSize: '20px', margin: '20px 0' }}>주문자 이름을 입력해주세요.</div>
-            <Input
-                type="text"
-                placeholder={userNamePlaceholder}
-                value={userName}
-                maxLength={30}
-                onChange={e => setUserName(e.target.value)}
-            />
+
+            {/*<Input*/}
+            {/*    type="text"*/}
+            {/*    placeholder={userNamePlaceholder}*/}
+            {/*    value={userName}*/}
+            {/*    maxLength={30}*/}
+            {/*    onChange={e => setUserName(e.target.value)}*/}
+            {/*/>*/}
+
+            <InputWrapper>
+                <Input type="text" value={userName} onChange={e => handleChange(e)} maxLength={30} />
+                <UserNameCount>{`${userName.length}/${30}`}</UserNameCount>
+            </InputWrapper>
+
             <BRKButton onClick={handleOrder}>주문하기</BRKButton>
         </div>
     );

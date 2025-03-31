@@ -109,14 +109,14 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
         }
     }, []);
 
-    const defaultDrinkTemp = (popoverProps.options?.[0].drinkTemperature as DrinkTemperature) || DrinkTemperature.HOT;
+    const defaultDrinkTemp = popoverProps.options?.[0].drinkTemperature || DrinkTemperature.HOT;
     const drinkTempMenu = popoverProps.options.find(o => o.drinkTemperature === defaultDrinkTemp);
 
     const [selectedTempMenu, setSelectedTempMenu] = useState({
         ...drinkTempMenu,
         checked: false,
         quantity: 1,
-        price: drinkTempMenu?.price || 0
+        price: drinkTempMenu?.price ?? 0
     });
 
     console.log(selectedTempMenu);

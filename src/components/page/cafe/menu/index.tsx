@@ -128,14 +128,14 @@ const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
 
         return option.length === 1 && option[0].drinkTemperature === 'ICED' ? (
             <TemperatureChip
-                label="ONLY ICE"
+                label="ICE ONLY"
                 color="primary"
                 size="small"
                 sx={{ bgcolor: '#2196f3', color: 'white' }}
             />
         ) : (
             <TemperatureChip
-                label="ONLY HOT"
+                label="HOT ONLY"
                 color="secondary"
                 size="small"
                 sx={{ bgcolor: '#f44336', color: 'white' }}

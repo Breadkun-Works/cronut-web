@@ -24,7 +24,7 @@ import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
 import { styled } from '@mui/material/styles';
 import { getCookie } from '@/utils/cookie';
 import { useAddMenuCart } from '@/apis/cafe/cafe-api';
-import { COLORS_DARK, COLORS_LIGHT } from '@/data';
+import { COLORS_DARK } from '@/data';
 
 // 스타일 컴포넌트를 직접 정의
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
@@ -82,7 +82,7 @@ const StyledToggleButton = styled(ToggleButton)(() => ({
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
-        children: React.ReactElement<any, any>;
+        children: React.ReactElement;
     },
     ref: React.Ref<unknown>
 ) {

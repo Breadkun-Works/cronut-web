@@ -1,9 +1,9 @@
 'use client';
 
-import { Box, Button, CardActionArea, CardContent, Chip, Dialog, DialogContent, Typography } from '@mui/material';
+import { Box, Button, CardActionArea, CardContent, Dialog, DialogContent, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Grid2'; // Grid2 올바르게 import
 import { CafeMenuData, COLORS_DARK } from '@/data';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
 import { DrinkCategory } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
@@ -150,7 +150,7 @@ const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
             <StyledMenuTabs value={tabValue} onChange={handleTabChange} centered aria-label="cafe menu tabs">
                 {CafeMenuData.map((cafeMenu, cafeMenuIdx) => (
                     <StyledMenuTab
-                        key={cafeMenuIdx}
+                        key={cafeMenu.index}
                         icon={
                             <TabIcon>{returnIcon(DrinkCategory[cafeMenu.value as keyof typeof DrinkCategory])}</TabIcon>
                         }
@@ -171,7 +171,7 @@ const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
                                                     <>
                                                         <Grid2
                                                             size={{ xs: 6, md: 4 }}
-                                                            key={idx}
+                                                            key={`menu_${idx}`}
                                                             component={'div'}
                                                             ref={loadMoreRef}
                                                         >
@@ -225,7 +225,7 @@ const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
                                                                 </CardActionArea>
                                                             </StyledCard>
                                                         </Grid2>
-                                                        {openDialog && selectedMenu === record.name && (
+                                                        {entry && openDialog && selectedMenu === record.name && (
                                                             <MenuPopover
                                                                 width={dialogWidth}
                                                                 open={openDialog}

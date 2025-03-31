@@ -105,7 +105,7 @@ export interface IAddCartMenuResponse {
 }
 export interface ICafeMenuPopoverProps {
     open: boolean;
-    onClose: () => void;
+    onClose(): void;
     popoverProps: {
         menuName: string;
         options: Array<ICafeMenuOption>;
@@ -113,5 +113,5 @@ export interface ICafeMenuPopoverProps {
     };
     width: number;
     cartId?: string;
-    onSuccess: () => void;
+    onSuccess(): void;
 }

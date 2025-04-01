@@ -126,6 +126,15 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
     const maxImageSize = '120px'; // 최대 크기 제한
 
     const handleChange = (name: string, value: any, type?: string) => {
+        if (name === 'drinkTemperature') {
+            const newMenu = popoverProps.options.find(p => p.drinkTemperature === value);
+            setSelectedTempMenu({
+                ...newMenu,
+                checked: false,
+                quantity: 1,
+                price: drinkTempMenu?.price ?? 0
+            });
+        }
         setSelectedTempMenu(prevMenu => {
             const updatedMenu = { ...prevMenu, [name]: value };
 

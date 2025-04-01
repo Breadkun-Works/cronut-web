@@ -103,7 +103,6 @@ const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
             if (containerRef.current) {
                 const isSmartphone = window.innerWidth <= 480; // 스마트폰 기준 (480px 이하)
                 const containerWidth = containerRef.current.offsetWidth;
-                console.log(containerWidth);
 
                 if (isSmartphone) {
                     setDialogWidth(window.innerWidth);

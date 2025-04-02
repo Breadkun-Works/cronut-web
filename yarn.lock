@@ -2895,6 +2895,7 @@ __metadata:
     eslint-config-prettier: ^9.1.0
     eslint-plugin-prettier: ^5.1.3
     eslint-plugin-react: ^7.34.0
+    framer-motion: ^12.6.2
     lucide-react: ^0.475.0
     next: ^14.2.18
     next-pwa: ^5.6.0
@@ -4253,6 +4254,28 @@ __metadata:
     es-set-tostringtag: ^2.1.0
     mime-types: ^2.1.12
   checksum: e887298b22c13c7c9c5a8ba3716f295a479a13ca78bfd855ef11cbce1bcf22bc0ae2062e94808e21d46e5c667664a1a1a8a7f57d7040193c1fefbfb11af58aab
+  languageName: node
+  linkType: hard
+
+"framer-motion@npm:^12.6.2":
+  version: 12.6.2
+  resolution: "framer-motion@npm:12.6.2"
+  dependencies:
+    motion-dom: ^12.6.1
+    motion-utils: ^12.5.0
+    tslib: ^2.4.0
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 54658a2688f5fc50c5530539f9a807056ee6e4fa3d4af8bfe0ea7e0d67ffdf3b568a0f5e8fabbff9efc6d7fde78b404db369ef67b0be6341a36ed9be4e54f9b5
   languageName: node
   linkType: hard
 
@@ -5698,6 +5721,22 @@ __metadata:
   bin:
     mkdirp: dist/cjs/src/bin.js
   checksum: 972deb188e8fb55547f1e58d66bd6b4a3623bf0c7137802582602d73e6480c1c2268dcbafbfb1be466e00cc7e56ac514d7fd9334b7cf33e3e2ab547c16f83a8d
+  languageName: node
+  linkType: hard
+
+"motion-dom@npm:^12.6.1":
+  version: 12.6.1
+  resolution: "motion-dom@npm:12.6.1"
+  dependencies:
+    motion-utils: ^12.5.0
+  checksum: 937e9d7a5f6513fc9cada4cadf2297ed34d7259366230cc55da662935ae782c383e6f6170bbe04c3fcc1bfdbcbf7212a66448c206898727b2e1b12c3fab882b1
+  languageName: node
+  linkType: hard
+
+"motion-utils@npm:^12.5.0":
+  version: 12.5.0
+  resolution: "motion-utils@npm:12.5.0"
+  checksum: 347169ab97d8b3720b363afad6c9f4e8999490d1d95c70aaa8f83333be1b8b4e11c5f25564a9809fb091160fad2184403222e5b383be1bba004243c8b47497fe
   languageName: node
   linkType: hard
 

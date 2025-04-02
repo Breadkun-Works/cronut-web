@@ -13,7 +13,6 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
     const { data: cartInfo, isLoading, isSuccess } = useGetCartById(params.id);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
-    const isMobile = window.innerWidth <= 480;
 
     const handleClose = () => {
         setOpenModal(false);
@@ -40,10 +39,7 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
                         backgroundColor: COLORS_DARK.background.main, // 다크모드에서 배경색 더 밝게
                         maxWidth: 'none',
                         margin: 0,
-                        borderRadius: isMobile ? '16px 16px 0 0' : '16px',
-                        position: 'fixed',
-                        left: isMobile ? 0 : 'auto',
-                        right: isMobile ? 0 : 'auto',
+                        borderRadius: '16px',
                         boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                         // boxShadow: isDarkMode
                         //     ? '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)'
@@ -54,26 +50,20 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
                     }
                 }}
             >
-                <DialogTitle
-                    sx={{
-                        color: COLORS_DARK.text.primary,
-                        padding: '16px 24px',
-                        fontWeight: 'bold'
-                    }}
-                >
-                    장바구니 오류
-                </DialogTitle>
                 <DialogContent
                     sx={{
                         color: COLORS_DARK.text.primary,
-                        padding: '24px'
+                        padding: '24px',
+                        textAlign: 'center'
                     }}
                 >
                     <Typography variant="body1">이 장바구니는 접근할 수 없습니다.</Typography>
                 </DialogContent>
                 <DialogActions
                     sx={{
-                        padding: '12px 24px'
+                        padding: '12px 24px',
+                        display: 'flex',
+                        justifyContent: 'center'
                     }}
                 >
                     <Button
@@ -96,14 +86,11 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
         );
     } else {
         return (
-            <Container maxWidth="lg" sx={{ py: 6 }}>
-                <Box sx={{ textAlign: 'center', mb: 3 }}>
-                    <Typography variant="h3" component="h1" gutterBottom fontWeight="bold" color="white">
-                        {name}님, 장바구니에 담을 메뉴를 선택해주세요
-                    </Typography>
-                </Box>
-                <CafeMenu entry={'personalCart'} cartId={params.id} />
-            </Container>
+            <CafeMenu
+                entry={'personalCart'}
+                title={`${name}님, 장바구니에 담을 메뉴를 선택해주세요.`}
+                cartId={params.id}
+            />
         );
     }
 };

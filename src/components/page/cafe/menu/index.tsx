@@ -1,26 +1,29 @@
 'use client';
 
-import { Box, Button, CardActionArea, CardContent, Dialog, DialogContent, Typography } from '@mui/material';
-import Grid2 from '@mui/material/Grid2'; // Grid2 올바르게 import
+import { Box, CardActionArea, Typography } from '@mui/material';
 import { CafeMenuData, COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
 import { DrinkCategory } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
 import {
-    StyledCard,
+    CategoryTab,
+    CategoryTabs,
+    Header,
+    MenuGrid,
+    MenuImage,
+    MenuItemCard,
+    MenuItemContent,
+    PageContainer,
+    ScrollableContent,
     StyledCardMedia,
-    StyledMenuContainer,
-    StyledMenuTab,
-    StyledMenuTabs,
-    StyledMenuTitle,
     TabIcon,
-    TemperatureChip
+    TemperatureBadge
 } from '@/styles/cart/cart.styles';
 import { Coffee, Leaf, Wine } from 'lucide-react';
-import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useRouter } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
+import { CafeHeader } from '@/components/page/cafe/header';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -49,7 +52,7 @@ const CafeMenuTabPanel = ({ children, value, index, ...other }: any) => {
     );
 };
 
-const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
+const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; cartId?: string }) => {
     const [tabValue, setTabValue] = useState(0);
 
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
@@ -125,168 +128,101 @@ const CafeMenu = ({ entry, cartId }: { entry?: string; cartId?: string }) => {
     const getTemperatureChip = (option: Array<ICafeMenuOption>) => {
         if (option.length === 2) return null;
 
-        return option.length === 1 && option[0].drinkTemperature === 'ICED' ? (
-            <TemperatureChip
-                label="ICE ONLY"
-                color="primary"
+        return (
+            <TemperatureBadge
+                temperature={option.length === 1 && option[0].drinkTemperature === 'ICED' ? 'ICED' : 'HOT'}
+                label={option.length === 1 && option[0].drinkTemperature === 'ICED' ? 'ICE ONLY' : 'HOT ONLY'}
                 size="small"
-                sx={{ bgcolor: '#2196f3', color: 'white' }}
-            />
-        ) : (
-            <TemperatureChip
-                label="HOT ONLY"
-                color="secondary"
-                size="small"
-                sx={{ bgcolor: '#f44336', color: 'white' }}
             />
         );
     };
 
     return (
-        <StyledMenuContainer maxWidth="lg" sx={{ paddingTop: entry && '20px' }}>
-            {!entry && <StyledMenuTitle>카페 메뉴</StyledMenuTitle>}
+        <PageContainer>
+            <Header>
+                <CafeHeader entry={entry} title={title} cartId={cartId} />
 
-            <StyledMenuTabs value={tabValue} onChange={handleTabChange} centered aria-label="cafe menu tabs">
-                {CafeMenuData.map((cafeMenu, cafeMenuIdx) => (
-                    <StyledMenuTab
-                        key={cafeMenu.index}
-                        icon={
-                            <TabIcon>{returnIcon(DrinkCategory[cafeMenu.value as keyof typeof DrinkCategory])}</TabIcon>
-                        }
-                        label={cafeMenu.name}
-                    />
-                ))}
-            </StyledMenuTabs>
-            {CafeMenuData.map(cafeMenu => {
-                return (
-                    <CafeMenuTabPanel key={cafeMenu.index} value={tabValue} index={cafeMenu.index}>
-                        <Box component={'div'} ref={containerRef}>
-                            {data?.pages?.[0]?.records && data?.pages?.[0]?.records?.length > 0 ? (
-                                <>
-                                    <Grid2 container spacing={3} key={cafeMenu.index}>
-                                        {data?.pages?.map(page => {
-                                            return page.records.map((record, idx) => {
-                                                return (
-                                                    <>
-                                                        <Grid2
-                                                            size={{ xs: 6, md: 4 }}
-                                                            key={`menu_${idx}`}
-                                                            component={'div'}
-                                                            ref={loadMoreRef}
-                                                        >
-                                                            <StyledCard>
-                                                                <CardActionArea
-                                                                    onClick={() => handleCardClick(record.name)}
-                                                                >
-                                                                    <Box sx={{ position: 'relative' }}>
-                                                                        {getTemperatureChip(record.options)}
-                                                                        <StyledCardMedia
-                                                                            image={
-                                                                                'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
-                                                                            }
-                                                                            sx={{ backgroundSize: 'contain' }}
-                                                                            title={record.name}
-                                                                        />
-                                                                    </Box>
-                                                                    <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-                                                                        <Box
-                                                                            sx={{
-                                                                                display: 'flex',
-                                                                                flexDirection: 'column',
-                                                                                gap: '8px',
-                                                                                width: '100%',
-                                                                                alignItems: 'center',
-                                                                                textAlign: 'center'
-                                                                            }}
-                                                                        >
-                                                                            <Typography
-                                                                                variant="body1"
-                                                                                sx={{
-                                                                                    fontWeight: 'medium',
-                                                                                    textAlign: 'center',
-                                                                                    width: '100%'
-                                                                                }}
-                                                                            >
-                                                                                {record.name}
-                                                                            </Typography>
-                                                                            <Typography
-                                                                                variant="body1"
-                                                                                sx={{
-                                                                                    textAlign: 'center',
-                                                                                    width: '100%'
-                                                                                }}
-                                                                            >
-                                                                                {record.options[0].price.toLocaleString()}
-                                                                                원
-                                                                            </Typography>
-                                                                        </Box>
-                                                                    </CardContent>
-                                                                </CardActionArea>
-                                                            </StyledCard>
-                                                        </Grid2>
-                                                        {entry && openDialog && selectedMenu === record.name && (
-                                                            <MenuPopover
-                                                                width={dialogWidth}
-                                                                open={openDialog}
-                                                                onClose={handleCloseDialog}
-                                                                popoverProps={{
-                                                                    menuName: record.name,
-                                                                    options: record.options
+                <CategoryTabs value={tabValue} onChange={handleTabChange} centered>
+                    {CafeMenuData.map((cafeMenu, cafeMenuIdx) => (
+                        <CategoryTab
+                            key={cafeMenu.index}
+                            icon={
+                                <TabIcon>
+                                    {returnIcon(DrinkCategory[cafeMenu.value as keyof typeof DrinkCategory])}
+                                </TabIcon>
+                            }
+                            label={cafeMenu.name}
+                        />
+                    ))}
+                </CategoryTabs>
+            </Header>
+            <ScrollableContent>
+                {CafeMenuData.map(cafeMenu => {
+                    return (
+                        <CafeMenuTabPanel key={cafeMenu.index} value={tabValue} index={cafeMenu.index}>
+                            <Box component={'div'} ref={loadMoreRef}>
+                                <MenuGrid>
+                                    {data?.pages?.map(page => {
+                                        return page.records.map((record, idx, idex) => {
+                                            return (
+                                                <MenuItemCard key={`menu_${idx}`}>
+                                                    <CardActionArea onClick={() => handleCardClick(record.name)}>
+                                                        <MenuItemContent>
+                                                            <Box position="relative" width="100%">
+                                                                <MenuImage>
+                                                                    {getTemperatureChip(record.options)}
+                                                                    <StyledCardMedia
+                                                                        image={
+                                                                            'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
+                                                                        }
+                                                                        sx={{ backgroundSize: 'contain' }}
+                                                                        title={record.name}
+                                                                    />
+                                                                </MenuImage>
+                                                            </Box>
+
+                                                            <Typography
+                                                                variant="subtitle2"
+                                                                fontWeight="bold"
+                                                                sx={{
+                                                                    mt: 1,
+                                                                    textAlign: 'center',
+                                                                    overflow: 'hidden',
+                                                                    textOverflow: 'ellipsis',
+                                                                    whiteSpace: 'nowrap'
                                                                 }}
-                                                                cartId={cartId}
-                                                                onSuccess={() => {
-                                                                    setMoveToConfirm(true);
+                                                            >
+                                                                {record.name}
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="body2"
+                                                                fontWeight="medium"
+                                                                sx={{
+                                                                    color: COLORS_DARK.accent.main,
+                                                                    textAlign: 'center',
+                                                                    mt: 0.5
                                                                 }}
-                                                            />
-                                                        )}
-                                                        {moveToConfirm && (
-                                                            <Dialog open={moveToConfirm}>
-                                                                <DialogContent
-                                                                    sx={{
-                                                                        color: COLORS_DARK.text.primary,
-                                                                        padding: '24px'
-                                                                    }}
-                                                                >
-                                                                    <Typography variant={'body1'}>
-                                                                        상품을 장바구니에 담았습니다.
-                                                                        <br /> 장바구니로 이동하시겠습니까?
-                                                                    </Typography>
-                                                                </DialogContent>
-                                                                <Button
-                                                                    onClick={() => {
-                                                                        setMoveToConfirm(false);
-                                                                    }}
-                                                                >
-                                                                    취소
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={() => {
-                                                                        router.push(`/cafe/cart/confirm/${cartId}`);
-                                                                    }}
-                                                                >
-                                                                    확인
-                                                                </Button>
-                                                            </Dialog>
-                                                        )}
-                                                    </>
-                                                );
-                                            });
-                                        })}
-                                    </Grid2>
-                                    {!hasNextPage && (
-                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                                            <p>마지막 페이지입니다.</p>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <></>
-                            )}
-                        </Box>
-                    </CafeMenuTabPanel>
-                );
-            })}
-        </StyledMenuContainer>
+                                                            >
+                                                                {record.options[0].price.toLocaleString()}원
+                                                            </Typography>
+                                                        </MenuItemContent>
+                                                    </CardActionArea>
+                                                </MenuItemCard>
+                                            );
+                                        });
+                                    })}
+                                </MenuGrid>
+                                {!hasNextPage && (
+                                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                                        <p>끝~</p>
+                                    </div>
+                                )}
+                            </Box>
+                        </CafeMenuTabPanel>
+                    );
+                })}
+            </ScrollableContent>
+        </PageContainer>
     );
 };
 

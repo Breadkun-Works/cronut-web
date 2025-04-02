@@ -1,8 +1,7 @@
-import { desktop } from '@/styles/mixnis';
-import { colors } from '@/styles/colors';
 import styled from '@emotion/styled';
-import { Card, CardMedia, Chip, Container, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Badge, Box, Card, CardContent, CardMedia, Chip, Container, Tab, Tabs, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
+import { TemperatureBadgeProps } from '@/types/cart';
 
 export const PageWrapper = styled.div`
     width: 100%;
@@ -10,108 +9,6 @@ export const PageWrapper = styled.div`
     .cart-wrapper {
         display: flex;
         justify-content: center;
-    }
-`;
-
-export const CartTitle = styled.div`
-    background-color: ${colors.gray09};
-    display: flex;
-    align-items: center;
-    margin-bottom: clamp(1px, 3vw, 16px);
-
-    ${desktop(`
-    margin-bottom: 25px;
-  `)}
-
-    .title__icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 11.54vw;
-        max-height: 48px;
-        width: 11.54vw;
-        max-width: 48px;
-        border-radius: clamp(1px, 5.13vw, 22px);
-        background-color: ${colors.blue00};
-        margin-left: clamp(1px, 3.85vw, 27px);
-        margin-right: clamp(1px, 3.85vw, 16px);
-
-        ${desktop(`
-      background-color: transparent;
-      height: auto;
-      width: auto;
-      max-height: none;
-      max-width: none;
-      border-radius: 0;
-      margin-left: 30px;
-      margin-right: 10px;
-    `)}
-
-        > img {
-            height: 5.64vw;
-            max-height: 22px;
-
-            ${desktop(`
-        height: 20px;
-        max-height: none;
-      `)}
-        }
-    }
-
-    .title__select {
-        position: relative;
-        display: flex;
-        align-items: center;
-
-        .title__letter {
-            font-size: clamp(1px, 5.38vw, 25px);
-
-            ${desktop(`
-        font-size: 20px;
-      `)}
-        }
-
-        select {
-            font-size: clamp(1px, 4vw, 15px);
-            text-align-last: center;
-            -webkit-text-align-last: center;
-            -moz-text-align-last: center;
-            -ms-text-align-last: center;
-            appearance: none;
-            text-decoration: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: ${colors.gray08};
-            color: ${colors.gray00};
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-
-            ${desktop(`
-        font-size: 20px;
-      `)}
-        }
-
-        .title__select-button {
-            width: 2vw;
-            max-width: 10px;
-            margin-left: 1.5vw;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-
-            ${desktop(`
-        width: 8px;
-        max-width: none;
-        margin-left: 10px;
-      `)}
-        }
     }
 `;
 
@@ -132,59 +29,25 @@ export const CartButton = styled.button`
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
-    border: 1px solid #8b4513;
+    border: 1px solid ${COLORS_DARK.accent.dark};
     box-sizing: border-box;
-    background-color: #8b4513;
+    background-color: ${COLORS_DARK.accent.dark};
     color: #fff;
     padding: 0 10px;
     text-align: center;
     margin: 20px 0;
 `;
 
-export const StyledMenuContainer = styled(Container)`
-    background-color: ${COLORS_DARK.background.main};
-    color: ${COLORS_DARK.text.primary};
-    transition:
-        background-color 0.3s ease,
-        color 0.3s ease;
-    min-height: 100vh;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-`;
-
-export const StyledMenuTitle = styled.h1`
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 2rem;
-    color: ${COLORS_DARK.text.primary};
-`;
-
-// MUI Tabs 스타일링
-export const StyledMenuTabs = styled(Tabs)`
-    margin-bottom: 2rem;
-    border-bottom: 1px solid ${COLORS_DARK.divider};
-
-    .MuiTabs-indicator {
-        background-color: ${COLORS_DARK.accent.main};
-    }
-`;
-
-export const StyledMenuTab = styled(Tab)`
-    color: ${COLORS_DARK.text.secondary};
-    opacity: 1;
-    text-transform: none;
-    font-weight: normal;
-
-    &.Mui-selected {
-        color: ${COLORS_DARK.accent.main};
-        font-weight: bold;
-    }
-
-    &:hover {
-        color: ${COLORS_DARK.accent.main};
-    }
-`;
+export const StyledMenuTitle = styled(Typography)({
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    color: COLORS_DARK.text.primary,
+    position: 'absolute', // 추가: 절대 위치 설정
+    left: '50%', // 추가: 가운데 정렬
+    top: '50%', // 추가: 가운데 정렬
+    transform: 'translate(-50%, -50%)', // 추가: 정확한 중앙 정렬
+    whiteSpace: 'nowrap' // 추가: 텍스트가 줄바꿈되지 않도록
+});
 
 // 온도 뱃지를 위한 Box 컴포넌트
 export const StyledMenuTempBox = styled.div`
@@ -201,21 +64,24 @@ export const TabIcon = styled(StyledMenuTempBox)`
     justify-content: center;
 `;
 
-export const StyledCard = styled(Card)(({ theme }) => ({
+export const StyledCard = styled(Card)<{ hover?: boolean }>(({ hover }) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    '&:hover': {
-        transform: 'translateY(-4px)',
-        border: '1px solid white'
-    },
-    backgroundColor: '#2c3034'
+    backgroundColor: '#2c3034',
+    ...(hover && {
+        '&:hover': {
+            transform: 'translateY(-4px)',
+            border: '1px solid white'
+        }
+    })
 }));
 
 export const StyledCardMedia = styled(CardMedia)({
     height: 0,
-    paddingTop: '56.25%', // 16:9 비율
+    paddingTop: '100%',
+    backgroundColor: 'white',
     position: 'relative',
     transition: 'transform 0.3s ease',
     '&:hover': {
@@ -223,9 +89,116 @@ export const StyledCardMedia = styled(CardMedia)({
     }
 });
 
-export const TemperatureChip = styled(Chip)(({ theme }) => ({
+export const PageContainer = styled(Container)({
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    backgroundColor: COLORS_DARK.background.main
+});
+
+export const Header = styled(Box)({
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
+    backgroundColor: COLORS_DARK.background.main,
+    borderBottom: `1px solid ${COLORS_DARK.divider}`,
+    padding: '12px 16px'
+});
+
+export const HeaderContent = styled(Box)({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    position: 'relative',
+    marginTop: '1.5rem',
+    marginBottom: '1.5rem'
+});
+
+export const CategoryTabs = styled(Tabs)({
+    minHeight: 48,
+    marginBottom: 8,
+    '& .MuiTabs-flexContainer': {
+        justifyContent: 'center',
+        gap: 16
+    }
+});
+
+export const CategoryTab = styled(Tab)`
+    padding: 8px 4px;
+    minheight: 40;
+
+    &.Mui-selected {
+        color: ${COLORS_DARK.accent.main};
+        font-weight: bold;
+    }
+
+    &:hover {
+        color: ${COLORS_DARK.accent.main};
+    }
+`;
+
+export const ScrollableContent = styled(Box)({
+    flex: 1,
+    padding: '0 16px 16px 16px',
+    overflowY: 'auto'
+});
+
+export const MenuGrid = styled(Box)({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)', // 기본 3개씩 표시 (웹)
+    gap: 16,
+    width: '100%',
+    '@media (max-width: 600px)': {
+        gridTemplateColumns: 'repeat(2, 1fr)' // 모바일에서는 2개씩 표시
+    }
+});
+
+export const MenuItemCard = styled(Card)({
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+    '&:hover': {
+        transform: 'translateY(-2px)',
+        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)'
+    }
+});
+
+export const MenuItemContent = styled(CardContent)({
+    padding: '12px !important',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1
+});
+
+export const MenuImage = styled(Box)({
+    position: 'relative',
+    width: '100%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 8
+});
+
+export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, temperature }) => ({
+    height: 20,
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: '0.65rem',
+    backgroundColor: temperature === 'ICED' ? COLORS_DARK.ice : COLORS_DARK.hot,
+    color: '#fff',
     position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 1
+    top: 8,
+    left: 8,
+    zIndex: 1,
+    boxShadow: temperature === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)'
 }));
+
+export const CartBadge = styled(Badge)({
+    '& .MuiBadge-badge': {
+        backgroundColor: COLORS_DARK.hot,
+        color: '#fff',
+        fontWeight: 'bold',
+        boxShadow: '0 0 0 2px #212529'
+    }
+});

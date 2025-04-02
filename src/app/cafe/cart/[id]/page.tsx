@@ -7,6 +7,7 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { usePathname, useRouter } from 'next/navigation';
 import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
+import { COLORS_DARK } from '@/data';
 
 const PLACEHOLDER = '이름을 입력해주세요.';
 // const Input = styled.input`
@@ -191,7 +192,7 @@ const BKRInput = ({
     );
 };
 const StyledButton = styled.button`
-    background-color: #8b4513;
+    background-color: ${COLORS_DARK.accent.dark};
     border: none;
     cursor: pointer;
     border-radius: 50%;
@@ -213,9 +214,9 @@ const BRKButton = styled.button`
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
-    border: 1px solid #8b4513;
+    border: 1px solid ${COLORS_DARK.accent.dark};
     box-sizing: border-box;
-    background-color: #8b4513;
+    background-color: ${COLORS_DARK.accent.dark};
     color: #fff;
     padding: 0 10px;
     text-align: center;

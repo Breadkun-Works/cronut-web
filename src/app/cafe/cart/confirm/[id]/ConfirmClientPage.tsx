@@ -302,7 +302,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                                 if (decryptedData) {
                                     const { acctNm, acctNo } = decryptedData;
                                     window.open(
-                                        `supertoss://send?amount=${totalPrice || 1}&bank=${acctNm}&accountNo=${acctNo}`,
+                                        `supertoss://send?amount=${encodeURIComponent(totalPrice || 1)}&bank=${encodeURIComponent(acctNm)}&accountNo=${encodeURIComponent(acctNo)}`,
                                         '_blank'
                                     );
                                 }

@@ -53,8 +53,8 @@ const CartPage = () => {
 
     const { mutate, isPending, isSuccess } = useCreateCart({
         onSuccess: data => {
-            console.log('성공:', data);
-            router.push(`/cafe/cart/${data.data.cafeCart.id}`);
+            const option = paymentType === 'dutch' ? `?acctNo=${accountNumber}&acctNm=${bankName}` : '';
+            router.push(`/cafe/cart/redirect/${data.data.cafeCart.id}${option}`);
         },
         onError: error => {
             console.error('실패:', error.response?.data);
@@ -70,6 +70,7 @@ const CartPage = () => {
             ...(newCart.description && { description: newCart.description })
         });
     };
+    /* 추가 및 수정해야됨 */
     const banks = ['국민은행', '신한은행', '우리은행', '하나은행', '농협은행'];
 
     return (

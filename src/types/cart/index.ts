@@ -115,3 +115,7 @@ export interface ICafeMenuPopoverProps {
     cartId?: string;
     onSuccess(): void;
 }
+
+export interface TemperatureBadgeProps {
+    temperature: 'ICED' | 'HOT';
+}

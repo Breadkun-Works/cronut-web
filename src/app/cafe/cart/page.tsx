@@ -1,19 +1,14 @@
 'use client';
-import { CartButton, PageWrapper, CartTitle, CartContainer } from '@/styles/cart/cart.styles';
+import { CartButton, PageWrapper, CartContainer } from '@/styles/cart/cart.styles';
 import React, { useState } from 'react';
-import { getPlaceholderText, useConditionalTimeout } from '@/utils/util';
+import { useConditionalTimeout } from '@/utils/util';
 import { useCreateCart } from '@/apis/cafe/cafe-api';
 import { useCompanyContext } from '@/context/CompanyContext';
-import CompanySelector from '@/app/CompanySelect';
-import Image from 'next/image';
-import { companyDropdownItem } from '@/types/common';
 import NotificationBox from '@/components/NotificationBox';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 import {
     Box,
-    Card,
-    CardContent,
     FormControl,
     FormControlLabel,
     InputLabel,
@@ -24,7 +19,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import Link from 'next/link';
+import { CompanySelect } from '@/components/CompanySelect';
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -79,26 +74,14 @@ const CartPage = () => {
 
     return (
         <PageWrapper>
-            <CartTitle>
-                <Image className={'title__icon'} src="/icon/home-title-icon.webp" alt="title" width={22} height={22} />
-                <div className={'title__select'}>
-                    <div className={'title__letter'}>{companyDropdownItem.find(c => c.value === company)?.label}</div>
-                    <CompanySelector />
-                    <Image
-                        className={'title__select-button'}
-                        src="/icon/home-select-arrow.webp"
-                        alt="dropdown-button"
-                        width={10}
-                        height={7.3}
-                    />
-                </div>
-            </CartTitle>
+            <CompanySelect />
             <div className={'cart-wrapper'}>
                 <CartContainer>
                     <div style={{ fontSize: '20px', margin: '20px 0', textAlign: 'center' }}>
                         음료 주문을 시작합니다.
                         <br />
-                        주문서는 생성 후 3시간동안 사용 가능합니다.
+                        주문서는 생성 후 <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>3시간</span>
+                        동안 사용 가능합니다.
                         <br />
                         <br />
                         장바구니 이름을 입력해주세요.

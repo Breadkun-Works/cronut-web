@@ -13,13 +13,12 @@ import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
 import { getCookie, setCookie } from '@/utils/cookie';
 import { useCompanyContext } from '@/context/CompanyContext';
-import CompanySelector from '@/app/CompanySelect';
-import { Company, companyDropdownItem } from '@/types/common';
+import { Company } from '@/types/common';
+import { CompanySelect } from '@/components/CompanySelect';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    // const [company, setCompany] = useState(''); // 강촌, 을지
     const { company, setCompany } = useCompanyContext(); // company와 setCompany를 가져옵니다.
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
@@ -210,24 +209,7 @@ export default function Home() {
     return (
         <>
             <div className={hs('home')}>
-                <div className={hs('title')}>
-                    <div className={hs('title__icon')}>
-                        <Image src="/icon/home-title-icon.webp" alt="title" width={22} height={22} />
-                    </div>
-                    <div className={hs('title__select')}>
-                        <div className={hs('title__letter')}>
-                            {companyDropdownItem.find(c => c.value === company)?.label}
-                        </div>
-                        <CompanySelector />
-                        <Image
-                            className={hs('title__select-button')}
-                            src="/icon/home-select-arrow.webp"
-                            alt="dropdown-button"
-                            width={10}
-                            height={7.3}
-                        />
-                    </div>
-                </div>
+                <CompanySelect entry={'home'} />
                 <div className={hs('home__body')}>
                     <div className={hs('home__weather')}>
                         <div className={hs('home__weather--now')}>
@@ -246,13 +228,7 @@ export default function Home() {
                                 >{`${TMP?.[0].fcstValue.padStart(2, '0') || '-'}°C`}</div>
                             </div>
                             <div className={hs('home__weather--now-rain')}>
-                                <Image
-                                    // className={hs('home__weather--now-rain-img')}
-                                    src="/icon/weather/popPercent.webp"
-                                    alt="rain-percent"
-                                    width={21}
-                                    height={21}
-                                />
+                                <Image src="/icon/weather/popPercent.webp" alt="rain-percent" width={21} height={21} />
                                 <div className={hs('home__weather--now-rain-text')}>
                                     {`${RAIN?.[0].fcstValue.padStart(2, '0') || '-'}%`}
                                 </div>
@@ -476,7 +452,7 @@ export default function Home() {
                 <div className={hs('home__pop-up-bread')}>
                     <div className={hs('home__pop-up-bread--mask')} onClick={() => setBreadPopUp(false)} />
                     <div className={hs('home__pop-up-bread--wrapper')}>
-                        <Image
+                        <img //Image width랑 height가 없어서 일단 기본 img 태그로 변경해두었습니다..!
                             className={hs('home__pop-up-bread--img')}
                             src={bread?.img ? `https://babkaotalk.herokuapp.com${bread?.img}` : '/icon/home-bread.webp'}
                             alt="todays bread"

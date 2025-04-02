@@ -2,8 +2,6 @@ import { createTheme } from '@mui/material';
 import { DrinkCategory } from '@/types/common';
 import { Coffee, CoffeeIcon as Tea, Wine } from 'lucide-react';
 
-export const breakPoints = { xs: 0, sm: 768, md: 960, lg: 1280, xl: 1920 };
-
 export const MuiTheme = createTheme({
     breakpoints: {
         values: {
@@ -130,5 +128,7 @@ export const COLORS_DARK = {
         secondary: '#adb5bd', // 부가 텍스트 (밝은 회색)
         disabled: '#6c757d' // 비활성화 텍스트 (중간 회색)
     },
-    divider: 'rgba(248, 249, 250, 0.1)' // 구분선 색상
+    divider: 'rgba(248, 249, 250, 0.1)', // 구분선 색상
+    ice: '#4dabf7', // ICED 뱃지 색상
+    hot: '#ff6b6b' // HOT 뱃지 색상
 };

@@ -3,10 +3,6 @@ import { Badge, Box, Card, CardContent, CardMedia, Chip, Container, Tab, Tabs, T
 import { COLORS_DARK } from '@/data';
 import { TemperatureBadgeProps } from '@/types/cart';
 
-interface ScrollableProps {
-    isMobile: boolean;
-}
-
 export const PageWrapper = styled.div`
     width: 100%;
     max-width: 950px;
@@ -67,30 +63,20 @@ export const TabIcon = styled(StyledMenuTempBox)`
     justify-content: center;
 `;
 
-export const StyledCard = styled(Card)<{ hover?: boolean }>(({ hover }) => ({
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    backgroundColor: '#2c3034',
-    ...(hover && {
-        '&:hover': {
-            transform: 'translateY(-4px)',
-            border: '1px solid white'
-        }
-    })
-}));
-
-export const StyledCardMedia = styled(CardMedia)({
+export const MenuCardMedia = styled(CardMedia, {
+    shouldForwardProp: prop => prop !== 'isMenu'
+})<{ isMenu: boolean }>(({ isMenu }) => ({
     height: 0,
     paddingTop: '100%',
     backgroundColor: 'white',
     position: 'relative',
     transition: 'transform 0.3s ease',
-    '&:hover': {
-        transform: 'scale(1.05)'
-    }
-});
+    ...(!isMenu && {
+        '&:hover': {
+            transform: 'scale(1.05)'
+        }
+    })
+}));
 
 export const PageContainer = styled(Container)({
     display: 'flex',
@@ -146,7 +132,7 @@ export const ScrollableContent = styled(Box)`
     overflow-y: auto;
 
     &.mobile {
-        padding: 0; // 모바일일 때 패딩 제거
+        padding: 0 0 16px 0; // 모바일일 때 패딩 제거
     }
 `;
 
@@ -160,17 +146,22 @@ export const MenuGrid = styled(Box)({
     }
 });
 
-export const MenuItemCard = styled(Card)({
+export const MenuItemCard = styled(Card, {
+    shouldForwardProp: prop => prop !== 'isMenu'
+})<{ isMenu: boolean }>(({ isMenu }) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
     transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-    '&:hover': {
-        transform: 'translateY(-2px)',
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)'
-    }
-});
+    // isMenu가 true가 아닐 때만 hover 효과 적용
+    ...(!isMenu && {
+        '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)'
+        }
+    })
+}));
 
 export const MenuItemContent = styled(CardContent)({
     padding: '12px !important',

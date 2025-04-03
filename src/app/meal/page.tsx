@@ -7,7 +7,7 @@ import { fetchMealData } from '@/apis/meal/meal-api';
 import { Company, mealMenu } from '@/types/common';
 import { getMealImagePath } from '@/utils/image-return';
 import { useCompanyContext } from '@/context/CompanyContext';
-import CompanySelector from '@/app/CompanySelect';
+import { CompanySelect } from '@/components/CompanySelect';
 
 const ms = classNames.bind(styles);
 
@@ -147,22 +147,8 @@ const Meal = () => {
 
     return (
         <div className={ms('meal')}>
-            <div className={ms('title')}>
-                <div className={ms('title__icon')}>
-                    <img src="/icon/meal-title-icon.webp" alt="title" style={{ height: '5.64vw', maxHeight: '22px' }} />
-                </div>
-                <div className={ms('title__select')}>
-                    <div className={ms('title__letter')}>
-                        {company === Company.KANGCHON ? '강촌 식단' : '을지 식단'}
-                    </div>
-                    <CompanySelector type={'meal'} />
-                    <img
-                        className={ms('title__select-button')}
-                        src="/icon/home-select-arrow.webp"
-                        alt="dropdown-button"
-                    />
-                </div>
-            </div>
+            <CompanySelect entry={'meal'} />
+
             <div className={ms('days')}>
                 {company === Company.KANGCHON &&
                     days?.map((day, index) => (

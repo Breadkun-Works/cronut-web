@@ -1,6 +1,6 @@
 'use client';
-import { MapPin } from 'lucide-react';
-import { Company, companyDropdownItem } from '@/types/common';
+import { MapPin, Utensils } from 'lucide-react';
+import { Company, companyDropdownItem, companyMealDropdownItem } from '@/types/common';
 import React from 'react';
 import { useCompanyContext } from '@/context/CompanyContext';
 import { Container, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
@@ -14,6 +14,8 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
         setCompany(selectedCompany);
         localStorage.setItem('recentCompany', selectedCompany);
     };
+
+    const isMobile = window.innerWidth <= 480;
 
     return (
         <Container>
@@ -42,15 +44,25 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 6,
-                                ...(entry === 'home' && { fontSize: 'clamp(1px, 5.38vw, 25px)' })
+                                ...(['home', 'meal'].includes(entry as string) && isMobile
+                                    ? {
+                                          fontSize: 'clamp(1px, 5.38vw, 25px)'
+                                      }
+                                    : { fontSize: '20px' })
                             }}
                         >
-                            <MapPin size={'3vh'} />
-                            {selected === 'KANGCHON' ? '더존 강촌 캠퍼스' : '더존 을지타워'}
+                            {entry === 'meal' ? (
+                                <Utensils size={'3vh'} style={{ marginRight: '10px' }} />
+                            ) : (
+                                <MapPin size={'3vh'} style={{ marginRight: '10px' }} />
+                            )}
+                            {entry === 'meal'
+                                ? companyMealDropdownItem.find(c => c.value === selected)?.label
+                                : companyDropdownItem.find(c => c.value === selected)?.label}
                         </div>
                     )}
                 >
-                    {companyDropdownItem.map(companyDropdown => {
+                    {(entry === 'meal' ? companyMealDropdownItem : companyDropdownItem).map(companyDropdown => {
                         return (
                             <MenuItem
                                 sx={{

@@ -10,13 +10,13 @@ import {
     CategoryTab,
     CategoryTabs,
     Header,
+    MenuCardMedia,
     MenuGrid,
     MenuImage,
     MenuItemCard,
     MenuItemContent,
     PageContainer,
     ScrollableContent,
-    StyledCardMedia,
     TabIcon,
     TemperatureBadge
 } from '@/styles/cart/cart.styles';
@@ -69,7 +69,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     const [selectedMenu, setSelectedMenu] = useState('');
     const [moveToConfirm, setMoveToConfirm] = useState(false);
 
-    const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetCafeMenuInfinite(query);
+    const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
 
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
@@ -142,7 +142,57 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         );
     };
 
-    console.log(dialogWidth);
+    const MenuItem = ({ record, onClick, entry }: any) => {
+        // 공통 컨텐츠
+        const content = (
+            <MenuItemContent>
+                <Box position="relative" width="100%">
+                    <MenuImage>
+                        {getTemperatureChip(record.options)}
+                        <MenuCardMedia
+                            isMenu={entry === 'menu'}
+                            image={'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'}
+                            sx={{ backgroundSize: 'contain' }}
+                            title={record.name}
+                        />
+                    </MenuImage>
+                </Box>
+
+                <Typography
+                    variant="subtitle2"
+                    fontWeight="bold"
+                    sx={{
+                        mt: 1,
+                        textAlign: 'center',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                    }}
+                >
+                    {record.name}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    fontWeight="medium"
+                    sx={{
+                        color: COLORS_DARK.accent.main,
+                        textAlign: 'center',
+                        mt: 0.5
+                    }}
+                >
+                    {record.options[0].price.toLocaleString()}원
+                </Typography>
+            </MenuItemContent>
+        );
+
+        // entry가 "menu"인 경우 CardActionArea 없이 렌더링
+        if (entry === 'menu') {
+            return content;
+        }
+
+        // 그 외의 경우 CardActionArea로 감싸서 렌더링
+        return <CardActionArea onClick={onClick}>{content}</CardActionArea>;
+    };
 
     return (
         <PageContainer ref={containerRef}>
@@ -177,48 +227,12 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                         return page.records.map((record, idx, idex) => {
                                             return (
                                                 <>
-                                                    <MenuItemCard key={`menu_${idx}`}>
-                                                        <CardActionArea onClick={() => handleCardClick(record.name)}>
-                                                            <MenuItemContent>
-                                                                <Box position="relative" width="100%">
-                                                                    <MenuImage>
-                                                                        {getTemperatureChip(record.options)}
-                                                                        <StyledCardMedia
-                                                                            image={
-                                                                                'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
-                                                                            }
-                                                                            sx={{ backgroundSize: 'contain' }}
-                                                                            title={record.name}
-                                                                        />
-                                                                    </MenuImage>
-                                                                </Box>
-
-                                                                <Typography
-                                                                    variant="subtitle2"
-                                                                    fontWeight="bold"
-                                                                    sx={{
-                                                                        mt: 1,
-                                                                        textAlign: 'center',
-                                                                        overflow: 'hidden',
-                                                                        textOverflow: 'ellipsis',
-                                                                        whiteSpace: 'nowrap'
-                                                                    }}
-                                                                >
-                                                                    {record.name}
-                                                                </Typography>
-                                                                <Typography
-                                                                    variant="body2"
-                                                                    fontWeight="medium"
-                                                                    sx={{
-                                                                        color: COLORS_DARK.accent.main,
-                                                                        textAlign: 'center',
-                                                                        mt: 0.5
-                                                                    }}
-                                                                >
-                                                                    {record.options[0].price.toLocaleString()}원
-                                                                </Typography>
-                                                            </MenuItemContent>
-                                                        </CardActionArea>
+                                                    <MenuItemCard key={`menu_${idx}`} isMenu={entry === 'menu'}>
+                                                        <MenuItem
+                                                            record={record}
+                                                            onClick={() => handleCardClick(record.name)}
+                                                            entry={entry}
+                                                        />
                                                     </MenuItemCard>
                                                     {entry !== 'menu' && openDialog && selectedMenu === record.name && (
                                                         <MenuPopover
@@ -269,7 +283,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                         </Button>
                                     </Dialog>
                                 )}
-                                {!hasNextPage && (
+                                {!hasNextPage && isFetched && (
                                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                                         <p>끝~</p>
                                     </div>

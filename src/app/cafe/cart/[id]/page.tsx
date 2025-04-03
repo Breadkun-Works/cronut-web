@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     };
 }
 const fetchCart = async (cafeCartId: string): Promise<any> => {
-    const secretKey: string = process.env.SECRET_CRYPTO_KEY!;
+    const secretKey: string = process.env.SECRET_ENCRYPT_KEY!;
     const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {
         headers: {
             Accept: 'application/vnd.breadkun.v1+json',

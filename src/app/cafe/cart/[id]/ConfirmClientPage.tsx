@@ -313,7 +313,13 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                                 fontSize: '1.125rem',
                                 '&:hover': { backgroundColor: '#6B3410' }
                             }}
-                            onClick={() => router.push(`/cafe/cart/${cartId}/menu`)}
+                            onClick={() => {
+                                if (uuid) {
+                                    router.push(`/cafe/cart/${cartId}/menu`);
+                                } else {
+                                    router.push(`/cafe/cart/register/${cartId}`);
+                                }
+                            }}
                         >
                             주문하기
                         </Button>

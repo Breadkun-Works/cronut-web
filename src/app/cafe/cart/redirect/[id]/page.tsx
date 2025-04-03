@@ -8,10 +8,12 @@ interface IAccount {
 }
 
 const fetchCart = async (cafeCartId: string): Promise<any> => {
+    const secretKey: string = process.env.SECRET_ENCRYPT_KEY!;
     const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {
         headers: {
             Accept: 'application/vnd.breadkun.v1+json',
-            Origin: 'https://breadkun-dev.vercel.app'
+            Origin: 'http://localhost:3000',
+            'X-SSR-Token': secretKey
         }
     });
     if (!res.ok) throw new Error('API 요청 실패');
@@ -43,8 +45,8 @@ export default async function RedirectPage({
 
         const encryptedData = encryptAES256(data, keyBuffer);
 
-        redirect(`/cafe/cart/confirm/${params.id}?data=${encryptedData}`);
+        redirect(`/cafe/cart/${params.id}?data=${encryptedData}`);
     } else {
-        redirect(`/cafe/cart/confirm/${params.id}`);
+        redirect(`/cafe/cart/${params.id}`);
     }
 }

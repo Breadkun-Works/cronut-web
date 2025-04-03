@@ -276,7 +276,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                         </Button>
                                         <Button
                                             onClick={() => {
-                                                router.push(`/cafe/cart/confirm/${cartId}`);
+                                                router.push(`/cafe/cart/${cartId}`);
                                             }}
                                         >
                                             확인

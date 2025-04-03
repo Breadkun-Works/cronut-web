@@ -7,7 +7,7 @@ import { ChevronLeft, Trash2, CupSodaIcon as Cup } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from '@/utils/cookie';
 import { useQuery } from '@tanstack/react-query';
-import { face1 } from '../../[id]/images';
+import { face1 } from './images';
 interface CartItem {
     id: string;
     cafeCartId: string;
@@ -34,38 +34,65 @@ interface ConfirmClientPageProps {
 export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClientPageProps) {
     const router = useRouter();
 
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [loading, setLoading] = useState(true);
     const uuid = getCookie('BRK-UUID');
     const {
-        data: cartData = [],
+        data: initialCartItems = [],
         isLoading,
         error
     } = useQuery({
         queryKey: ['orderItems', cartId],
         queryFn: async () => {
-            try {
-                const response = await fetch(`https://api.breadkun.com/api/cafe/carts/${cartId}/items?include=DETAILS`);
-                if (!response.ok) throw new Error('네트워크 응답 실패');
-                const json = await response.json();
-                // const res = await fetch(``);
-                // console.log(res)
-                return json.data?.cafeCartItem || [];
-            } catch (err) {
-                console.error(err);
-                throw new Error('데이터를 가져오는 중 오류 발생');
-            }
+            const response = await fetch(`https://api.breadkun.com/api/cafe/carts/${cartId}/items?include=DETAILS`);
+            if (!response.ok) throw new Error('네트워크 응답 실패');
+            const json = await response.json();
+            return json.data?.cafeCartItem || [];
         },
         staleTime: 1000 * 60 * 5,
         retry: 1
     });
 
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
     useEffect(() => {
-        if (!isLoading && !error) {
-            setCartItems(cartData as CartItem[]);
+        if (!isLoading && initialCartItems) {
+            setCartItems(initialCartItems);
         }
-        setLoading(isLoading);
-    }, [cartData, isLoading, error]);
+    }, [initialCartItems, isLoading]);
+
+    useEffect(() => {
+        // SSE 연결 설정
+        const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
+        const eventName = `cafe-cart-item-${cartId}`;
+
+        const handleEvent = (e: MessageEvent) => {
+            const eventData = JSON.parse(e.data);
+            setCartItems(prevItems => {
+                if (eventData.event === 'CREATED') {
+                    return [
+                        ...prevItems,
+                        ...eventData.data.cafeCartItem.filter(
+                            (newItem: CartItem) => !prevItems.some(item => item.id === newItem.id)
+                        )
+                    ];
+                } else if (eventData.event === 'DELETED') {
+                    return prevItems.filter(item => !eventData.data.id.includes(item.id));
+                } else {
+                    return prevItems;
+                }
+            });
+        };
+
+        eventSource.addEventListener(eventName, handleEvent);
+        eventSource.onerror = err => {
+            console.error('SSE 에러 발생:', err);
+            eventSource.close();
+        };
+
+        return () => {
+            eventSource.removeEventListener(eventName, handleEvent);
+            eventSource.close();
+        };
+    }, [cartId]);
 
     const deleteCartItem = async (id: string) => {
         try {
@@ -85,7 +112,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
         .filter(item => item.createdById === uuid)
         .reduce((sum, item) => sum + item.drinkTotalPrice, 0);
 
-    if (loading) {
+    if (isLoading) {
         return (
             <Box
                 sx={{
@@ -285,7 +312,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                                 fontSize: '1.125rem',
                                 '&:hover': { backgroundColor: '#6B3410' }
                             }}
-                            onClick={() => router.push(`/cafe/menu`)}
+                            onClick={() => router.push(`/cafe/cart/${cartId}/menu`)}
                         >
                             주문하기
                         </Button>
@@ -301,6 +328,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                             onClick={() => {
                                 if (decryptedData) {
                                     const { acctNm, acctNo } = decryptedData;
+
                                     window.open(
                                         `supertoss://send?amount=${encodeURIComponent(totalPrice || 1)}&bank=${encodeURIComponent(acctNm)}&accountNo=${encodeURIComponent(acctNo)}`,
                                         '_blank'

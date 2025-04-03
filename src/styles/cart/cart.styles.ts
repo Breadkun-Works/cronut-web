@@ -3,6 +3,10 @@ import { Badge, Box, Card, CardContent, CardMedia, Chip, Container, Tab, Tabs, T
 import { COLORS_DARK } from '@/data';
 import { TemperatureBadgeProps } from '@/types/cart';
 
+interface ScrollableProps {
+    isMobile: boolean;
+}
+
 export const PageWrapper = styled.div`
     width: 100%;
     max-width: 950px;
@@ -45,8 +49,7 @@ export const StyledMenuTitle = styled(Typography)({
     position: 'absolute', // 추가: 절대 위치 설정
     left: '50%', // 추가: 가운데 정렬
     top: '50%', // 추가: 가운데 정렬
-    transform: 'translate(-50%, -50%)', // 추가: 정확한 중앙 정렬
-    whiteSpace: 'nowrap' // 추가: 텍스트가 줄바꿈되지 않도록
+    transform: 'translate(-50%, -50%)' // 추가: 정확한 중앙 정렬
 });
 
 // 온도 뱃지를 위한 Box 컴포넌트
@@ -137,11 +140,15 @@ export const CategoryTab = styled(Tab)`
     }
 `;
 
-export const ScrollableContent = styled(Box)({
-    flex: 1,
-    padding: '0 16px 16px 16px',
-    overflowY: 'auto'
-});
+export const ScrollableContent = styled(Box)`
+    flex: 1;
+    padding: 0 16px 16px 16px;
+    overflow-y: auto;
+
+    &.mobile {
+        padding: 0; // 모바일일 때 패딩 제거
+    }
+`;
 
 export const MenuGrid = styled(Box)({
     display: 'grid',

@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 import { getCookie } from '@/utils/cookie';
 import CafeMenu from '@/components/page/cafe/menu';
 import { useGetCartById } from '@/apis/cafe/cafe-api';

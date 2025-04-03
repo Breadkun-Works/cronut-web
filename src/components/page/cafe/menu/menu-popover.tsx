@@ -95,6 +95,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
     const userName = getCookie('BRK-UserName');
     const uuid = getCookie('BRK-UUID');
 
+    console.log(open, 'open!!');
     // 창 크기 변경 감지
     useEffect(() => {
         const handleResize = () => {

@@ -396,7 +396,7 @@ export default function Home() {
                                 </Link>
                             </>
                         )}
-                        <Link href={'/cafe'}>
+                        <Link href={'/cafe/menu'}>
                             <div>
                                 <div className={hs('home__link--title')}>카페</div>
                                 <div className={hs('home__link--text')}>-서비스 준비중-</div>

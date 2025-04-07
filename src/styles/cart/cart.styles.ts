@@ -42,10 +42,11 @@ export const StyledMenuTitle = styled(Typography)({
     fontWeight: 'bold',
     fontSize: '1.5rem',
     color: COLORS_DARK.text.primary,
-    position: 'absolute', // 추가: 절대 위치 설정
-    left: '50%', // 추가: 가운데 정렬
-    top: '50%', // 추가: 가운데 정렬
-    transform: 'translate(-50%, -50%)' // 추가: 정확한 중앙 정렬
+    textAlign: 'center'
+    // position: 'absolute', // 추가: 절대 위치 설정
+    // left: '50%', // 추가: 가운데 정렬
+    // top: '50%', // 추가: 가운데 정렬
+    // transform: 'translate(-50%, -50%)' // 추가: 정확한 중앙 정렬
 });
 
 // 온도 뱃지를 위한 Box 컴포넌트
@@ -96,7 +97,7 @@ export const Header = styled(Box)({
 
 export const HeaderContent = styled(Box)({
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
     marginTop: '1.5rem',
@@ -132,7 +133,7 @@ export const ScrollableContent = styled(Box)`
     overflow-y: auto;
 
     &.mobile {
-        padding: 0 0 16px 0; // 모바일일 때 패딩 제거
+        padding: 16px 0 16px 0; // 모바일일 때 패딩 제거
     }
 `;
 

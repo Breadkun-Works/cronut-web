@@ -15,7 +15,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
         localStorage.setItem('recentCompany', selectedCompany);
     };
 
-    const isMobile = window.innerWidth <= 480;
+    const isMobile = typeof window !== 'undefined' && window.screen.availWidth <= 480;
 
     return (
         <Container>

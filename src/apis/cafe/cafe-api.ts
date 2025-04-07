@@ -56,7 +56,7 @@ const getCafeMenu = async (
     const { currentPage, totalPages } = data.meta;
 
     return {
-        records: data.data.cafeMenuBoard,
+        records: data.data ? data.data.cafeMenuBoard : [],
         pageInfo: {
             first: currentPage === 0,
             last: currentPage === totalPages - 1,
@@ -73,7 +73,7 @@ export const useGetCafeMenuInfinite = (query: {
     cafeLocation?: Company;
 }) => {
     return useInfiniteQuery({
-        queryKey: ['cafeMenuInfinite', query],
+        queryKey: ['cafeMenuInfinite', { ...query }],
         refetchOnWindowFocus: false,
         queryFn: ({ pageParam = 0 }) => getCafeMenu(pageParam, query),
         initialPageParam: 0,
@@ -86,10 +86,7 @@ const getCartById = async (cartId: string): Promise<ICartInfo> => {
     return response.data.data.cafeCart; // Adjusted based on the response structure
 };
 
-export const useGetCartById = (
-    cartId: string,
-    options?: UseQueryOptions<ICartInfo> // Specify that the data type is ICartInfo
-) => {
+export const useGetCartById = (cartId: string, options?: UseQueryOptions<ICartInfo>) => {
     return useQuery<ICartInfo>({
         queryKey: ['cart', cartId],
         queryFn: () => getCartById(cartId),
@@ -99,7 +96,6 @@ export const useGetCartById = (
 };
 
 const addMenuCart = async ({ cafeCartId, cartData, user }: IAddMenuCartParams): Promise<IAddCartMenuResponse> => {
-    console.log(user.uuid, 'uuid!!');
     const { data } = await axios.post<IAddCartMenuResponse>(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/${cafeCartId}/items`,
         [cartData],
@@ -107,7 +103,6 @@ const addMenuCart = async ({ cafeCartId, cartData, user }: IAddMenuCartParams): 
             headers: {
                 Accept: 'application/vnd.breadkun.v1+json',
                 'X-User-UUID': user.uuid,
-                // 'X-User-Name': user.userName
                 'X-User-Name': utf8ToBase64(user.userName)
             }
         }

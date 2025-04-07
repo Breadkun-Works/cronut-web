@@ -326,28 +326,30 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                         >
                             주문하기
                         </Button>
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            sx={{
-                                backgroundColor: '#8B4513',
-                                py: 1.5,
-                                fontSize: '1.125rem',
-                                '&:hover': { backgroundColor: '#6B3410' }
-                            }}
-                            onClick={() => {
-                                setPaymentModalOpen(true);
-                                // if (decryptedData) {
-                                // const { bankName, accountNumber } = decryptedData;
-                                // window.open(
-                                //     `supertoss://send?amount=${encodeURIComponent(totalPrice || 1)}&bank=${encodeURIComponent(bankName)}&accountNo=${encodeURIComponent(accountNumber)}`,
-                                //     '_blank'
-                                // );
-                                // }
-                            }}
-                        >
-                            토스로 정산하기
-                        </Button>
+                        {decryptedData && (
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                sx={{
+                                    backgroundColor: '#8B4513',
+                                    py: 1.5,
+                                    fontSize: '1.125rem',
+                                    '&:hover': { backgroundColor: '#6B3410' }
+                                }}
+                                onClick={() => {
+                                    setPaymentModalOpen(true);
+                                    // if (decryptedData) {
+                                    // const { bankName, accountNumber } = decryptedData;
+                                    // window.open(
+                                    //     `supertoss://send?amount=${encodeURIComponent(totalPrice || 1)}&bank=${encodeURIComponent(bankName)}&accountNo=${encodeURIComponent(accountNumber)}`,
+                                    //     '_blank'
+                                    // );
+                                    // }
+                                }}
+                            >
+                                토스로 정산하기
+                            </Button>
+                        )}
                     </Box>
                 </Container>
             </Box>
@@ -360,13 +362,15 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                     </Button>
                 </DialogActions>
             </Dialog>
-            <PaymentModal
-                open={paymentModalOpen}
-                setOpen={setPaymentModalOpen}
-                cafeAccount={decryptedData}
-                totalPrice={totalPrice}
-                handlePayment={setPaymentModalOpen}
-            />
+            {decryptedData && (
+                <PaymentModal
+                    open={paymentModalOpen}
+                    setOpen={setPaymentModalOpen}
+                    cafeAccount={decryptedData}
+                    totalPrice={totalPrice}
+                    handlePayment={setPaymentModalOpen}
+                />
+            )}
         </Box>
     );
 }

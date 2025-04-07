@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import ConfirmClientPage from './ConfirmClientPage';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     const cartData = await fetchCart(params.id);
     const cart = cartData.data.cafeCart;
@@ -24,7 +25,9 @@ const fetchCart = async (cafeCartId: string): Promise<any> => {
             'X-SSR-Token': secretKey
         }
     });
-    if (!res.ok) throw new Error('API 요청 실패');
+    if (res.status === 404) {
+        notFound();
+    }
     return res.json();
 };
 

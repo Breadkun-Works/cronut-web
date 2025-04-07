@@ -1,13 +1,29 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Container, Card, CardMedia, Box, Button, Grid } from '@mui/material';
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Typography,
+    Container,
+    Card,
+    CardMedia,
+    Box,
+    Button,
+    Grid,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
+} from '@mui/material';
 import axios from 'axios';
 import { ChevronLeft, Trash2, CupSodaIcon as Cup } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from '@/utils/cookie';
 import { useQuery } from '@tanstack/react-query';
 import { face1 } from './images';
+
 interface CartItem {
     id: string;
     cafeCartId: string;
@@ -35,11 +51,8 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
     const router = useRouter();
 
     const uuid = getCookie('BRK-UUID');
-    const {
-        data: initialCartItems = [],
-        isLoading,
-        error
-    } = useQuery({
+    const userName = getCookie('BRK-UserName');
+    const { data: initialCartItems = [], isLoading } = useQuery({
         queryKey: ['orderItems', cartId],
         queryFn: async () => {
             const response = await fetch(`https://api.breadkun.com/api/cafe/carts/${cartId}/items?include=DETAILS`);
@@ -53,6 +66,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
     });
 
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isLoading && initialCartItems) {
@@ -64,7 +78,6 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
         // SSE 연결 설정
         const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
         const eventName = `cafe-cart-item-${cartId}`;
-
         const handleEvent = (e: MessageEvent) => {
             const eventData = JSON.parse(e.data);
             setCartItems(prevItems => {
@@ -82,9 +95,10 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                 }
             });
         };
-
         eventSource.addEventListener(eventName, handleEvent);
+
         eventSource.onerror = err => {
+            setReloadDialogOpen(true);
             console.error('SSE 에러 발생:', err);
             eventSource.close();
         };
@@ -94,6 +108,10 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
             eventSource.close();
         };
     }, [cartId]);
+
+    const handleRefresh = () => {
+        window.location.reload();
+    };
 
     const deleteCartItem = async (id: string) => {
         try {
@@ -151,8 +169,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                     <Box sx={{ width: 48 }} />
                 </Toolbar>
             </AppBar>
-
-            <Container sx={{ mt: 2 }}>
+            <Container sx={{ mt: 2, position: 'relative', height: '100%', overflow: 'hidden' }}>
                 <Typography variant="h5" gutterBottom>
                     주문 목록
                 </Typography>
@@ -314,7 +331,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                                 '&:hover': { backgroundColor: '#6B3410' }
                             }}
                             onClick={() => {
-                                if (uuid) {
+                                if (userName) {
                                     router.push(`/cafe/cart/${cartId}/menu`);
                                 } else {
                                     router.push(`/cafe/cart/register/${cartId}`);
@@ -348,6 +365,15 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                     </Box>
                 </Container>
             </Box>
+            <Dialog open={reloadDialogOpen} disableEscapeKeyDown onClose={() => {}}>
+                <DialogTitle>세션 만료</DialogTitle>
+                <DialogContent>페이지를 새로고침 해주세여.</DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="primary" onClick={handleRefresh}>
+                        새로고침
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

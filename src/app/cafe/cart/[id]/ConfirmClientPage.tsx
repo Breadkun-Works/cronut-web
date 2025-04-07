@@ -332,7 +332,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                             }}
                             onClick={() => {
                                 if (userName) {
-                                    router.push(`/cafe/cart/${cartId}/menu`);
+                                    router.push(`/cafe/cart/menu/${cartId}`);
                                 } else {
                                     router.push(`/cafe/cart/register/${cartId}`);
                                 }

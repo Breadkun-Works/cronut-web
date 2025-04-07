@@ -38,7 +38,6 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
                     '& .MuiDialog-paper': {
                         backgroundColor: COLORS_DARK.background.main, // 다크모드에서 배경색 더 밝게
                         maxWidth: 'none',
-                        margin: 0,
                         borderRadius: '16px',
                         boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                         // boxShadow: isDarkMode
@@ -57,7 +56,9 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
                         textAlign: 'center'
                     }}
                 >
-                    <Typography variant="body1">이 장바구니는 접근할 수 없습니다.</Typography>
+                    <Typography variant="body1">
+                        {cartInfo.title} 장바구니의 이용 가능 시간이 만료되었습니다.
+                    </Typography>
                 </DialogContent>
                 <DialogActions
                     sx={{

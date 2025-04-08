@@ -53,7 +53,7 @@ const CartPage = () => {
 
     const { mutate, isPending, isSuccess } = useCreateCart({
         onSuccess: data => {
-            const option = paymentType === 'dutch' ? `?acctNo=${accountNumber}&acctNm=${bankName}` : '';
+            const option = paymentType === 'dutch' ? `?accountNumber=${accountNumber}&bankName=${bankName}` : '';
             router.push(`/cafe/cart/redirect/${data.data.cafeCart.id}${option}`);
         },
         onError: error => {

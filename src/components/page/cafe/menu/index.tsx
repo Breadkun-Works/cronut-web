@@ -249,9 +249,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                             </Typography>
                                         </DialogContent>
                                         <Button onClick={() => setMoveToConfirm(false)}>취소</Button>
-                                        <Button onClick={() => router.push(`/cafe/cart/confirm/${cartId}`)}>
-                                            확인
-                                        </Button>
+                                        <Button onClick={() => router.push(`/cafe/cart/${cartId}`)}>확인</Button>
                                     </Dialog>
                                 )}
 

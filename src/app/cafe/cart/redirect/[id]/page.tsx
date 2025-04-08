@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import crypto from 'crypto';
 
 interface IAccount {
-    acctNo: string;
-    acctNm: string;
+    accountNumber: string;
+    bankName: string;
 }
 
 const fetchCart = async (cafeCartId: string): Promise<any> => {
@@ -39,9 +39,9 @@ export default async function RedirectPage({
     const key = res.data.cafeCart.secureShareKey;
     const keyBuffer = Buffer.from(key, 'base64');
 
-    const { acctNo, acctNm } = searchParams;
-    if (acctNo && acctNm) {
-        const data = { acctNo, acctNm };
+    const { accountNumber, bankName } = searchParams;
+    if (accountNumber && bankName) {
+        const data = { accountNumber, bankName };
 
         const encryptedData = encryptAES256(data, keyBuffer);
 

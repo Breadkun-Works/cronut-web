@@ -13,6 +13,7 @@ import {
     ICafeMenuBoardResponse,
     ICartInfo,
     ICreateCartResponse,
+    IDeleteCartItem,
     INewCartType
 } from '@/types/cart';
 import { getCookie } from '@/utils/cookie';
@@ -117,4 +118,23 @@ export const useAddMenuCart = (
         mutationFn: addMenuCart,
         ...options
     });
+};
+
+export const deleteCartItem = async ({ cafeCartId, user }: IDeleteCartItem) => {
+    try {
+        const res = await axios.post(
+            `https://api.breadkun.com/api/cafe/carts/items/delete`,
+            { ids: [cafeCartId] },
+            {
+                headers: {
+                    Accept: 'application/vnd.breadkun.v1+json',
+                    'X-User-UUID': user.uuid,
+                    'X-User-Name': utf8ToBase64(user.userName)
+                }
+            }
+        );
+        return res.status === 204;
+    } catch (e) {
+        console.error(e);
+    }
 };

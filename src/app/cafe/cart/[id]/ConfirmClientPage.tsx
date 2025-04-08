@@ -17,7 +17,7 @@ import {
     DialogContent,
     DialogTitle
 } from '@mui/material';
-import axios from 'axios';
+import { deleteCartItem } from '@/apis/cafe/cafe-api';
 import { ChevronLeft, Trash2, CupSodaIcon as Cup } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from '@/utils/cookie';
@@ -43,16 +43,18 @@ interface CartItem {
     drinkImageUrl: string;
 }
 import Image from 'next/image';
+import PaymentModal from './PaymentModal';
 interface ConfirmClientPageProps {
-    decryptedData?: { acctNo: string; acctNm: string };
+    decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
     status: string;
 }
 export default function OrderConfirmation({ decryptedData, cartId, status }: ConfirmClientPageProps) {
     const router = useRouter();
-
-    const uuid = getCookie('BRK-UUID');
-    const userName = getCookie('BRK-UserName');
+    const user = {
+        uuid: getCookie('BRK-UUID'),
+        userName: getCookie('BRK-UserName')
+    };
     const { data: initialCartItems = [], isLoading } = useQuery({
         queryKey: ['orderItems', cartId],
         queryFn: async () => {
@@ -69,6 +71,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
     const [cartStatus, setCartStatus] = useState<string>(status);
+    const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
     useEffect(() => {
         if (!isLoading && initialCartItems) {
             setCartItems(initialCartItems);
@@ -117,22 +120,13 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
         window.location.reload();
     };
 
-    const deleteCartItem = async (id: string) => {
-        try {
-            const res = await axios.post(`https://api.breadkun.com/api/cafe/carts/items/delete`, { ids: [id] });
-            return res.status === 204;
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const removeItem = async (id: string) => {
-        const res = await deleteCartItem(id);
-        if (res) setCartItems(cartItems.filter(item => item.id !== id));
+    const removeItem = async (cafeCartId: string) => {
+        const res = await deleteCartItem({ cafeCartId, user });
+        if (res) setCartItems(cartItems.filter(item => item.id !== cafeCartId));
     };
 
     const totalPrice = cartItems
-        .filter(item => item.createdById === uuid)
+        .filter(item => item.createdById === user.uuid)
         .reduce((sum, item) => sum + item.drinkTotalPrice, 0);
 
     if (isLoading) {
@@ -252,11 +246,11 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                                                         </Typography>
                                                     </Box>
                                                     <Typography variant="body2" sx={{ color: '#ccc', mt: 1, mb: 1 }}>
-                                                        개당 {item.drinkPrice?.toLocaleString()}원
+                                                        개당 {item.drinkPrice?.toLocaleString()} 원
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    {item.createdById === uuid && cartStatus === 'ACTIVE' && (
+                                                    {item.createdById === user.uuid && cartStatus === 'ACTIVE' && (
                                                         <IconButton onClick={() => removeItem(item.id)} color="error">
                                                             <Trash2 size={20} />
                                                         </IconButton>
@@ -323,7 +317,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                                 '&:hover': { backgroundColor: '#6B3410' }
                             }}
                             onClick={() => {
-                                if (userName) {
+                                if (user.userName) {
                                     router.push(`/cafe/cart/menu/${cartId}`);
                                 } else {
                                     router.push(`/cafe/cart/register/${cartId}`);
@@ -342,14 +336,14 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                                 '&:hover': { backgroundColor: '#6B3410' }
                             }}
                             onClick={() => {
-                                if (decryptedData) {
-                                    const { acctNm, acctNo } = decryptedData;
-
-                                    window.open(
-                                        `supertoss://send?amount=${encodeURIComponent(totalPrice || 1)}&bank=${encodeURIComponent(acctNm)}&accountNo=${encodeURIComponent(acctNo)}`,
-                                        '_blank'
-                                    );
-                                }
+                                setPaymentModalOpen(true);
+                                // if (decryptedData) {
+                                // const { bankName, accountNumber } = decryptedData;
+                                // window.open(
+                                //     `supertoss://send?amount=${encodeURIComponent(totalPrice || 1)}&bank=${encodeURIComponent(bankName)}&accountNo=${encodeURIComponent(accountNumber)}`,
+                                //     '_blank'
+                                // );
+                                // }
                             }}
                         >
                             토스로 정산하기
@@ -366,6 +360,13 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                     </Button>
                 </DialogActions>
             </Dialog>
+            <PaymentModal
+                open={paymentModalOpen}
+                setOpen={setPaymentModalOpen}
+                cafeAccount={decryptedData}
+                totalPrice={totalPrice}
+                handlePayment={setPaymentModalOpen}
+            />
         </Box>
     );
 }

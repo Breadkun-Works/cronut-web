@@ -46,8 +46,9 @@ import Image from 'next/image';
 interface ConfirmClientPageProps {
     decryptedData?: { acctNo: string; acctNm: string };
     cartId: string;
+    status: string;
 }
-export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClientPageProps) {
+export default function OrderConfirmation({ decryptedData, cartId, status }: ConfirmClientPageProps) {
     const router = useRouter();
 
     const uuid = getCookie('BRK-UUID');
@@ -67,7 +68,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
 
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
-
+    const [cartStatus, setCartStatus] = useState<string>(status);
     useEffect(() => {
         if (!isLoading && initialCartItems) {
             setCartItems(initialCartItems);
@@ -76,38 +77,41 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
 
     useEffect(() => {
         // SSE 연결 설정
-        const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
-        const eventName = `cafe-cart-item-${cartId}`;
-        const handleEvent = (e: MessageEvent) => {
-            const eventData = JSON.parse(e.data);
-            setCartItems(prevItems => {
-                if (eventData.event === 'CREATED') {
-                    return [
-                        ...prevItems,
-                        ...eventData.data.cafeCartItem.filter(
-                            (newItem: CartItem) => !prevItems.some(item => item.id === newItem.id)
-                        )
-                    ];
-                } else if (eventData.event === 'DELETED') {
-                    return prevItems.filter(item => !eventData.data.id.includes(item.id));
-                } else {
-                    return prevItems;
-                }
-            });
-        };
-        eventSource.addEventListener(eventName, handleEvent);
+        if (cartStatus === 'ACTIVE') {
+            const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
+            const eventName = `cafe-cart-item-${cartId}`;
+            const handleEvent = (e: MessageEvent) => {
+                const eventData = JSON.parse(e.data);
+                setCartItems(prevItems => {
+                    if (eventData.event === 'CREATED') {
+                        return [
+                            ...prevItems,
+                            ...eventData.data.cafeCartItem.filter(
+                                (newItem: CartItem) => !prevItems.some(item => item.id === newItem.id)
+                            )
+                        ];
+                    } else if (eventData.event === 'DELETED') {
+                        return prevItems.filter(item => !eventData.data.id.includes(item.id));
+                    } else {
+                        return prevItems;
+                    }
+                });
+            };
+            eventSource.addEventListener(eventName, handleEvent);
 
-        eventSource.onerror = err => {
-            setReloadDialogOpen(true);
-            console.error('SSE 에러 발생:', err);
-            eventSource.close();
-        };
+            eventSource.onerror = err => {
+                setCartStatus('INACTIVE');
+                setReloadDialogOpen(true);
+                console.error('SSE 에러 발생:', err);
+                eventSource.close();
+            };
 
-        return () => {
-            eventSource.removeEventListener(eventName, handleEvent);
-            eventSource.close();
-        };
-    }, [cartId]);
+            return () => {
+                eventSource.removeEventListener(eventName, handleEvent);
+                eventSource.close();
+            };
+        }
+    }, [cartId, cartStatus]);
 
     const handleRefresh = () => {
         window.location.reload();
@@ -157,18 +161,6 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                 maxWidth: 'md'
             }}
         >
-            <AppBar position="sticky" sx={{ backgroundColor: '#1C1F21', borderBottom: '1px solid #333' }}>
-                <Toolbar sx={{ height: '75px' }}>
-                    <IconButton edge="start" color="inherit" aria-label="back" onClick={() => router.back()}>
-                        <ChevronLeft size={24} />
-                    </IconButton>
-
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
-                        주문 확인
-                    </Typography>
-                    <Box sx={{ width: 48 }} />
-                </Toolbar>
-            </AppBar>
             <Container sx={{ mt: 2, position: 'relative', height: '100%', overflow: 'hidden' }}>
                 <Typography variant="h5" gutterBottom>
                     주문 목록
@@ -264,7 +256,7 @@ export default function OrderConfirmation({ decryptedData, cartId }: ConfirmClie
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    {item.createdById === uuid && (
+                                                    {item.createdById === uuid && cartStatus === 'ACTIVE' && (
                                                         <IconButton onClick={() => removeItem(item.id)} color="error">
                                                             <Trash2 size={20} />
                                                         </IconButton>

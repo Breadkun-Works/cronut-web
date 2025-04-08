@@ -51,14 +51,14 @@ export default async function ConfirmPage({
     searchParams: { data: string };
 }) {
     const encryptedData = searchParams.data;
+    const cartData = await fetchCart(params.id);
+    const status = cartData.data.cafeCart.status;
     if (encryptedData) {
-        const cartData = await fetchCart(params.id);
         const key = cartData.data.cafeCart.secureShareKey;
         const keyBuffer = Buffer.from(key, 'base64');
-
         const decryptedData = decryptAES256(encryptedData, keyBuffer);
-        return <ConfirmClientPage decryptedData={decryptedData} cartId={params.id} />;
+        return <ConfirmClientPage decryptedData={decryptedData} cartId={params.id} status={status} />;
     } else {
-        return <ConfirmClientPage cartId={params.id} />;
+        return <ConfirmClientPage cartId={params.id} status={status} />;
     }
 }

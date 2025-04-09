@@ -79,8 +79,9 @@ import { useIsMobile } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
 import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
 import { ExpiredModal } from '@/components/page/cafe/modal/expired-modal';
+import PaymentModal from './PaymentModal';
 interface ConfirmClientPageProps {
-    decryptedData?: { acctNo: string; acctNm: string };
+    decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
     status: string;
 }
@@ -98,6 +99,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [speedDialOpen, setSpeedDialOpen] = useState(false);
     const [isCreator, setIsCreator] = useState(false);
+    const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
 
     const uuid = getCookie('BRK-UUID');
     const userName = getCookie('BRK-UserName');
@@ -116,9 +118,6 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
     });
 
     const { data: cartBasic } = useGetCartById(cartId);
-
-    console.log(cartBasic);
-
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
     const [inactiveDialogOpen, setInactiveDialogOpen] = useState<boolean>(false);
@@ -478,7 +477,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                             </ActionButton>
                         ) : (
                             // 장바구니에 초대된 사람인 경우
-                            <ActionButton variant="contained" fullWidth>
+                            <ActionButton variant="contained" onClick={() => setPaymentModalOpen(true)} fullWidth>
                                 <ButtonIcon>
                                     <CircleDollarSign />
                                 </ButtonIcon>
@@ -582,6 +581,15 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                     </Button>
                 </DialogActions>
             </Dialog>
+            {decryptedData && (
+                <PaymentModal
+                    open={paymentModalOpen}
+                    setOpen={setPaymentModalOpen}
+                    cafeAccount={decryptedData}
+                    totalPrice={totalPrice}
+                    handlePayment={setPaymentModalOpen}
+                />
+            )}
         </CartConfirmContainer>
     );
 }

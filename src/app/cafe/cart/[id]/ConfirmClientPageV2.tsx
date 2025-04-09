@@ -77,7 +77,7 @@ import {
 } from '@/styles/cart/cart.styles';
 import { useIsMobile } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
-import { useGetCartById } from '@/apis/cafe/cafe-api';
+import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
 import { ExpiredModal } from '@/components/page/cafe/modal/expired-modal';
 interface ConfirmClientPageProps {
     decryptedData?: { acctNo: string; acctNm: string };
@@ -87,6 +87,11 @@ interface ConfirmClientPageProps {
 
 export default function OrderConfirmation({ decryptedData, cartId, status }: ConfirmClientPageProps) {
     const router = useRouter();
+    const user = {
+        uuid: getCookie('BRK-UUID'),
+        userName: getCookie('BRK-UserName')
+    };
+
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
 
@@ -177,18 +182,9 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
         window.location.reload();
     };
 
-    const deleteCartItem = async (id: string) => {
-        try {
-            const res = await axios.post(`https://api.breadkun.com/api/cafe/carts/items/delete`, { ids: [id] });
-            return res.status === 204;
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const removeItem = async (id: string) => {
-        const res = await deleteCartItem(id);
-        if (res) setCartItems(cartItems.filter(item => item.id !== id));
+    const removeItem = async (cafeCartId: string) => {
+        const res = await deleteCartItem({ cafeCartId, user });
+        if (res) setCartItems(cartItems.filter(item => item.id !== cafeCartId));
     };
 
     const totalPrice = cartItems
@@ -324,6 +320,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                     ) : (
                         <>
                             {cartItems.map(item => {
+                                console.log(item);
                                 return (
                                     <CartItemCard key={item.id}>
                                         <CartItemContent>

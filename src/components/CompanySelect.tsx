@@ -3,7 +3,7 @@ import { MapPin, Utensils } from 'lucide-react';
 import { Company, companyDropdownItem, companyMealDropdownItem } from '@/types/common';
 import React from 'react';
 import { useCompanyContext } from '@/context/CompanyContext';
-import { Container, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Box, Container, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { useIsMobile } from '@/utils/hook';
 
@@ -20,7 +20,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
 
     return (
         <Container>
-            <FormControl variant="standard" sx={{ m: 1 }}>
+            <FormControl variant="standard">
                 <Select
                     value={company.toString() || 'KANGCHON'} // 문자열로 변환하여 전달
                     onChange={e => handleChange(e)}

@@ -54,7 +54,7 @@ export default async function ConfirmPage({
     const encryptedData = searchParams.data;
     const cartData = await fetchCart(params.id);
     const status = cartData.data.cafeCart.status;
-    if (encryptedData) {
+    if (encryptedData && status === 'ACTIVE') {
         const key = cartData.data.cafeCart.secureShareKey;
         const keyBuffer = Buffer.from(key, 'base64');
         const decryptedData = decryptAES256(encryptedData, keyBuffer);

@@ -27,8 +27,7 @@ import { useRouter } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
 import { CafeHeader } from '@/components/page/cafe/header';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
-
-const isMobile = typeof window !== 'undefined' && window.screen.availWidth <= 480;
+import { useIsMobile } from '@/utils/hook';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -57,6 +56,7 @@ const CafeMenuTabPanel = ({ children, value, index, isMobile }: any) => {
 const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; cartId?: string }) => {
     const [tabValue, setTabValue] = useState(0);
     const { company } = useCompanyContext();
+    const isMobile = useIsMobile();
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -103,7 +103,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         if (openDialog) handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, [openDialog]);
+    }, [openDialog, window?.innerWidth]);
 
     // 회사 바뀌면 일부 필드 초기화
     useEffect(() => {
@@ -150,7 +150,10 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                         {getTemperatureChip(record.options)}
                         <MenuCardMedia
                             isMenu={entry === 'menu'}
-                            image={'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'}
+                            image={
+                                record.options?.[0]?.imageUrl ??
+                                'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
+                            }
                             sx={{ backgroundSize: 'contain' }}
                             title={record.name}
                         />
@@ -184,95 +187,88 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     };
 
     return (
-        <>
-            <CafeHeader entry={entry} cartId={cartId} />
-            <PageContainer ref={containerRef}>
-                <Header>
-                    <HeaderContent>
-                        <StyledMenuTitle>{title}</StyledMenuTitle>
-                    </HeaderContent>
-                    <CategoryTabs value={tabValue} onChange={handleTabChange} centered>
-                        {CafeMenuData.map(cafeMenu => (
-                            <CategoryTab
-                                key={cafeMenu.index}
-                                icon={<TabIcon>{returnIcon(cafeMenu.value)}</TabIcon>}
-                                label={cafeMenu.name}
-                            />
-                        ))}
-                    </CategoryTabs>
-                </Header>
+        <PageContainer ref={containerRef}>
+            <Header>
+                <CafeHeader entry={entry} cartId={cartId} />
+                <HeaderContent>
+                    <StyledMenuTitle>{title}</StyledMenuTitle>
+                </HeaderContent>
+            </Header>
+            <CategoryTabs value={tabValue} onChange={handleTabChange} centered>
+                {CafeMenuData.map(cafeMenu => (
+                    <CategoryTab
+                        key={cafeMenu.index}
+                        icon={<TabIcon>{returnIcon(cafeMenu.value)}</TabIcon>}
+                        label={cafeMenu.name}
+                    />
+                ))}
+            </CategoryTabs>
 
-                <ScrollableContent className={isMobile ? 'mobile' : ''}>
-                    {CafeMenuData.map(cafeMenu => (
-                        <CafeMenuTabPanel
-                            key={cafeMenu.index}
-                            value={tabValue}
-                            index={cafeMenu.index}
-                            isMobile={isMobile}
-                        >
-                            <Box ref={loadMoreRef} component="div">
-                                <MenuGrid>
-                                    {data?.pages?.map(page =>
-                                        page.records.map((record, idx) => (
-                                            <React.Fragment key={`menu_${idx}`}>
-                                                <MenuItemCard isMenu={entry === 'menu'}>
-                                                    <MenuItem
-                                                        record={record}
-                                                        onClick={() => handleCardClick(record.name)}
-                                                        entry={entry}
-                                                    />
-                                                </MenuItemCard>
-                                                {entry !== 'menu' && openDialog && selectedMenu === record.name && (
-                                                    <MenuPopover
-                                                        width={dialogWidth}
-                                                        open={openDialog}
-                                                        onClose={handleCloseDialog}
-                                                        popoverProps={{
-                                                            menuName: record.name,
-                                                            options: record.options
-                                                        }}
-                                                        cartId={cartId}
-                                                        onSuccess={() => setMoveToConfirm(true)}
-                                                    />
-                                                )}
-                                            </React.Fragment>
-                                        ))
-                                    )}
-                                </MenuGrid>
-
-                                {moveToConfirm && (
-                                    <Dialog open={moveToConfirm}>
-                                        <DialogContent sx={{ color: COLORS_DARK.text.primary, padding: '24px' }}>
-                                            <Typography variant={'body1'}>
-                                                상품을 장바구니에 담았습니다.
-                                                <br /> 장바구니로 이동하시겠습니까?
-                                            </Typography>
-                                        </DialogContent>
-                                        <Button onClick={() => setMoveToConfirm(false)}>취소</Button>
-                                        <Button onClick={() => router.push(`/cafe/cart/${cartId}`)}>확인</Button>
-                                    </Dialog>
+            <ScrollableContent className={isMobile ? 'mobile' : ''}>
+                {CafeMenuData.map(cafeMenu => (
+                    <CafeMenuTabPanel key={cafeMenu.index} value={tabValue} index={cafeMenu.index} isMobile={isMobile}>
+                        <Box ref={loadMoreRef} component="div">
+                            <MenuGrid>
+                                {data?.pages?.map(page =>
+                                    page.records.map((record, idx) => (
+                                        <React.Fragment key={`menu_${idx}`}>
+                                            <MenuItemCard isMenu={entry === 'menu'}>
+                                                <MenuItem
+                                                    record={record}
+                                                    onClick={() => handleCardClick(record.name)}
+                                                    entry={entry}
+                                                />
+                                            </MenuItemCard>
+                                            {entry !== 'menu' && openDialog && selectedMenu === record.name && (
+                                                <MenuPopover
+                                                    width={dialogWidth}
+                                                    open={openDialog}
+                                                    onClose={handleCloseDialog}
+                                                    popoverProps={{
+                                                        menuName: record.name,
+                                                        options: record.options
+                                                    }}
+                                                    cartId={cartId}
+                                                    onSuccess={() => setMoveToConfirm(true)}
+                                                />
+                                            )}
+                                        </React.Fragment>
+                                    ))
                                 )}
+                            </MenuGrid>
 
-                                {!hasNextPage &&
-                                    isFetched &&
-                                    ((data?.pages?.[0]?.records?.length ?? 0) > 0 ? (
-                                        <Box display="flex" justifyContent="center" mt={3}>
-                                            <Typography variant="body2">끝~</Typography>
-                                        </Box>
-                                    ) : (
-                                        <Box display="flex" justifyContent="center" mt={30}>
-                                            <Typography variant="body2" fontSize={'large'} textAlign={'center'}>
-                                                아직 등록된 메뉴가 없어요.
-                                                <br />곧 맛있는 메뉴들이 올라올 예정이에요 ☕️🍰
-                                            </Typography>
-                                        </Box>
-                                    ))}
-                            </Box>
-                        </CafeMenuTabPanel>
-                    ))}
-                </ScrollableContent>
-            </PageContainer>
-        </>
+                            {moveToConfirm && (
+                                <Dialog open={moveToConfirm}>
+                                    <DialogContent sx={{ color: COLORS_DARK.text.primary, padding: '24px' }}>
+                                        <Typography variant={'body1'}>
+                                            상품을 장바구니에 담았습니다.
+                                            <br /> 장바구니로 이동하시겠습니까?
+                                        </Typography>
+                                    </DialogContent>
+                                    <Button onClick={() => setMoveToConfirm(false)}>취소</Button>
+                                    <Button onClick={() => router.push(`/cafe/cart/${cartId}`)}>확인</Button>
+                                </Dialog>
+                            )}
+
+                            {!hasNextPage &&
+                                isFetched &&
+                                ((data?.pages?.[0]?.records?.length ?? 0) > 0 ? (
+                                    <Box display="flex" justifyContent="center" mt={3}>
+                                        <Typography variant="body2">끝~</Typography>
+                                    </Box>
+                                ) : (
+                                    <Box display="flex" justifyContent="center" mt={30}>
+                                        <Typography variant="body2" fontSize={'large'} textAlign={'center'}>
+                                            아직 등록된 메뉴가 없어요.
+                                            <br />곧 맛있는 메뉴들이 올라올 예정이에요 ☕️🍰
+                                        </Typography>
+                                    </Box>
+                                ))}
+                        </Box>
+                    </CafeMenuTabPanel>
+                ))}
+            </ScrollableContent>
+        </PageContainer>
     );
 };
 

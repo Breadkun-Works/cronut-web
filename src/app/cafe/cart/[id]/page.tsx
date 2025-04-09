@@ -1,5 +1,6 @@
 import crypto from 'crypto';
-import ConfirmClientPage from './ConfirmClientPage';
+// import ConfirmClientPage from './ConfirmClientPage';
+import ConfirmClientPageV2 from './ConfirmClientPageV2';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
@@ -57,8 +58,8 @@ export default async function ConfirmPage({
         const key = cartData.data.cafeCart.secureShareKey;
         const keyBuffer = Buffer.from(key, 'base64');
         const decryptedData = decryptAES256(encryptedData, keyBuffer);
-        return <ConfirmClientPage decryptedData={decryptedData} cartId={params.id} status={status} />;
+        return <ConfirmClientPageV2 decryptedData={decryptedData} cartId={params.id} status={status} />;
     } else {
-        return <ConfirmClientPage cartId={params.id} status={status} />;
+        return <ConfirmClientPageV2 cartId={params.id} status={status} />;
     }
 }

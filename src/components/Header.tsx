@@ -63,6 +63,15 @@ function Header() {
                         >
                             BUS
                         </Link>
+                        <Link
+                            className={
+                                router.startsWith('/cafe') ? hs('header__nav--menu', 'active') : hs('header__nav--menu')
+                            }
+                            href={'/cafe/menu'}
+                            onClick={() => setMenuBox(false)}
+                        >
+                            CAFE
+                        </Link>
                     </div>
                 </nav>
             </header>

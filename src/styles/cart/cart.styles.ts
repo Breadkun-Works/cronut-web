@@ -1,6 +1,21 @@
 import styled from '@emotion/styled';
-import { Badge, Box, Card, CardContent, CardMedia, Chip, Container, Tab, Tabs, Typography } from '@mui/material';
-import { COLORS_DARK } from '@/data';
+import {
+    Avatar,
+    Badge,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    Chip,
+    Container,
+    Paper,
+    SpeedDial,
+    Tab,
+    Tabs,
+    Typography
+} from '@mui/material';
+import { BREAKPOINT, COLORS_DARK, FONT_SIZE } from '@/data';
 import { TemperatureBadgeProps } from '@/types/cart';
 
 export const PageWrapper = styled.div`
@@ -29,9 +44,9 @@ export const CartButton = styled.button`
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
-    border: 1px solid ${COLORS_DARK.accent.dark};
+    border: 1px solid ${COLORS_DARK.accent.main};
     box-sizing: border-box;
-    background-color: ${COLORS_DARK.accent.dark};
+    background-color: ${COLORS_DARK.accent.main};
     color: #fff;
     padding: 0 10px;
     text-align: center;
@@ -42,11 +57,8 @@ export const StyledMenuTitle = styled(Typography)({
     fontWeight: 'bold',
     fontSize: '1.5rem',
     color: COLORS_DARK.text.primary,
-    textAlign: 'center'
-    // position: 'absolute', // 추가: 절대 위치 설정
-    // left: '50%', // 추가: 가운데 정렬
-    // top: '50%', // 추가: 가운데 정렬
-    // transform: 'translate(-50%, -50%)' // 추가: 정확한 중앙 정렬
+    textAlign: 'center',
+    whiteSpace: 'pre-line'
 });
 
 // 온도 뱃지를 위한 Box 컴포넌트
@@ -90,9 +102,20 @@ export const Header = styled(Box)({
     position: 'sticky',
     top: 0,
     zIndex: 10,
+    backgroundColor: COLORS_DARK.background.main
+});
+
+export const ConfirmHeader = styled(Box)({
+    position: 'sticky',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 0,
+    zIndex: 10,
+    borderBottom: `1px solid ${COLORS_DARK.border.default}`,
     backgroundColor: COLORS_DARK.background.main,
-    borderBottom: `1px solid ${COLORS_DARK.divider}`,
-    padding: '12px 16px'
+    padding: 16,
+    marginBottom: '16px'
 });
 
 export const HeaderContent = styled(Box)({
@@ -100,8 +123,8 @@ export const HeaderContent = styled(Box)({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    marginTop: '1.5rem',
-    marginBottom: '1.5rem'
+    marginTop: '1rem',
+    marginBottom: '1rem'
 });
 
 export const CategoryTabs = styled(Tabs)({
@@ -110,7 +133,9 @@ export const CategoryTabs = styled(Tabs)({
     '& .MuiTabs-flexContainer': {
         justifyContent: 'center',
         gap: 16
-    }
+    },
+    padding: '0 0 16px 0',
+    borderBottom: `1px solid ${COLORS_DARK.divider}`
 });
 
 export const CategoryTab = styled(Tab)`
@@ -184,7 +209,7 @@ export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, te
     borderRadius: 4,
     fontWeight: 600,
     fontSize: '0.65rem',
-    backgroundColor: temperature === 'ICED' ? COLORS_DARK.ice : COLORS_DARK.hot,
+    backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
     color: '#fff',
     position: 'absolute',
     top: 8,
@@ -195,9 +220,157 @@ export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, te
 
 export const CartBadge = styled(Badge)({
     '& .MuiBadge-badge': {
-        backgroundColor: COLORS_DARK.hot,
+        backgroundColor: COLORS_DARK.badge.hot,
         color: '#fff',
         fontWeight: 'bold',
         boxShadow: '0 0 0 2px #212529'
     }
 });
+export const CartConfirmContainer = styled(Container)({
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh'
+});
+
+export const LinkShareCard = styled(Card)({
+    marginBottom: 16,
+    overflow: 'hidden',
+    backgroundColor: COLORS_DARK.theme.blue,
+    border: `1px solid ${COLORS_DARK.background.lighter}`,
+    borderRadius: '20px'
+});
+
+export const LinkShareContent = styled(CardContent)({
+    padding: '12px !important'
+});
+
+export const CartItemCard = styled(Card)({
+    marginBottom: 16,
+    overflow: 'hidden',
+    transition: 'all 0.2s ease-in-out',
+    borderRadius: '20px',
+    '&:hover': {
+        transform: 'translateY(-2px)'
+    }
+});
+
+export const CartItemContent = styled(CardContent)({
+    padding: '16px !important'
+});
+
+export const ItemImage = styled(Box)(({ theme }) => ({
+    position: 'relative',
+    width: 60, // 모바일에서 기본 크기
+    height: 60,
+    borderRadius: 8,
+    overflow: 'hidden',
+    flexShrink: 0,
+    [theme.breakpoints.up('sm')]: {
+        width: 80, // 태블릿에서 크기
+        height: 80,
+        borderRadius: 12
+    },
+    [theme.breakpoints.up('md')]: {
+        width: 100, // 데스크탑에서 크기
+        height: 100
+    }
+}));
+
+export const ItemDetails = styled(Box)({
+    marginLeft: 16,
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'column'
+});
+export const ConfirmTemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, temperature }) => ({
+    height: 20,
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: '0.65rem',
+    backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
+    color: '#fff',
+    marginLeft: 8,
+    boxShadow: 'none'
+}));
+
+export const UserAvatar = styled(Avatar)(({ theme }) => ({
+    width: 24,
+    height: 24,
+    [theme.breakpoints.up('sm')]: {
+        width: 30,
+        height: 30
+    },
+    [theme.breakpoints.up('md')]: {
+        width: 34,
+        height: 34
+    },
+    marginRight: 8,
+    fontSize: '0.75rem',
+    backgroundColor: COLORS_DARK.accent.main,
+    color: COLORS_DARK.text.primary,
+    fontWeight: 600
+}));
+
+export const BottomSummary = styled(Paper)({
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: COLORS_DARK.theme.blue,
+    borderTop: `1px solid ${COLORS_DARK.background.lighter}`,
+    boxShadow: 'none'
+});
+
+export const ButtonsContainer = styled(Box)({
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 16,
+    marginTop: 16
+});
+
+export const ActionButton = styled(Button)({
+    height: 56,
+    fontSize: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    color: COLORS_DARK.text.primary,
+    backgroundColor: COLORS_DARK.accent.main
+});
+
+export const WhiteButton = styled(Button)({
+    height: 56,
+    fontSize: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: COLORS_DARK.text.primary,
+    border: `1px solid ${COLORS_DARK.accent.main}`,
+    color: COLORS_DARK.accent.main,
+    '&:hover': {
+        backgroundColor: '#e9ecef' // 약간 어두운 흰색
+    }
+});
+
+export const ButtonIcon = styled(Box)({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+});
+
+export const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
+    position: 'fixed',
+    bottom: 100, // 하단 버튼 위에 위치
+    right: 16,
+    '& .MuiSpeedDial-fab': {
+        backgroundColor: COLORS_DARK.accent.main,
+        color: COLORS_DARK.text.primary,
+        '&:hover': {
+            backgroundColor: '#e08a1e'
+        }
+    }
+}));

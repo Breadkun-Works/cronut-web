@@ -5,11 +5,11 @@ import { Coffee, CoffeeIcon as Tea, Wine } from 'lucide-react';
 export const MuiTheme = createTheme({
     breakpoints: {
         values: {
-            xs: 0,
-            sm: 768,
-            md: 960,
-            lg: 1280,
-            xl: 1920
+            xs: 375,
+            sm: 480,
+            md: 768,
+            lg: 1024,
+            xl: 1280
         }
     },
     typography: {
@@ -28,12 +28,6 @@ export const MuiTheme = createTheme({
             fontSize: '2.5rem', // 기본 크기 (큰 화면)
             '@media (max-width:768px)': {
                 fontSize: '1.5rem' // 작은 화면에서 더 작은 크기
-            }
-        },
-        h6: {
-            fontSize: '1.25rem', // 기본 크기 (큰 화면)
-            '@media (max-width:768px)': {
-                fontSize: '1rem' // 작은 화면에서 더 작은 크기
             }
         }
     },
@@ -112,23 +106,53 @@ export const COLORS_LIGHT = {
 // 다크모드 색상 정의 - 기본 배경색 #212529 기준
 export const COLORS_DARK = {
     background: {
-        main: '#212529', // 기본 배경색
-        light: '#2c3034', // 약간 밝은 배경
-        lighter: '#343a40', // 더 밝은 배경 (카드 등)
-        input: '#495057' // 입력 필드 배경
-    },
-    accent: {
-        main: '#ff9e44', // 메인 포인트 (부드러운 오렌지)
-        light: '#ffb347', // 강조 포인트 (밝은 오렌지)
-        dark: '#e67e22', // 어두운 포인트 (진한 오렌지)
-        disabled: 'rgba(255, 158, 68, 0.5)' // 비활성화 (반투명 오렌지)
+        main: '#212529', // gray-09
+        light: '#2c3034',
+        lighter: '#343a40', // gray-08
+        input: '#495057', // gray-07
+        surface: '#343a40' // 카드 등 서페이스
     },
     text: {
-        primary: '#f8f9fa', // 주요 텍스트 (거의 흰색)
-        secondary: '#adb5bd', // 부가 텍스트 (밝은 회색)
-        disabled: '#6c757d' // 비활성화 텍스트 (중간 회색)
+        primary: '#f8f9fa', // gray-00
+        secondary: '#adb5bd', // gray-05
+        tertiary: '#868e96', // gray-06
+        disabled: '#6c757d' // 중간 회색
     },
-    divider: 'rgba(248, 249, 250, 0.1)', // 구분선 색상
-    ice: '#4dabf7', // ICED 뱃지 색상
-    hot: '#ff6b6b' // HOT 뱃지 색상
+    accent: {
+        main: '#cf7500',
+        light: '#ffb347',
+        dark: '#e67e22',
+        disabled: 'rgba(255, 158, 68, 0.5)'
+    },
+    border: {
+        default: '#343a40',
+        subtle: '#495057'
+    },
+    badge: {
+        ice: '#4dabf7',
+        hot: '#ff6b6b'
+    },
+    theme: {
+        blue: '#404258',
+        blueAlt: '#30475e',
+        purple: '#413543',
+        green: '#2e4f4f',
+        red: '#a80038',
+        yellow: '#cf7500'
+    },
+    divider: 'rgba(248, 249, 250, 0.1)'
+};
+
+export const BREAKPOINT = {
+    xsmall: '375px',
+    small: '480px',
+    medium: '768px',
+    large: '1024px'
+};
+
+export const FONT_SIZE = {
+    xsmall: '0.75rem', // 12px
+    small: '0.875rem', // 14px
+    medium: '1rem', // 16px
+    large: '1.125rem' // 18px
 };

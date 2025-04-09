@@ -25,6 +25,7 @@ import { styled } from '@mui/material/styles';
 import { getCookie } from '@/utils/cookie';
 import { useAddMenuCart } from '@/apis/cafe/cafe-api';
 import { COLORS_DARK } from '@/data';
+import { useIsMobile } from '@/utils/hook';
 
 // 스타일 컴포넌트를 직접 정의
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
@@ -52,30 +53,23 @@ const StyledToggleButton = styled(ToggleButton)(() => ({
     color: COLORS_DARK.text.secondary,
     backgroundColor: `rgba(255, 158, 68, 0.08)`,
     border: `1px solid rgba(255,158,68,0.08)`,
-    // backgroundColor: `rgba(${isDarkMode ? '255, 158, 68' : '240, 144, 0'}, 0.08)`,
-    // border: `1px solid rgba(${isDarkMode ? '255, 158, 68' : '240, 144, 0'}, 0.15)`,
     borderRadius: '8px !important',
     padding: '12px 16px',
     fontSize: '0.9rem',
     fontWeight: 'bold',
     '&.Mui-selected': {
         color: '#212529',
-        // color: isDarkMode ? '#212529' : '#ffffff',
         backgroundColor: COLORS_DARK.accent.main,
         border: `1px solid ${COLORS_DARK.accent.main}`,
         boxShadow: `0 2px 8px rgba(255, 158, 68, 0.08)`
-        // boxShadow: `0 2px 8px rgba(${isDarkMode ? '255, 158, 68' : '240, 144, 0'}, 0.2)`
     },
     '&:hover': {
         backgroundColor: `rgba(255, 158, 68, 0.08)`
-        // backgroundColor: `rgba(${isDarkMode ? '255, 158, 68' : '240, 144, 0'}, 0.15)`
     },
     '&.Mui-disabled': {
         backgroundColor: 'rgba(248, 249, 250, 0.05)',
-        // backgroundColor: isDarkMode ? 'rgba(248, 249, 250, 0.05)' : 'rgba(0, 0, 0, 0.05)',
         color: COLORS_DARK.text.disabled,
         border: '1px solid rgba(248, 249, 250, 0.1)'
-        // border: isDarkMode ? '1px solid rgba(248, 249, 250, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)'
     },
     transition: 'all 0.2s ease'
 }));
@@ -90,12 +84,11 @@ const Transition = forwardRef(function Transition(
 });
 
 export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSuccess }: ICafeMenuPopoverProps) => {
-    const isMobile = window.innerWidth <= 480;
+    const isMobile = useIsMobile();
     const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
     const userName = getCookie('BRK-UserName');
     const uuid = getCookie('BRK-UUID');
 
-    console.log(open, 'open!!');
     // 창 크기 변경 감지
     useEffect(() => {
         const handleResize = () => {
@@ -213,12 +206,8 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                     left: isMobile ? 0 : 'auto',
                     right: isMobile ? 0 : 'auto',
                     boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-                    // boxShadow: isDarkMode
-                    //     ? '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)'
-                    //     : '0 -4px 20px rgba(0, 0, 0, 0.3)',
                     overflow: 'hidden',
                     border: '1px solid rgba(255, 255, 255, 0.1)'
-                    // border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'
                 }
             }}
         >
@@ -323,8 +312,8 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     sx={{
                                         color: COLORS_DARK.accent.main,
                                         fontSize: {
-                                            xs: '0.9rem',
-                                            sm: '1rem'
+                                            xs: '1rem',
+                                            sm: '1.2rem'
                                         },
                                         fontWeight: 500
                                     }}
@@ -454,33 +443,6 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                 </Box>
                             </Box>
 
-                            {/*<Box sx={{ mb: 3 }}>*/}
-                            {/*    <FormControlLabel*/}
-                            {/*        control={*/}
-                            {/*            <Checkbox*/}
-                            {/*                checked={usePersonalTumbler}*/}
-                            {/*                onChange={handleTumblerChange}*/}
-                            {/*                sx={{*/}
-                            {/*                    color: COLORS.accent.main,*/}
-                            {/*                    "&.Mui-checked": {*/}
-                            {/*                        color: COLORS.accent.main,*/}
-                            {/*                    },*/}
-                            {/*                    "& .MuiSvgIcon-root": {*/}
-                            {/*                        fontSize: 22,*/}
-                            {/*                    },*/}
-                            {/*                }}*/}
-                            {/*            />*/}
-                            {/*        }*/}
-                            {/*        label="개인 텀블러 사용 (10% 할인)"*/}
-                            {/*        sx={{*/}
-                            {/*            color: COLORS.text.primary,*/}
-                            {/*            "& .MuiFormControlLabel-label": {*/}
-                            {/*                fontSize: "0.9rem",*/}
-                            {/*            },*/}
-                            {/*        }}*/}
-                            {/*    />*/}
-                            {/*</Box>*/}
-
                             <Divider sx={{ borderColor: COLORS_DARK.divider, mb: 2 }} />
 
                             {/* 총 가격 표시 */}
@@ -540,7 +502,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                 onClick={handleAddToCart}
                                 sx={{
                                     backgroundColor: COLORS_DARK.accent.main,
-                                    color: '#212529',
+                                    color: COLORS_DARK.text.primary,
                                     '&:hover': {
                                         backgroundColor: COLORS_DARK.accent.light
                                     },

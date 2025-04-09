@@ -90,7 +90,7 @@ export default function HeaderCartButton({ itemCount = 0 }: HeaderCartButtonProp
     }, []);
 
     return (
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative', paddingRight: '10px' }}>
             {/* 펄스 효과 */}
             {showPulse && (
                 <PulseEffect

@@ -92,6 +92,8 @@ export const useGetCartById = (cartId: string, options?: UseQueryOptions<ICartIn
         queryKey: ['cart', cartId],
         queryFn: () => getCartById(cartId),
         enabled: !!cartId,
+        refetchOnWindowFocus: false,
+        retry: 2,
         ...options
     });
 };

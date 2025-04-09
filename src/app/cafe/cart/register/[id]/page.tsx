@@ -260,7 +260,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
         if (nameToUse !== PLACEHOLDER) {
             setCookie('BRK-UserName', nameToUse);
             const cookieUUID = getCookie('BRK-UUID');
-            router.push(`/cafe/cart/${params.id}/menu`);
+            router.push(`/cafe/cart/menu/${params.id}`);
         }
     };
 

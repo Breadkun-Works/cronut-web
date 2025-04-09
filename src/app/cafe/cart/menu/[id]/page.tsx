@@ -7,12 +7,15 @@ import { useGetCartById } from '@/apis/cafe/cafe-api';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { COLORS_DARK } from '@/data';
+import { useIsMobile } from '@/utils/hook';
 
 const CartMenuById = ({ params }: { params: { id: string; userId: string } }) => {
     const name = getCookie('BRK-UserName');
     const { data: cartInfo, isLoading, isSuccess } = useGetCartById(params.id);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
+
+    const isMobile = useIsMobile();
 
     const handleClose = () => {
         setOpenModal(false);
@@ -40,12 +43,8 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
                         maxWidth: 'none',
                         borderRadius: '16px',
                         boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-                        // boxShadow: isDarkMode
-                        //     ? '0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)'
-                        //     : '0 -4px 20px rgba(0, 0, 0, 0.3)',
                         overflow: 'hidden',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
-                        // border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'
                     }
                 }}
             >
@@ -89,7 +88,7 @@ const CartMenuById = ({ params }: { params: { id: string; userId: string } }) =>
         return (
             <CafeMenu
                 entry={'personalCart'}
-                title={`${name}님, 장바구니에 담을 메뉴를 선택해주세요.`}
+                title={`${name}님,${isMobile ? '\n' : ' '}카페 메뉴를 선택해주세요.`}
                 cartId={params.id}
             />
         );

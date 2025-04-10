@@ -15,7 +15,6 @@ import {
     InputAdornment,
     TextField
 } from '@mui/material';
-import axios from 'axios';
 import {
     ChevronLeft,
     Trash2,
@@ -61,6 +60,7 @@ import {
     CartConfirmContainer,
     CartItemCard,
     CartItemContent,
+    ConfirmContainer,
     ConfirmHeader,
     ConfirmTemperatureBadge,
     Header,
@@ -78,7 +78,7 @@ import {
 import { useIsMobile } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
 import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
-import { ExpiredModal } from '@/components/page/cafe/modal/expired-modal';
+import { CartConfirmModal } from '@/components/page/cafe/modal/expired-modal';
 import PaymentModal from './PaymentModal';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
@@ -96,10 +96,11 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
 
+    const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
+
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [speedDialOpen, setSpeedDialOpen] = useState(false);
     const [isCreator, setIsCreator] = useState(false);
-    const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
 
     const uuid = getCookie('BRK-UUID');
     const userName = getCookie('BRK-UserName');
@@ -178,7 +179,9 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
     }, [cartBasic]);
 
     const handleRefresh = () => {
-        window.location.reload();
+        if (typeof window !== 'undefined') {
+            window.location.reload();
+        }
     };
 
     const removeItem = async (cafeCartId: string) => {
@@ -227,7 +230,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
 
     return (
         <CartConfirmContainer>
-            <ConfirmHeader>
+            <ConfirmHeader isMobile={isMobile}>
                 <ShoppingCart className={'mt-1'} />
                 <Typography variant="h6" fontWeight="bold" sx={{ color: COLORS_DARK.text.primary, marginLeft: '1rem' }}>
                     {cartBasic?.title}
@@ -302,7 +305,8 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                                 textAlign: 'center',
                                 backgroundColor: COLORS_DARK.background.lighter,
                                 borderRadius: 3,
-                                mt: 2
+                                mt: 2,
+                                mb: 2
                             }}
                         >
                             <ShoppingCart
@@ -426,69 +430,72 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                         </>
                     )}
                 </Container>
-            </ScrollableContent>
-
-            <BottomSummary elevation={0}>
-                <Container disableGutters sx={{ maxWidth: '900px' }}>
-                    {/* 내 주문 금액 */}
-                    <Box
-                        sx={{
-                            background: COLORS_DARK.theme.purple,
-                            borderRadius: 3,
-                            padding: '16px',
-                            marginBottom: 2,
-                            border: `1px solid ${COLORS_DARK.accent.main}30`
-                        }}
-                    >
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography variant="subtitle1" fontWeight="bold" sx={{ color: COLORS_DARK.text.primary }}>
-                                내 주문 금액
-                            </Typography>
-                            <Typography variant="h5" fontWeight="bold" sx={{ color: COLORS_DARK.text.primary }}>
-                                {totalPrice.toLocaleString()}원
-                            </Typography>
-                        </Box>
-                    </Box>
-
-                    <ButtonsContainer>
-                        <WhiteButton
-                            fullWidth
-                            onClick={() => {
-                                if (userName) {
-                                    router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
-                                } else {
-                                    router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
-                                }
+                <BottomSummary elevation={0}>
+                    <Container disableGutters sx={{ maxWidth: '900px' }}>
+                        {/* 내 주문 금액 */}
+                        <Box
+                            sx={{
+                                background: COLORS_DARK.theme.purple,
+                                borderRadius: 3,
+                                padding: '16px',
+                                marginBottom: 2,
+                                border: `1px solid ${COLORS_DARK.accent.main}30`
                             }}
                         >
-                            <ButtonIcon>
-                                <CupSoda style={{ marginRight: '8px', color: COLORS_DARK.accent.main }} />
-                            </ButtonIcon>
-                            메뉴 담기
-                        </WhiteButton>
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                    sx={{ color: COLORS_DARK.text.primary }}
+                                >
+                                    내 주문 금액
+                                </Typography>
+                                <Typography variant="h5" fontWeight="bold" sx={{ color: COLORS_DARK.text.primary }}>
+                                    {totalPrice.toLocaleString()}원
+                                </Typography>
+                            </Box>
+                        </Box>
 
-                        {isCreator ? (
-                            // 장바구니 생성자인 경우
-                            <ActionButton variant="contained" fullWidth>
+                        <ButtonsContainer>
+                            <WhiteButton
+                                fullWidth
+                                onClick={() => {
+                                    if (userName) {
+                                        router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
+                                    } else {
+                                        router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
+                                    }
+                                }}
+                            >
                                 <ButtonIcon>
-                                    <LockIcon />
+                                    <CupSoda style={{ marginRight: '8px', color: COLORS_DARK.accent.main }} />
                                 </ButtonIcon>
-                                주문 마감하기
-                            </ActionButton>
-                        ) : (
-                            // 장바구니에 초대된 사람인 경우
-                            <ActionButton variant="contained" onClick={() => setPaymentModalOpen(true)} fullWidth>
-                                <ButtonIcon>
-                                    <CircleDollarSign />
-                                </ButtonIcon>
-                                송금하기
-                            </ActionButton>
-                        )}
-                    </ButtonsContainer>
-                </Container>
-            </BottomSummary>
+                                메뉴 담기
+                            </WhiteButton>
 
-            <ExpiredModal
+                            {isCreator ? (
+                                // 장바구니 생성자인 경우
+                                <ActionButton variant="contained" fullWidth>
+                                    <ButtonIcon>
+                                        <LockIcon />
+                                    </ButtonIcon>
+                                    주문 마감하기
+                                </ActionButton>
+                            ) : (
+                                // 장바구니에 초대된 사람인 경우
+                                <ActionButton variant="contained" onClick={() => setPaymentModalOpen(true)} fullWidth>
+                                    <ButtonIcon>
+                                        <CircleDollarSign />
+                                    </ButtonIcon>
+                                    송금하기
+                                </ActionButton>
+                            )}
+                        </ButtonsContainer>
+                    </Container>
+                </BottomSummary>
+            </ScrollableContent>
+
+            <CartConfirmModal
                 open={inactiveDialogOpen}
                 onClose={() => setInactiveDialogOpen(false)}
                 onConfirm={() => {
@@ -572,15 +579,25 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
             {/*    </DialogActions>*/}
             {/*</Dialog>*/}
 
-            <Dialog open={reloadDialogOpen && !inactiveDialogOpen} disableEscapeKeyDown onClose={() => {}}>
-                <DialogTitle>세션 만료</DialogTitle>
-                <DialogContent>페이지를 새로고침 해주세여.</DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="primary" onClick={handleRefresh}>
-                        새로고침
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {/*<Dialog open={reloadDialogOpen} disableEscapeKeyDown onClose={() => {}}>*/}
+            {/*    <DialogTitle>세션 만료</DialogTitle>*/}
+            {/*    <DialogContent>페이지를 새로고침 해주세여.</DialogContent>*/}
+            {/*    <DialogActions>*/}
+            {/*        <Button variant="contained" color="primary" onClick={handleRefresh}>*/}
+            {/*            새로고침*/}
+            {/*        </Button>*/}
+            {/*    </DialogActions>*/}
+            {/*</Dialog>*/}
+            {reloadDialogOpen && !inactiveDialogOpen && (
+                <CartConfirmModal
+                    open={reloadDialogOpen && !inactiveDialogOpen}
+                    disableEscapeKeyDown
+                    onConfirm={() => handleRefresh()}
+                    title={'세션 만료'}
+                    content={<>페이지를 새로고침 해주세여.</>}
+                />
+            )}
+
             {decryptedData && (
                 <PaymentModal
                     open={paymentModalOpen}

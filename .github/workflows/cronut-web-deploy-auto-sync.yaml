@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - dev
+      - test
 
 jobs:
   build:
@@ -15,13 +16,13 @@ jobs:
 
       - name: Get current branch name
         run: echo "TARGET_BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
-    
+
       - name: Install mustache (to update the date)
         run: apk add ruby && gem install mustache
-      
+
       - name: creates output
         run: sh ./build.sh
-      
+
       - name: Pushes to another repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
@@ -35,6 +36,6 @@ jobs:
           commit-message: ${{ github.event.commits[0].message || 'Auto-sync commit' }}
           target-branch: ${{ env.TARGET_BRANCH }}
           create-target-branch-if-needed: true
-      
+
       - name: Test get variable exported by push-to-another-repository
         run: echo $DESTINATION_CLONED_DIRECTORY

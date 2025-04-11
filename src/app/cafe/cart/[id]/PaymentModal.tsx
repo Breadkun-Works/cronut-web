@@ -11,18 +11,46 @@ import {
     Box,
     Typography,
     Paper,
-    Divider,
+    Divider
 } from '@mui/material';
 import { Copy, Check, ScanQrCode } from 'lucide-react';
+import QRCodeComponent from '@/components/QRCodeComponent';
+import { useIsMobile } from '@/utils/hook';
 
 export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, handlePayment }: any) {
+    const isMobile = useIsMobile();
     const [tab, setTab] = useState('bank');
     const [copied, setCopied] = useState(false);
 
     const copyAccountNumber = () => {
-        navigator.clipboard.writeText(cafeAccount.accountNumber);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
+        if (typeof navigator.clipboard === 'undefined') {
+            const textArea = document.createElement('textarea');
+            textArea.value = `${cafeAccount.bankName} ${cafeAccount.accountNumber}`;
+            textArea.style.position = 'fixed';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                }
+            } catch (err) {
+                console.error('링크 복사 실패', err);
+            }
+
+            document.body.removeChild(textArea);
+        } else {
+            navigator.clipboard
+                .writeText(`${cafeAccount.bankName} ${cafeAccount.accountNumber}`)
+                .then(() => {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                })
+                .catch(err => console.error('링크 복사 실패', err));
+        }
     };
 
     return (
@@ -65,7 +93,7 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
                                 onClick={copyAccountNumber}
                                 sx={{ borderColor: 'gray', ':hover': { bgcolor: 'gray.800' } }}
                             >
-                                {copied ? '복사됨' : '복사하기'}
+                                {copied ? '복사완료' : '복사하기'}
                             </Button>
                         </Box>
                         <Divider sx={{ bgcolor: 'gray', my: 2 }} />
@@ -82,38 +110,55 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
 
                 {tab === 'toss' && (
                     <Paper sx={{ p: 2, bgcolor: '#1C1F21', textAlign: 'center' }} elevation={0}>
-                        <Paper
-                            sx={{
-                                bgcolor: 'white',
-                                width: 192,
-                                height: 192,
-                                mx: 'auto',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                mb: 2,
-                                position: 'relative'
-                            }}
-                            elevation={1}
-                        >
-                            <ScanQrCode size={100} />
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    bgcolor: 'rgba(255,255,255,0.8)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: 1
-                                }}
-                            >
-                                <Typography color="black">QR 코드 스캔</Typography>
-                            </Box>
-                        </Paper>
-                        <Typography variant="body2" color="gray">
-                            QR 코드를 스캔하여 이체를 진행해주세요.
-                        </Typography>
+                        {!isMobile ? (
+                            <>
+                                <Paper
+                                    sx={{
+                                        bgcolor: 'white',
+                                        width: 192,
+                                        height: 192,
+                                        mx: 'auto',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        mb: 2,
+                                        position: 'relative',
+                                        p: 1
+                                    }}
+                                    elevation={1}
+                                >
+                                    <QRCodeComponent
+                                        url={`supertoss://send?amount=${totalPrice}&bank=${cafeAccount.bankName}&accountNo=${cafeAccount.accountNumber}`}
+                                    />
+                                </Paper>
+                                <Typography variant="body2" color="gray">
+                                    QR 코드를 스캔하여 이체를 진행해주세요.
+                                </Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    onClick={() =>
+                                        window.open(
+                                            `supertoss://send?amount=${totalPrice}&bank=${cafeAccount.bankName}&accountNo=${cafeAccount.accountNumber}`,
+                                            '_blank'
+                                        )
+                                    }
+                                    sx={{
+                                        borderRadius: 3,
+                                        paddingX: 3,
+                                        paddingY: 1.2,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    토스로 송금하기
+                                </Button>
+                            </>
+                        )}
+
                         <Divider sx={{ bgcolor: 'gray', my: 2 }} />
                         <Typography variant="subtitle2" color="gray">
                             정산 금액
@@ -137,7 +182,7 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
                 <Button
                     variant="contained"
                     onClick={() => handlePayment(false)}
-                    sx={{ bgcolor: '#8B4513', ':hover': { bgcolor: '#6B3410' } }}
+                    sx={{ bgcolor: '#8B4513', ':hover': { bgcolor: '#6B3410' }, color: 'white' }}
                 >
                     주문 완료
                 </Button>

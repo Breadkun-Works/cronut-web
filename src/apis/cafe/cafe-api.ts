@@ -125,7 +125,7 @@ export const useAddMenuCart = (
 export const deleteCartItem = async ({ cafeCartId, user }: IDeleteCartItem) => {
     try {
         const res = await axios.post(
-            `https://api.breadkun.com/api/cafe/carts/items/delete`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/items/delete`,
             { ids: [cafeCartId] },
             {
                 headers: {
@@ -135,6 +135,20 @@ export const deleteCartItem = async ({ cafeCartId, user }: IDeleteCartItem) => {
                 }
             }
         );
+        return res.status === 204;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+export const expireCart = async ({ cafeCartId, user }: IDeleteCartItem) => {
+    try {
+        const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/${cafeCartId}/expire`, {
+            headers: {
+                Accept: 'application/vnd.breadkun.v1+json',
+                'X-User-UUID': user.uuid
+            }
+        });
         return res.status === 204;
     } catch (e) {
         console.error(e);

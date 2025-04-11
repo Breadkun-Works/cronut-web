@@ -71,7 +71,7 @@ const CartPage = () => {
         });
     };
     /* 추가 및 수정해야됨 */
-    const banks = ['토스뱅크', '국민은행', '신한은행', '우리은행', '하나은행', '농협은행'];
+    const banks = ['토스뱅크', '국민은행', '신한은행', '우리은행', '하나은행', 'NH농협'];
 
     return (
         <PageWrapper>
@@ -157,7 +157,12 @@ const CartPage = () => {
                                     label="계좌번호"
                                     placeholder="계좌번호를 입력하세요 (- 없이)"
                                     value={accountNumber}
-                                    onChange={e => setAccountNumber(e.target.value)}
+                                    onChange={e => {
+                                        const numericValue = e.target.value.replace(/\D/g, '');
+                                        setAccountNumber(numericValue);
+                                    }}
+                                    type="tel"
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                     sx={{
                                         fontSize: '16px',
                                         bgcolor: '#2C2F31',

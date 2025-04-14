@@ -1,4 +1,4 @@
-name: Automatically syncs to personal repository
+name: Build and Sync to Personal Repo
 
 on:
   push:
@@ -10,18 +10,49 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: pandoc/latex
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout the repository code
+        uses: actions/checkout@v4
 
-      - name: Get current branch name
-        run: echo "TARGET_BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: Install mustache (to update the date)
-        run: apk add ruby && gem install mustache
+      - name: Enable Corepack
+        run: corepack enable
 
-      - name: creates output
-        run: sh ./build.sh
+      - name: Set Yarn version
+        run: corepack prepare yarn@3.8.7 --activate
+
+      - name: Create dummy .env # 빌드를 위한 더미 env
+        run: |
+          echo "NEXT_PUBLIC_KAKAO_API_KEY=dummy-key" > .env
+          echo "NEXT_PUBLIC_OPEN_API_ENCODING_KEY=dummy-key" >> .env
+          echo "SECRET_ENCRYPT_KEY=dummy-key" >> .env
+          echo "NEXT_PUBLIC_API_BASE_URL=dummy-url" >> .env
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+
+  sync_to_personal_repo:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()
+
+    steps:
+      - name: Checkout the repository code
+        uses: actions/checkout@v4
+
+      - name: Prepare files (excluding .github)
+        run: |
+          rm -rf output
+          mkdir output
+          rsync -av --exclude='.github' --exclude='.git' . output/
 
       - name: Pushes to another repository
         id: push_directory
@@ -32,10 +63,7 @@ jobs:
           source-directory: 'output'
           destination-github-username: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USERNAME }}
           destination-repository-name: ${{ secrets.BREADKUN_CRONUT_DEPLOY_REPO_NAME }}
-          user-email: ${{ secrets.BREADKUN_CRONUT_DEPLOY_EMAIL }}
-          commit-message: ${{ github.event.commits[0].message || 'Auto-sync commit' }}
-          target-branch: ${{ env.TARGET_BRANCH }}
+          user-email: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USER_EMAIL }}
+          commit-message: ${{ github.event.head_commit.message }}
+          target-branch: ${{ github.ref_name }}
           create-target-branch-if-needed: true
-
-      - name: Test get variable exported by push-to-another-repository
-        run: echo $DESTINATION_CLONED_DIRECTORY

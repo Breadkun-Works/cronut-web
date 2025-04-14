@@ -30,9 +30,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# API KEY
-.env*
-
 # vercel
 .vercel
 
@@ -40,3 +37,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 node_modules
+
+.idea

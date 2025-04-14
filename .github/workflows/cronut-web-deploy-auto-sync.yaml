@@ -61,6 +61,6 @@ jobs:
           destination-github-username: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USERNAME }}
           destination-repository-name: ${{ secrets.BREADKUN_CRONUT_DEPLOY_REPO_NAME }}
           user-email: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USER_EMAIL }}
-          commit-message: ${{ github.event.head_commit.message || 'Auto-sync from source repo' }}
+          commit-message: ${{ github.event.head_commit.message }}
           target-branch: ${{ github.ref_name }}
           create-target-branch-if-needed: true

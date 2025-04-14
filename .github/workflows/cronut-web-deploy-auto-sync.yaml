@@ -49,7 +49,7 @@ jobs:
         run: |
           rm -rf output
           mkdir output
-          rsync -av --exclude='.github' . output/
+          rsync -av --exclude='.github' --exclude='.git' . output/
 
       - name: Pushes to another repository
         id: push_directory
@@ -61,6 +61,6 @@ jobs:
           destination-github-username: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USERNAME }}
           destination-repository-name: ${{ secrets.BREADKUN_CRONUT_DEPLOY_REPO_NAME }}
           user-email: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USER_EMAIL }}
-          commit-message: ${{ github.event.head_commit.message }}
+          commit-message: ${{ github.event.head_commit.message || 'Auto-sync from source repo' }}
           target-branch: ${{ github.ref_name }}
           create-target-branch-if-needed: true

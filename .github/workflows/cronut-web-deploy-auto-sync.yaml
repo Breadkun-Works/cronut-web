@@ -23,6 +23,9 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Set Yarn to latest version
+        run: corepack prepare yarn@3.8.7 --activate
+
       - name: Create dummy .env # 빌드를 위한 더미 env
         run: |
           echo "NEXT_PUBLIC_KAKAO_API_KEY=dummy-key" > .env

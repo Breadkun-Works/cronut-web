@@ -1,8 +1,8 @@
 import crypto from 'crypto';
-// import ConfirmClientPage from './ConfirmClientPage';
-import ConfirmClientPageV2 from './ConfirmClientPageV2';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { ConfirmClientV3 } from '@/app/cafe/cart/[id]/ConfirmClientV3';
+import { cookies } from 'next/headers';
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     const cartData = await fetchCart(params.id);
     const cart = cartData.data.cafeCart;
@@ -54,12 +54,35 @@ export default async function ConfirmPage({
     const encryptedData = searchParams.data;
     const cartData = await fetchCart(params.id);
     const status = cartData.data.cafeCart.status;
+    const isCartInactive = status === 'INACTIVE';
+
+    const cookieStore = cookies();
+    const uuid = cookieStore.get('BRK-UUID')?.value;
+    const userName = cookieStore.get('BRK-UserName')?.value;
+    const isCreator = uuid === cartData.data.cafeCart.createdById;
+
     if (encryptedData && status === 'ACTIVE') {
         const key = cartData.data.cafeCart.secureShareKey;
         const keyBuffer = Buffer.from(key, 'base64');
         const decryptedData = decryptAES256(encryptedData, keyBuffer);
-        return <ConfirmClientPageV2 decryptedData={decryptedData} cartId={params.id} status={status} />;
+        return (
+            <ConfirmClientV3
+                decryptedData={decryptedData}
+                cartId={params.id}
+                status={status}
+                isCreator={isCreator}
+                user={{ uuid, userName }}
+            />
+        );
     } else {
-        return <ConfirmClientPageV2 cartId={params.id} status={status} />;
+        return (
+            <ConfirmClientV3
+                cartId={params.id}
+                status={status}
+                isCartInactive={isCartInactive}
+                isCreator={isCreator}
+                user={{ uuid, userName }}
+            />
+        );
     }
 }

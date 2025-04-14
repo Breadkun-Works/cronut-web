@@ -1,35 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-    IconButton,
-    Typography,
-    Container,
-    CardMedia,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    InputAdornment,
-    TextField
-} from '@mui/material';
-import {
-    ChevronLeft,
-    Trash2,
-    CupSodaIcon as Cup,
-    CopyIcon,
-    ShareIcon,
-    Share2,
-    ShoppingCart,
-    HandCoins,
-    CupSoda,
-    LockIcon,
-    CircleDollarSign,
-    DeleteIcon,
-    Bold
-} from 'lucide-react';
+import { IconButton, Typography, Container, CardMedia, Box, InputAdornment, TextField } from '@mui/material';
+import { Trash2, CopyIcon, Share2, ShoppingCart, CupSoda, LockIcon, CircleDollarSign } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getCookie } from '@/utils/cookie';
 import { useQuery } from '@tanstack/react-query';
@@ -60,25 +33,20 @@ import {
     CartConfirmContainer,
     CartItemCard,
     CartItemContent,
-    ConfirmContainer,
     ConfirmHeader,
     ConfirmTemperatureBadge,
-    Header,
-    HeaderContent,
     ItemDetails,
     ItemImage,
     LinkShareCard,
     LinkShareContent,
     ScrollableContent,
-    StyledMenuTitle,
-    TemperatureBadge,
     UserAvatar,
     WhiteButton
 } from '@/styles/cart/cart.styles';
 import { useIsMobile } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
 import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
-import { CartConfirmModal } from '@/components/page/cafe/modal/expired-modal';
+import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-modal';
 import PaymentModal from './PaymentModal';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
@@ -430,7 +398,7 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
                         </>
                     )}
                 </Container>
-                <BottomSummary elevation={0}>
+                <BottomSummary>
                     <Container disableGutters sx={{ maxWidth: '900px' }}>
                         {/* 내 주문 금액 */}
                         <Box

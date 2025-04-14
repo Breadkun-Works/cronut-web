@@ -1075,7 +1075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.27.0
   resolution: "@babel/runtime@npm:7.27.0"
   dependencies:
@@ -1475,19 +1475,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@mui/icons-material@npm:7.0.1"
+"@mui/icons-material@npm:6":
+  version: 6.4.11
+  resolution: "@mui/icons-material@npm:6.4.11"
   dependencies:
-    "@babel/runtime": ^7.26.10
+    "@babel/runtime": ^7.26.0
   peerDependencies:
-    "@mui/material": ^7.0.1
+    "@mui/material": ^6.4.11
     "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 399d0db50d8c113023868cdd23b4f66b0f4d449d0b17b11685146659c9ad48bd104b595a27fbe80a568d5e74dff315f64058a2efa3b4a4c8b94fd1f93fff1771
+  checksum: 732589469552d3eda39dcfdc66414db841a1e6d437761bcc6328699ba54ee05a6b3d3eb523848185b02312e4bf4bc87d16eaeb6a36484aa01f55a4b87ef6b373
   languageName: node
   linkType: hard
 
@@ -3048,7 +3048,7 @@ __metadata:
   dependencies:
     "@emotion/react": ^11.14.0
     "@emotion/styled": ^11.14.0
-    "@mui/icons-material": ^7.0.1
+    "@mui/icons-material": 6
     "@mui/material": ^6.4.6
     "@tanstack/react-query": ^5.66.0
     "@tanstack/react-query-devtools": ^5.66.0

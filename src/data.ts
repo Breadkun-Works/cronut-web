@@ -2,14 +2,37 @@ import { createTheme } from '@mui/material';
 import { DrinkCategory } from '@/types/common';
 import { Coffee, CoffeeIcon as Tea, Wine } from 'lucide-react';
 
+declare module '@mui/material/styles' {
+    interface BreakpointOverrides {
+        xs: true;
+        sm: true;
+        md: true;
+        lg: true;
+        xl: true;
+        xxl: true;
+        xxxl: true;
+    }
+}
+
 export const MuiTheme = createTheme({
+    // breakpoints: {
+    //     values: {
+    //         xs: 375,
+    //         sm: 480,
+    //         md: 768,
+    //         lg: 1024,
+    //         xl: 1280
+    //     }
+    // },
     breakpoints: {
         values: {
-            xs: 375,
-            sm: 480,
-            md: 768,
-            lg: 1024,
-            xl: 1280
+            xs: 0, // 기존대로 유지 (사실상 xxs 역할)
+            sm: 360, // 일반적인 소형 스마트폰
+            md: 480, // 일반 스마트폰
+            lg: 768, // 태블릿
+            xl: 1024, // 노트북
+            xxl: 1280, // 데스크탑
+            xxxl: 1440 // 대형 데스크탑
         }
     },
     typography: {

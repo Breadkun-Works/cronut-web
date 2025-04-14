@@ -124,3 +124,22 @@ export interface IDeleteCartItem {
     cafeCartId: string;
     user: IUserInfo;
 }
+
+export interface CafeCartItem {
+    cafeCartId: string;
+    cafeMenuId: number;
+    createdAt: string;
+    createdById: string;
+    createdByName: string;
+    drinkCategory: string;
+    drinkImageFilename: string;
+    drinkImageUrl: string;
+    drinkName: string;
+    drinkPrice: number;
+    drinkTemperature: 'HOT' | 'ICED';
+    drinkTotalPrice: number;
+    id: string;
+    imageUrl: string;
+    isPersonalCup: boolean;
+    quantity: number;
+}

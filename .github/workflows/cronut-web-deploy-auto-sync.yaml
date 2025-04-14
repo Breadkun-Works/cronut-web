@@ -45,13 +45,19 @@ jobs:
       - name: Checkout the repository code
         uses: actions/checkout@v4
 
+      - name: Prepare files (excluding .github)
+        run: |
+          rm -rf output
+          mkdir output
+          rsync -av --exclude='.github' . output/
+
       - name: Pushes to another repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.BREADKUN_CRONUT_AUTO_FORK_TOKEN }}
         with:
-          source-directory: '.'
+          source-directory: 'output'
           destination-github-username: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USERNAME }}
           destination-repository-name: ${{ secrets.BREADKUN_CRONUT_DEPLOY_REPO_NAME }}
           user-email: ${{ secrets.BREADKUN_CRONUT_DEPLOY_USER_EMAIL }}

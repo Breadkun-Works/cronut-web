@@ -1,24 +1,13 @@
 'use client';
-import React, { useRef, useState, useEffect, useLayoutEffect, ChangeEvent } from 'react';
+import React, { useRef, useState, useEffect, useLayoutEffect, ChangeEvent, useCallback } from 'react';
 import Image from 'next/image';
-import { face1, face2, face3, face4 } from '../../[id]/images';
 import { RefreshCw, Copy } from 'lucide-react';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { usePathname, useRouter } from 'next/navigation';
 import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
 import { COLORS_DARK } from '@/data';
 
 const PLACEHOLDER = '이름을 입력해주세요.';
-// const Input = styled.input`
-//     width: 100%;
-//     height: 40px;
-//     border: 1px solid #ccc;
-//     border-radius: 5px;
-//     padding: 0 10px;
-//     box-sizing: border-box;
-//     font-size: 16px;
-// `;
 
 const InputWrapper = styled.div`
     position: relative;
@@ -91,7 +80,7 @@ const copyLink = (url: string) => {
     }
 };
 
-const ProfileCard = ({ image, style }: { image: StaticImport; style?: React.CSSProperties }) => {
+const ProfileCard = ({ image, style }: { image: string; style?: React.CSSProperties }) => {
     return (
         <div
             style={{
@@ -106,7 +95,7 @@ const ProfileCard = ({ image, style }: { image: StaticImport; style?: React.CSSP
                 ...style
             }}
         >
-            <Image width={300} height={300} alt="profile" src={image} style={{ width: '100%', height: '100%' }} />
+            <Image width={250} height={250} alt="profile" src={image} style={{ width: '80%', height: '80%' }} />
         </div>
     );
 };
@@ -226,7 +215,12 @@ const BRKButton = styled.button`
 const OrderPage = ({ params }: { params: { id: string } }) => {
     const baseUrl = window.location.origin;
     const currentUrl = baseUrl + usePathname();
-    const images = [face1, face2, face3, face4];
+    const images = [
+        `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m1.webp`,
+        `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m2.webp`,
+        `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m3.webp`,
+        `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/w1.webp`
+    ];
     const router = useRouter();
 
     const getRandomProfileImage = () => {
@@ -236,18 +230,11 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     const setRandomProfileImage = () => {
         setRandomImage(getRandomProfileImage());
     };
-    const [randomImage, setRandomImage] = useState<StaticImport>(getRandomProfileImage());
+    const [randomImage, setRandomImage] = useState<string>(getRandomProfileImage());
     const [userName, setUserName] = useState<string>('');
     const [userNamePlaceholder, setUserNamePlaceholder] = useState<string>(PLACEHOLDER);
 
-    useEffect(() => {
-        const cookieUserInfo = getCookie('BRK-UserName');
-        if (cookieUserInfo) {
-            setUserNamePlaceholder(cookieUserInfo.key);
-        }
-    }, []);
-
-    const handleOrder = () => {
+    const handleOrder = useCallback(() => {
         let cookieUserInfo = getCookie('BRK-UUID');
 
         if (!cookieUserInfo) {
@@ -259,11 +246,24 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
 
         if (nameToUse !== PLACEHOLDER) {
             setCookie('BRK-UserName', nameToUse);
-            const cookieUUID = getCookie('BRK-UUID');
+            setCookie('BRK-UserProfile', randomImage);
             router.push(`/cafe/cart/menu/${params.id}`);
         }
-    };
+    }, [params.id, router, userName, userNamePlaceholder, randomImage]);
 
+    useEffect(() => {
+        const cookieUserInfo = getCookie('BRK-UserName');
+        if (cookieUserInfo) {
+            setUserNamePlaceholder(cookieUserInfo.key);
+        }
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+                handleOrder();
+            }
+        };
+        window.addEventListener('keyup', handleKeyUp);
+        return () => window.removeEventListener('keyup', handleKeyUp);
+    }, [handleOrder]);
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         if (value.length <= 30) {

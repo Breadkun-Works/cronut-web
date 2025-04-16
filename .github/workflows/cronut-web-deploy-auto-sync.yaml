@@ -32,6 +32,7 @@ jobs:
           echo "NEXT_PUBLIC_OPEN_API_ENCODING_KEY=dummy-key" >> .env
           echo "SECRET_ENCRYPT_KEY=dummy-key" >> .env
           echo "NEXT_PUBLIC_API_BASE_URL=dummy-url" >> .env
+          echo "NEXT_PUBLIC_STORAGE_BASE_URL=dummy-url" >> .env
 
       - name: Install dependencies
         run: yarn install

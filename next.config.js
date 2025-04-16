@@ -10,7 +10,7 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'plus.unsplash.com' // 임시 이미지 호스트 추가
+                hostname: `ax40oxk5pwva.objectstorage.ap-chuncheon-1.oci.customer-oci.com`
             }
         ]
     },

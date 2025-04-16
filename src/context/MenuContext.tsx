@@ -1,14 +1,17 @@
 'use client';
-import { createContext, useContext, useEffect, useState } from 'react';
-
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { CookiesProvider } from 'react-cookie';
 interface MenuContextProps {
     menuBox: boolean;
     setMenuBox: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const MenuContext = createContext<MenuContextProps | undefined>(undefined);
 
-export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
+export const MenuProvider = ({ children }: { children: ReactNode }) => {
     const [menuBox, setMenuBox] = useState(false);
+
+    // useMemo로 감싸서 불필요한 리렌더링 방지
+    const contextValue = useMemo(() => ({ menuBox, setMenuBox }), [menuBox]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -21,7 +24,11 @@ export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, [menuBox]);
 
-    return <MenuContext.Provider value={{ menuBox, setMenuBox }}>{children}</MenuContext.Provider>;
+    return (
+        <CookiesProvider>
+            <MenuContext.Provider value={contextValue}>{children}</MenuContext.Provider>
+        </CookiesProvider>
+    );
 };
 
 export const useMenuContext = () => {

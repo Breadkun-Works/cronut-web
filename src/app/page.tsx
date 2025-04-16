@@ -11,11 +11,15 @@ import { fetchWeatherData } from '@/apis/weather/weather-api';
 import Link from 'next/link';
 import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
+import { getCookie, setCookie } from '@/utils/cookie';
+import { useCompanyContext } from '@/context/CompanyContext';
+import { Company } from '@/types/common';
+import { CompanySelect } from '@/components/CompanySelect';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    const [company, setCompany] = useState(''); // 강촌, 을지
+    const { company, setCompany } = useCompanyContext(); // company와 setCompany를 가져옵니다.
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
     const [weatherRequestCompleted, setWeatherRequestCompleted] = useState(false);
@@ -33,11 +37,6 @@ export default function Home() {
     const [weather, setWeather] = useState<{ [key in string]: WeatherReturn[] }>({});
     const { SKY, PTY, RAIN, TMP } = weather; //하늘 / 강수형태 / 강수확률 / 기온
 
-    // 회사를 드롭다운에 따라 업데이트하는 함수
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCompany(e.target.value);
-    };
-
     const getWeatherTime = (fcstTime: string): string | undefined => {
         if (fcstTime && +fcstTime < 1200) {
             return `오전${fcstTime.slice(0, 2)}시`;
@@ -53,10 +52,14 @@ export default function Home() {
     const handleTouchMove = (e: TouchEvent) => e.preventDefault(); // 스크롤 정지 함수
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
-        const recentCompany = localStorage.getItem('recentCompany') || '강촌';
+        const recentCompany = (localStorage.getItem('recentCompany') as Company) || Company.KANGCHON;
         setCompany(recentCompany);
 
         window.scrollTo(0, 0);
+        const cookieUserInfo = getCookie('BRK-UUID');
+        if (!cookieUserInfo) {
+            setCookie('BRK-UUID', crypto.randomUUID());
+        }
         return () => {
             window.scrollTo(0, 0);
         };
@@ -198,7 +201,7 @@ export default function Home() {
                 console.log(error);
             }
         }
-        if (company === '강촌') {
+        if (company === Company.KANGCHON) {
             fetchData();
         }
     }, [company]);
@@ -206,27 +209,7 @@ export default function Home() {
     return (
         <>
             <div className={hs('home')}>
-                <div className={hs('title')}>
-                    <div className={hs('title__icon')}>
-                        <Image src="/icon/home-title-icon.webp" alt="title" width={22} height={22} />
-                    </div>
-                    <div className={hs('title__select')}>
-                        <div className={hs('title__letter')}>
-                            {company === '강촌' ? '더존 강촌캠퍼스' : '더존 을지타워'}
-                        </div>
-                        <select value={company} onChange={handleChange} aria-label="회사를 선택해 주세요.">
-                            <option value="강촌">더존 강촌캠퍼스</option>
-                            <option value="을지">더존 을지타워</option>
-                        </select>
-                        <Image
-                            className={hs('title__select-button')}
-                            src="/icon/home-select-arrow.webp"
-                            alt="dropdown-button"
-                            width={10}
-                            height={7.3}
-                        />
-                    </div>
-                </div>
+                <CompanySelect entry={'home'} />
                 <div className={hs('home__body')}>
                     <div className={hs('home__weather')}>
                         <div className={hs('home__weather--now')}>
@@ -245,13 +228,7 @@ export default function Home() {
                                 >{`${TMP?.[0].fcstValue.padStart(2, '0') || '-'}°C`}</div>
                             </div>
                             <div className={hs('home__weather--now-rain')}>
-                                <Image
-                                    // className={hs('home__weather--now-rain-img')}
-                                    src="/icon/weather/popPercent.webp"
-                                    alt="rain-percent"
-                                    width={21}
-                                    height={21}
-                                />
+                                <Image src="/icon/weather/popPercent.webp" alt="rain-percent" width={21} height={21} />
                                 <div className={hs('home__weather--now-rain-text')}>
                                     {`${RAIN?.[0].fcstValue.padStart(2, '0') || '-'}%`}
                                 </div>
@@ -373,7 +350,7 @@ export default function Home() {
                                 />
                             </div>
                         </Link>
-                        {company === '강촌' && (
+                        {company === Company.KANGCHON && (
                             <>
                                 <button className={hs('home__link--bread')} onClick={() => setBreadPopUp(true)}>
                                     <div>
@@ -419,7 +396,7 @@ export default function Home() {
                                 </Link>
                             </>
                         )}
-                        <Link href={'/cafe'}>
+                        <Link href={'/cafe/menu'}>
                             <div>
                                 <div className={hs('home__link--title')}>카페</div>
                                 <div className={hs('home__link--text')}>-서비스 준비중-</div>
@@ -451,7 +428,7 @@ export default function Home() {
                         </Link>
                     </div>
                 </div>
-                {company === '강촌' && (
+                {company === 'KANGCHON' && (
                     <div className={hs('home__body-sec')}>
                         <div className={hs('home__body-sec--bread')}>
                             <div className={hs('body-sec__bread--title')}>오늘의 빵</div>
@@ -466,7 +443,7 @@ export default function Home() {
                                 width={100}
                                 height={79}
                             />
-                            <div className={hs('body-sec__bread--text')}>{bread?.name || '정보가 없습니다.'}</div>
+                            <div className={hs('body-sec__bread--text')}>{bread?.name ?? '정보가 없습니다.'}</div>
                         </div>
                     </div>
                 )}
@@ -475,13 +452,13 @@ export default function Home() {
                 <div className={hs('home__pop-up-bread')}>
                     <div className={hs('home__pop-up-bread--mask')} onClick={() => setBreadPopUp(false)} />
                     <div className={hs('home__pop-up-bread--wrapper')}>
-                        <Image
+                        <img //Image width랑 height가 없어서 일단 기본 img 태그로 변경해두었습니다..!
                             className={hs('home__pop-up-bread--img')}
                             src={bread?.img ? `https://babkaotalk.herokuapp.com${bread?.img}` : '/icon/home-bread.webp'}
                             alt="todays bread"
                         />
                         <div className={hs('home__pop-up-bread--text')}>
-                            {bread?.name || '오늘의 빵 정보가 없습니다.'}
+                            {bread?.name ?? '오늘의 빵 정보가 없습니다.'}
                         </div>
                         <span className={hs('home__pop-up-bread--close')} onClick={() => setBreadPopUp(false)}>
                             닫기

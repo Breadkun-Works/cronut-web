@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { Company } from '@/types/common';
 
 export const fetchMealData = async (location: string, weekNumber: number) => {
     try {
         const result = await axios.post('https://babkaotalk.herokuapp.com/api/webDiet', {
-            location
+            location: location === Company.KANGCHON ? '강촌' : '을지'
         });
         if (result.data) {
             if (result.data.resultData.updated === weekNumber) {

@@ -1,14 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    compiler: {
-        styledComponents: true // SSR 지원 활성화
-    },
+    compiler: {},
     reactStrictMode: true,
     images: {
         remotePatterns: [
             {
                 protocol: 'https',
                 hostname: 'babkaotalk.herokuapp.com'
+            },
+            {
+                protocol: 'https',
+                hostname: `ax40oxk5pwva.objectstorage.ap-chuncheon-1.oci.customer-oci.com`
             }
         ]
     },

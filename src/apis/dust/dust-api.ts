@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Company } from '@/types/common';
 
 const cancelTokenSource = axios.CancelToken.source(); // 요청 취소 토큰
 
@@ -39,7 +40,7 @@ export const fetchDustDataTest = async (company: string) => {
     try {
         const dustResponse = await axios.get(
             `https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=${
-                company === '강촌' ? '가평' : '중구'
+                company === Company.KANGCHON ? '가평' : '중구'
             }&ver=1.4&dataTerm=daily&pageNo=1&numOfRows=1&returnType=json&serviceKey=${process.env.NEXT_PUBLIC_OPEN_API_ENCODING_KEY}`,
             { cancelToken: cancelTokenSource.token, timeout: 5000 } // 캔슬토큰, setTimeOut 5s
         );

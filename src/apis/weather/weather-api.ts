@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { addOrSubDays, formatDate, formatTime } from '@/utils/dates';
 import { WeatherReturn } from '@/types/home';
+import { Company } from '@/types/common';
 
 const cancelTokenSource = axios.CancelToken.source(); // 요청 취소 토큰
 
@@ -47,7 +48,7 @@ export const fetchWeatherData = async (company: string) => {
         const weatherResponse = await axios.get(
             `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${
                 process.env.NEXT_PUBLIC_OPEN_API_ENCODING_KEY
-            }&numOfRows=200&pageNo=1&dataType=json&base_date=${baseDate}&base_time=${baseTime}&nx=${company === '강촌' ? '71' : '60'}&ny=${company === '강촌' ? '132' : '127'}`,
+            }&numOfRows=200&pageNo=1&dataType=json&base_date=${baseDate}&base_time=${baseTime}&nx=${company === Company.KANGCHON ? '71' : '60'}&ny=${company === Company.KANGCHON ? '132' : '127'}`,
             {
                 cancelToken: cancelTokenSource.token,
                 timeout: 50000

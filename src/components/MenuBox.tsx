@@ -35,7 +35,6 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
             <nav className={ms('menu-box__menus')}>
                 <Link
                     className={router === '/' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    // className={({ isActive }) => (isActive ? ms('menu-box__menu-active') : ms('menu-box__menu'))}
                     href={'/public'}
                     onClick={() => setMenuBox(false)}
                 >
@@ -43,7 +42,6 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                 </Link>
                 <Link
                     className={router === '/meal' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    // className={({ isActive }) => (isActive ? ms('menu-box__menu-active') : ms('menu-box__menu'))}
                     href={'/meal'}
                     onClick={() => setMenuBox(false)}
                 >
@@ -56,6 +54,13 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                     onClick={() => setMenuBox(false)}
                 >
                     BUS
+                </Link>
+                <Link
+                    className={router === '/cafe/menu' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
+                    href={'/cafe/menu'}
+                    onClick={() => setMenuBox(false)}
+                >
+                    CAFE
                 </Link>
                 <button className={ms('menu-box__exit')} onClick={() => setMenuBox(false)}>
                     닫기

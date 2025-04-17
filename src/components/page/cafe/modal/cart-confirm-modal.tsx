@@ -42,7 +42,9 @@ export const CartConfirmModal = (props: ICartExpiredModalTypes) => {
                 }
             }}
         >
-            <DialogTitle>{title}</DialogTitle>
+            <DialogTitle textAlign={'center'} alignItems={'center'}>
+                {title}
+            </DialogTitle>
             <DialogContent
                 sx={{
                     color: COLORS_DARK.text.primary,

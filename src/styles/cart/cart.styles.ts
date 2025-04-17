@@ -10,13 +10,15 @@ import {
     CardMedia,
     Chip,
     Container,
+    DialogContent,
+    SnackbarContent,
     Tab,
     Tabs,
     Typography
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { TemperatureBadgeProps } from '@/types/cart';
-import { ShoppingCart } from 'lucide-react';
+import { LinkIcon, ShoppingCart } from 'lucide-react';
 import { keyframes } from '@emotion/react';
 
 interface ConfirmHeaderProps {
@@ -272,13 +274,26 @@ export const CartConfirmContainer = styled(Container)({
     // minHeight: '100vh'
 });
 
-export const LinkShareCard = styled(Card)({
-    marginBottom: 16,
+// export const LinkShareCard = styled(Card)({
+//     marginBottom: 12,
+//     overflow: 'hidden',
+//     backgroundColor: COLORS_DARK.theme.blue,
+//     border: `1px solid ${COLORS_DARK.background.lighter}`,
+//     borderRadius: '20px'
+// });
+
+export const LinkShareCard = styled(Card)(({ theme }) => ({
     overflow: 'hidden',
     backgroundColor: COLORS_DARK.theme.blue,
     border: `1px solid ${COLORS_DARK.background.lighter}`,
     borderRadius: '20px'
-});
+
+    // marginBottom: '8px',
+    //
+    // [theme.breakpoints.down('xxxl')]: {
+    //     marginBottom: '12px'
+    // }
+}));
 
 export const LinkShareContent = styled(CardContent)({
     padding: '12px !important'
@@ -353,9 +368,7 @@ export const ConfirmContainer = styled(Box)`
 
 export const OrderFooter = styled.div`
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
+    inset: auto 0 0 0;
     background-color: ${COLORS_DARK.theme.blue};
     z-index: 10;
     padding: 16px;
@@ -363,7 +376,9 @@ export const OrderFooter = styled.div`
 
     @media (max-height: 700px) {
         padding: 12px;
+        min-height: 40px;
     }
+    min-height: 50px;
 `;
 
 export const OrderAmountCard = styled.div`
@@ -384,14 +399,33 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
     justifyContent: 'center',
     gap: 8,
 
-    fontSize: '1.2rem',
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '1rem',
+        padding: '8px 0'
+    },
+    [theme.breakpoints.up('md')]: {
+        fontSize: '1.2rem'
+    },
+    [theme.breakpoints.up('xl')]: {
+        fontSize: '1.25rem'
+    },
+    [theme.breakpoints.up('xxl')]: {
+        fontSize: '1.3rem'
+    },
+    '@media (max-height: 700px)': {
+        fontSize: '0.875rem'
+    },
     padding: '12px 0',
     width: '100%',
     borderRadius: 12,
 
     border: `2px solid ${COLORS_DARK.accent.main}`,
     backgroundColor: variant === 'contained' ? COLORS_DARK.accent.main : 'white',
-    color: variant === 'contained' ? 'white' : COLORS_DARK.accent.main,
+    color: variant === 'contained' ? '#fff' : COLORS_DARK.accent.main,
+
+    '& svg': {
+        color: variant === 'contained' ? '#fff' : COLORS_DARK.accent.main
+    },
 
     '&:hover': {
         backgroundColor: variant === 'contained' ? '#e08a1e' : '#f5f5f5'
@@ -401,13 +435,12 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
         backgroundColor: theme.palette.action.disabledBackground,
         color: theme.palette.action.disabled,
         border: `2px solid ${theme.palette.action.disabled}`,
-        cursor: 'not-allowed'
-    }),
+        cursor: 'not-allowed',
 
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '1rem',
-        padding: '8px 0'
-    }
+        '& svg': {
+            color: theme.palette.action.disabled
+        }
+    })
 }));
 
 export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ temperature }) => ({
@@ -514,7 +547,7 @@ export const ScrollableCartList = styled(Box, {
 })<{ bottomHeight: number; isEmpty?: boolean }>(({ theme, bottomHeight, isEmpty }) => ({
     flex: 1,
     paddingTop: 16,
-    paddingBottom: isEmpty ? 0 : bottomHeight,
+    paddingBottom: isEmpty ? 16 : bottomHeight,
     overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
@@ -569,34 +602,6 @@ export const DrinkNameTypography = styled(Typography)(({ theme }) => ({
         fontSize: '0.8125rem'
     }
 }));
-
-export const ExpiredBanner = styled('div')(({ theme }) => ({
-    width: '100%',
-    overflow: 'hidden',
-    backgroundColor: COLORS_DARK.badge.hot,
-    color: 'white',
-    fontWeight: 700,
-    whiteSpace: 'nowrap',
-    position: 'relative',
-    fontSize: '1rem',
-    padding: '8px 0',
-
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '0.875rem'
-    },
-    [theme.breakpoints.down('xs')]: {
-        fontSize: '0.75rem'
-    },
-    [theme.breakpoints.up('md')]: {
-        fontSize: '1.125rem'
-    }
-}));
-
-export const MarqueeContent = styled.div`
-    display: inline-block;
-    white-space: nowrap;
-    animation: ${marquee} 15s linear infinite;
-`;
 
 export const CartWarningWrapper = styled('div')(({ theme }) => ({
     width: '100%',
@@ -673,5 +678,113 @@ export const OrderPriceTypography = styled(Typography)(({ theme }) => ({
     },
     '@media (max-height: 700px)': {
         fontSize: '0.875rem'
+    }
+}));
+
+export const QuantityTypography = styled(Typography)(({ theme }) => ({
+    color: COLORS_DARK.text.primary,
+    fontWeight: 500,
+    fontSize: '0.875rem',
+
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '0.9rem'
+    },
+    [theme.breakpoints.up('md')]: {
+        fontSize: '0.95rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+        fontSize: '1rem'
+    }
+}));
+
+export const PriceTypography = styled(Typography)(({ theme }) => ({
+    color: COLORS_DARK.accent.main,
+    fontWeight: 700,
+    fontSize: '1rem', // 기본값(xs 기준)
+
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '1.2rem'
+    },
+    [theme.breakpoints.up('md')]: {
+        fontSize: '1.25rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+        fontSize: '1.3rem'
+    }
+}));
+
+export const CustomSnackbarContent = styled(SnackbarContent)(({ theme }) => ({
+    backgroundColor: COLORS_DARK.theme.purple,
+    color: COLORS_DARK.text.primary,
+    fontWeight: 600,
+    justifyContent: 'center',
+    textAlign: 'center',
+    borderRadius: 12,
+    border: `1px solid ${COLORS_DARK.accent.main}`,
+    padding: '8px 16px',
+    boxShadow: `0 0 8px ${COLORS_DARK.accent.main}`,
+    fontSize: '0.875rem',
+
+    [theme.breakpoints.up('md')]: {
+        fontSize: '0.9375rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+        fontSize: '1rem'
+    },
+    [theme.breakpoints.up('xl')]: {
+        fontSize: '1.0625rem'
+    }
+}));
+
+export const SnackbarDialogContent = styled(DialogContent)(({ theme }) => ({
+    backgroundColor: COLORS_DARK.theme.purple,
+    borderRadius: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '320px',
+    width: 'auto',
+    minHeight: '90px',
+    boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.5)'
+}));
+
+export const SnackbarDialogIcon = styled(LinkIcon)(({ theme }) => ({
+    flexShrink: 0,
+    color: COLORS_DARK.accent.main,
+    width: '1rem',
+    height: '1rem',
+    [theme.breakpoints.up('md')]: {
+        width: '1.2rem',
+        height: '1.2rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+        width: '1.25rem',
+        height: '1.25rem'
+    },
+    [theme.breakpoints.up('xl')]: {
+        width: '1.35rem',
+        height: '1.35rem'
+    }
+}));
+
+export const SnackbarDialogText = styled(Typography)(({ theme }) => ({
+    fontWeight: 700,
+    color: COLORS_DARK.text.primary,
+    marginLeft: '0.3rem',
+    fontSize: '0.875rem',
+    [theme.breakpoints.up('md')]: {
+        fontSize: '0.95rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+        fontSize: '1rem'
+    },
+    [theme.breakpoints.up('xl')]: {
+        fontSize: '1.1rem'
+    },
+    [theme.breakpoints.up('xxl')]: {
+        fontSize: '1.125rem'
+    },
+    [theme.breakpoints.up('xxxl')]: {
+        fontSize: '1.2rem'
     }
 }));

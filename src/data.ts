@@ -15,15 +15,6 @@ declare module '@mui/material/styles' {
 }
 
 export const MuiTheme = createTheme({
-    // breakpoints: {
-    //     values: {
-    //         xs: 375,
-    //         sm: 480,
-    //         md: 768,
-    //         lg: 1024,
-    //         xl: 1280
-    //     }
-    // },
     breakpoints: {
         values: {
             xs: 0, // 기존대로 유지 (사실상 xxs 역할)
@@ -164,18 +155,4 @@ export const COLORS_DARK = {
         yellow: '#cf7500'
     },
     divider: 'rgba(248, 249, 250, 0.1)'
-};
-
-export const BREAKPOINT = {
-    xsmall: '375px',
-    small: '480px',
-    medium: '768px',
-    large: '1024px'
-};
-
-export const FONT_SIZE = {
-    xsmall: '0.75rem', // 12px
-    small: '0.875rem', // 14px
-    medium: '1rem', // 16px
-    large: '1.125rem' // 18px
 };

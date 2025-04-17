@@ -28,6 +28,52 @@ import { COLORS_DARK } from '@/data';
 import { useIsMobile } from '@/utils/hook';
 
 // 스타일 컴포넌트를 직접 정의
+// const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
+//     width: '100%',
+//     display: 'flex',
+//     '& .MuiToggleButtonGroup-grouped': {
+//         margin: 0,
+//         border: 0,
+//         '&.Mui-disabled': {
+//             border: 0,
+//             opacity: 0.5
+//         },
+//         '&:not(:first-of-type)': {
+//             borderRadius: '8px',
+//             marginLeft: '12px'
+//         },
+//         '&:first-of-type': {
+//             borderRadius: '8px'
+//         }
+//     }
+// }));
+//
+// const StyledToggleButton = styled(ToggleButton)(() => ({
+//     flex: 1,
+//     color: COLORS_DARK.text.secondary,
+//     backgroundColor: `rgba(255, 158, 68, 0.08)`,
+//     border: `1px solid rgba(255,158,68,0.08)`,
+//     borderRadius: '8px !important',
+//     padding: '12px 16px',
+//     fontSize: '0.9rem',
+//     fontWeight: 'bold',
+//     '&.Mui-selected': {
+//         color: '#212529',
+//         backgroundColor: COLORS_DARK.accent.main,
+//         border: `1px solid ${COLORS_DARK.accent.main}`,
+//         boxShadow: `0 2px 8px rgba(255, 158, 68, 0.08)`
+//     },
+//     '&:hover': {
+//         backgroundColor: `rgba(255, 158, 68, 0.08)`
+//     },
+//     '&.Mui-disabled': {
+//         backgroundColor: 'rgba(248, 249, 250, 0.05)',
+//         color: COLORS_DARK.text.disabled,
+//         border: '1px solid rgba(248, 249, 250, 0.1)'
+//     },
+//     transition: 'all 0.2s ease'
+// }));
+
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
     width: '100%',
     display: 'flex',
@@ -48,31 +94,39 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
     }
 }));
 
-const StyledToggleButton = styled(ToggleButton)(() => ({
-    flex: 1,
-    color: COLORS_DARK.text.secondary,
-    backgroundColor: `rgba(255, 158, 68, 0.08)`,
-    border: `1px solid rgba(255,158,68,0.08)`,
-    borderRadius: '8px !important',
-    padding: '12px 16px',
-    fontSize: '0.9rem',
-    fontWeight: 'bold',
-    '&.Mui-selected': {
-        color: '#212529',
-        backgroundColor: COLORS_DARK.accent.main,
-        border: `1px solid ${COLORS_DARK.accent.main}`,
-        boxShadow: `0 2px 8px rgba(255, 158, 68, 0.08)`
-    },
-    '&:hover': {
-        backgroundColor: `rgba(255, 158, 68, 0.08)`
-    },
-    '&.Mui-disabled': {
-        backgroundColor: 'rgba(248, 249, 250, 0.05)',
-        color: COLORS_DARK.text.disabled,
-        border: '1px solid rgba(248, 249, 250, 0.1)'
-    },
-    transition: 'all 0.2s ease'
-}));
+const StyledToggleButton = styled(ToggleButton)<{ value: DrinkTemperature }>(({ value }) => {
+    const color = value === DrinkTemperature.HOT ? '#ff6b6b' : '#4dabf7';
+    return {
+        flex: 1,
+        color,
+        border: `1px solid ${color}`,
+        borderRadius: '8px !important',
+        padding: '12px 16px',
+        fontSize: '0.9rem',
+        fontWeight: 'bold',
+        backgroundColor: 'transparent',
+        '&.Mui-selected': {
+            color: '#fff',
+            backgroundColor: color,
+            border: `1px solid ${color}`,
+            boxShadow: `0 2px 8px rgba(0, 0, 0, 0.1)`
+        },
+        '&.Mui-selected:hover': {
+            backgroundColor: color,
+            color: '#fff'
+        },
+        '&:hover': {
+            backgroundColor: color,
+            color: '#fff'
+        },
+        '&.Mui-disabled': {
+            backgroundColor: 'rgba(248, 249, 250, 0.05)',
+            color: COLORS_DARK.text.disabled,
+            border: '1px solid rgba(248, 249, 250, 0.1)'
+        },
+        transition: 'all 0.2s ease'
+    };
+});
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -124,6 +178,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
             const newMenu = popoverProps.options.find(p => p.drinkTemperature === value);
             setSelectedTempMenu({
                 ...newMenu,
+                imageUrl: newMenu?.imageUrl,
                 checked: false,
                 quantity: 1,
                 price: drinkTempMenu?.price ?? 0
@@ -284,11 +339,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                             transform: 'scale(1.05)'
                                         }
                                     }}
-                                    src={
-                                        'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
-                                        // popoverProps.options.find(o => o.drinkTemperature === defaultDrinkTemp)
-                                        //     ?.imageUrl || ''
-                                    }
+                                    src={selectedTempMenu.imageUrl || ''}
                                     alt={popoverProps.menuName}
                                 />
                             </Card>

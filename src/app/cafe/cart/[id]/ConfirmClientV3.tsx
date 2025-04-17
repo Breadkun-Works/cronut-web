@@ -110,7 +110,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const shareLink = window.location.href;
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [summaryModalOpen, setSummaryModalOpen] = useState(false);
@@ -119,7 +119,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const bottomRef = useRef<HTMLDivElement>(null); // 펼쳐졌을 때 하단 영역
     const unOpenBottomRef = useRef<HTMLDivElement>(null); // 접혀있을 때 펼치기 버튼
     const semiHeaderRef = useRef<HTMLDivElement>(null); // 세미 헤더 (있다면)
-    const [innerHeight, setInnerHeight] = useState(0);
 
     const [bottomHeight, setBottomHeight] = useState(160);
 
@@ -241,14 +240,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             window.removeEventListener('resize', updateBottomHeight);
         };
     }, [open]);
-
-    useEffect(() => {
-        const handleResize = () => setInnerHeight(window.innerHeight);
-        handleResize(); // 초기값
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     if (isLoading) {
         return (
@@ -376,7 +367,9 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <Box
                         sx={{
                             // minHeight,
-                            minHeight: `calc(${innerHeight}px - 21vw - ${semiHeaderRef.current?.getBoundingClientRect().height}px - ${bottomHeight + 20}px)`,
+                            minHeight: !open
+                                ? `calc(100vh - 18vh - 64px - 30px)`
+                                : ` calc(100vh - 18vh - 64px - 160px)`,
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',

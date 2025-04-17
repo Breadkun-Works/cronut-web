@@ -183,31 +183,6 @@ export const HeaderContent = styled(Box)({
     marginBottom: '1rem'
 });
 
-export const CategoryTabs = styled(Tabs)({
-    minHeight: 48,
-    marginBottom: 8,
-    '& .MuiTabs-flexContainer': {
-        justifyContent: 'center',
-        gap: 16
-    },
-    padding: '0 0 16px 0',
-    borderBottom: `1px solid ${COLORS_DARK.divider}`
-});
-
-export const CategoryTab = styled(Tab)`
-    padding: 8px 4px;
-    minheight: 40;
-
-    &.Mui-selected {
-        color: ${COLORS_DARK.accent.main};
-        font-weight: bold;
-    }
-
-    &:hover {
-        color: ${COLORS_DARK.accent.main};
-    }
-`;
-
 export const ScrollableContent = styled(Box)`
     flex: 1;
     padding: 0 16px 16px 16px;
@@ -217,48 +192,6 @@ export const ScrollableContent = styled(Box)`
         padding: 16px 0 16px 0; // 모바일일 때 패딩 제거
     }
 `;
-
-export const MenuGrid = styled(Box)({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)', // 기본 3개씩 표시 (웹)
-    gap: 16,
-    width: '100%',
-    '@media (max-width: 600px)': {
-        gridTemplateColumns: 'repeat(2, 1fr)' // 모바일에서는 2개씩 표시
-    }
-});
-
-export const MenuItemCard = styled(Card, {
-    shouldForwardProp: prop => prop !== 'isMenu'
-})<{ isMenu: boolean }>(({ isMenu }) => ({
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-    // isMenu가 true가 아닐 때만 hover 효과 적용
-    ...(!isMenu && {
-        '&:hover': {
-            transform: 'translateY(-2px)',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)'
-        }
-    })
-}));
-
-export const MenuItemContent = styled(CardContent)({
-    padding: '12px !important',
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1
-});
-
-export const MenuImage = styled(Box)({
-    position: 'relative',
-    width: '100%',
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 8
-});
 
 export const CartBadge = styled(Badge)({
     '& .MuiBadge-badge': {
@@ -273,14 +206,6 @@ export const CartConfirmContainer = styled(Container)({
     flexDirection: 'column'
     // minHeight: '100vh'
 });
-
-// export const LinkShareCard = styled(Card)({
-//     marginBottom: 12,
-//     overflow: 'hidden',
-//     backgroundColor: COLORS_DARK.theme.blue,
-//     border: `1px solid ${COLORS_DARK.background.lighter}`,
-//     borderRadius: '20px'
-// });
 
 export const LinkShareCard = styled(Card)(({ theme }) => ({
     overflow: 'hidden',
@@ -451,12 +376,20 @@ export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ temperatu
     padding: '0 6px',
     backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
     color: '#fff',
-    position: 'relative',
     boxShadow: temperature === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)',
-    display: 'flex',
+    display: 'inline-flex', // ✅ 핵심 포인트
     alignItems: 'center',
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    zIndex: 2,
 
-    /** 🔥 반응형 추가 **/
+    '& .MuiChip-label': {
+        padding: 0, // ✅ 기본 Chip 내부 padding 제거
+        display: 'inline-block',
+        lineHeight: 1
+    },
+
     '@media (max-width: 400px)': {
         fontSize: '0.6875rem',
         height: 20,

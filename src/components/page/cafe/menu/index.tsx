@@ -7,15 +7,9 @@ import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
 import { DrinkCategory } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
 import {
-    CategoryTab,
-    CategoryTabs,
     Header,
     HeaderContent,
     MenuCardMedia,
-    MenuGrid,
-    MenuImage,
-    MenuItemCard,
-    MenuItemContent,
     PageContainer,
     ScrollableContent,
     StyledMenuTitle,
@@ -28,6 +22,14 @@ import { ICafeMenuOption } from '@/types/cart';
 import { CafeHeader } from '@/components/page/cafe/header';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useIsMobile } from '@/utils/hook';
+import {
+    CategoryTabs,
+    CategoryTab,
+    MenuGrid,
+    MenuImage,
+    MenuItemCard,
+    MenuItemContent
+} from '@/styles/cart/menu/cart-menu.styles';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {

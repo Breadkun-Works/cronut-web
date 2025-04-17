@@ -12,121 +12,18 @@ import {
     Slide,
     Typography,
     Button,
-    Divider,
-    ToggleButton,
-    ToggleButtonGroup
+    Divider
 } from '@mui/material';
 import { forwardRef, useState, useEffect } from 'react';
 import type { TransitionProps } from '@mui/material/transitions';
 import { DrinkTemperature } from '@/types/common';
 import type { ICafeMenuPopoverProps } from '@/types/cart';
 import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
-import { styled } from '@mui/material/styles';
 import { getCookie } from '@/utils/cookie';
 import { useAddMenuCart } from '@/apis/cafe/cafe-api';
 import { COLORS_DARK } from '@/data';
 import { useIsMobile } from '@/utils/hook';
-
-// 스타일 컴포넌트를 직접 정의
-// const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
-//     width: '100%',
-//     display: 'flex',
-//     '& .MuiToggleButtonGroup-grouped': {
-//         margin: 0,
-//         border: 0,
-//         '&.Mui-disabled': {
-//             border: 0,
-//             opacity: 0.5
-//         },
-//         '&:not(:first-of-type)': {
-//             borderRadius: '8px',
-//             marginLeft: '12px'
-//         },
-//         '&:first-of-type': {
-//             borderRadius: '8px'
-//         }
-//     }
-// }));
-//
-// const StyledToggleButton = styled(ToggleButton)(() => ({
-//     flex: 1,
-//     color: COLORS_DARK.text.secondary,
-//     backgroundColor: `rgba(255, 158, 68, 0.08)`,
-//     border: `1px solid rgba(255,158,68,0.08)`,
-//     borderRadius: '8px !important',
-//     padding: '12px 16px',
-//     fontSize: '0.9rem',
-//     fontWeight: 'bold',
-//     '&.Mui-selected': {
-//         color: '#212529',
-//         backgroundColor: COLORS_DARK.accent.main,
-//         border: `1px solid ${COLORS_DARK.accent.main}`,
-//         boxShadow: `0 2px 8px rgba(255, 158, 68, 0.08)`
-//     },
-//     '&:hover': {
-//         backgroundColor: `rgba(255, 158, 68, 0.08)`
-//     },
-//     '&.Mui-disabled': {
-//         backgroundColor: 'rgba(248, 249, 250, 0.05)',
-//         color: COLORS_DARK.text.disabled,
-//         border: '1px solid rgba(248, 249, 250, 0.1)'
-//     },
-//     transition: 'all 0.2s ease'
-// }));
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
-    width: '100%',
-    display: 'flex',
-    '& .MuiToggleButtonGroup-grouped': {
-        margin: 0,
-        border: 0,
-        '&.Mui-disabled': {
-            border: 0,
-            opacity: 0.5
-        },
-        '&:not(:first-of-type)': {
-            borderRadius: '8px',
-            marginLeft: '12px'
-        },
-        '&:first-of-type': {
-            borderRadius: '8px'
-        }
-    }
-}));
-
-const StyledToggleButton = styled(ToggleButton)<{ value: DrinkTemperature }>(({ value }) => {
-    const color = value === DrinkTemperature.HOT ? '#ff6b6b' : '#4dabf7';
-    return {
-        flex: 1,
-        color,
-        border: `1px solid ${color}`,
-        borderRadius: '8px !important',
-        padding: '12px 16px',
-        fontSize: '0.9rem',
-        fontWeight: 'bold',
-        backgroundColor: 'transparent',
-        '&.Mui-selected': {
-            color: '#fff',
-            backgroundColor: color,
-            border: `1px solid ${color}`,
-            boxShadow: `0 2px 8px rgba(0, 0, 0, 0.1)`
-        },
-        '&.Mui-selected:hover': {
-            backgroundColor: color,
-            color: '#fff'
-        },
-        '&:hover': {
-            backgroundColor: color,
-            color: '#fff'
-        },
-        '&.Mui-disabled': {
-            backgroundColor: 'rgba(248, 249, 250, 0.05)',
-            color: COLORS_DARK.text.disabled,
-            border: '1px solid rgba(248, 249, 250, 0.1)'
-        },
-        transition: 'all 0.2s ease'
-    };
-});
+import { HotToggleButton, IcedToggleButton, StyledToggleButtonGroup } from '@/styles/cart/menu/cart-menu.styles';
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -166,8 +63,6 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
         quantity: 1,
         price: drinkTempMenu?.price ?? 0
     });
-
-    console.log(selectedTempMenu);
 
     // 이미지 크기를 화면 너비에 비례하게 계산
     const imageSize = isMobile ? `${width * 0.2}px` : `${width * 0.25}px`;
@@ -251,7 +146,6 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                 },
                 '& .MuiDialog-paper': {
                     backgroundColor: '#2c3034',
-                    // backgroundColor: isDarkMode ? '#2c3034' : COLORS.background.main, // 다크모드에서 배경색 더 밝게
                     width: `${width}px`, // 동적으로 설정된 너비
                     maxWidth: 'none',
                     margin: 0,
@@ -275,8 +169,8 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                     zIndex: 10,
                     backgroundColor: 'rgba(255, 158, 68, 0.1)',
                     borderRadius: '50%',
-                    width: 32,
-                    height: 32,
+                    width: 25,
+                    height: 25,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -350,8 +244,9 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                         fontWeight: 'bold',
                                         color: COLORS_DARK.text.primary,
                                         fontSize: {
-                                            xs: '1.1rem',
-                                            sm: '1.25rem'
+                                            xs: '1rem',
+                                            sm: '1.125rem',
+                                            md: '1.15rem'
                                         },
                                         mb: 0.5
                                     }}
@@ -401,7 +296,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     }}
                                     aria-label="temperature selection"
                                 >
-                                    <StyledToggleButton
+                                    <HotToggleButton
                                         value={DrinkTemperature.HOT}
                                         aria-label="hot option"
                                         disabled={popoverProps.options.every(
@@ -410,8 +305,8 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                         selected={selectedTempMenu.drinkTemperature === DrinkTemperature.HOT}
                                     >
                                         HOT
-                                    </StyledToggleButton>
-                                    <StyledToggleButton
+                                    </HotToggleButton>
+                                    <IcedToggleButton
                                         selected={selectedTempMenu.drinkTemperature === DrinkTemperature.ICED}
                                         value={DrinkTemperature.ICED}
                                         aria-label="iced option"
@@ -420,7 +315,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                         )}
                                     >
                                         ICED
-                                    </StyledToggleButton>
+                                    </IcedToggleButton>
                                 </StyledToggleButtonGroup>
                             </Box>
 
@@ -503,7 +398,8 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     mb: 3,
-                                    backgroundColor: COLORS_DARK.background.light,
+                                    backgroundColor: COLORS_DARK.theme.purple,
+                                    border: `1px solid rgba(255, 171, 0, 0.2)`,
                                     p: 2,
                                     borderRadius: '8px'
                                 }}
@@ -522,9 +418,14 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            color: COLORS_DARK.accent.main,
+                                            // color: COLORS_DARK.accent.main,
+                                            color: COLORS_DARK.text.primary,
                                             fontWeight: 'bold',
-                                            fontSize: '1.2rem',
+                                            fontSize: {
+                                                xs: '1.125rem',
+                                                sm: '1.15rem',
+                                                md: '1.2rem'
+                                            },
                                             textAlign: 'right'
                                         }}
                                     >
@@ -557,12 +458,15 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     '&:hover': {
                                         backgroundColor: COLORS_DARK.accent.light
                                     },
-                                    fontSize: '1rem',
+                                    fontSize: {
+                                        xs: '1rem', // 0 ~ 359px
+                                        sm: '1.125rem', // 360 ~ 479px
+                                        md: '1.15rem' // 480 ~ 767px
+                                    },
                                     fontWeight: 'bold',
                                     py: 1.5,
                                     borderRadius: '8px',
                                     textTransform: 'none',
-                                    boxShadow: '0 4px 10px rgba(255, 158, 68, 0.3)',
                                     transition: 'all 0.2s ease',
                                     '&:active': {
                                         transform: 'scale(0.98)'

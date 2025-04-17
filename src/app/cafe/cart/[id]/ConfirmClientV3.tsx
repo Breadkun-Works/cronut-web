@@ -34,20 +34,14 @@ import {
     ClipboardList,
     CopyIcon,
     CupSoda,
-    InfoIcon,
-    Link,
     LockIcon,
-    MenuIcon,
-    MessageSquareShare,
     Share2,
-    ShareIcon,
     ShoppingCart,
     Trash2
 } from 'lucide-react';
 import {
     Box,
     CardMedia,
-    Collapse,
     Container,
     Dialog,
     IconButton,
@@ -68,11 +62,11 @@ import { CafeCartItem, IDeleteCartItem } from '@/types/cart';
 import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-modal';
 import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-modal';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
     status: string;
-    isCartInactive?: boolean;
     isCreator: boolean;
     user: {
         uuid?: string;
@@ -110,15 +104,15 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const shareLink = window.location.href;
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [summaryModalOpen, setSummaryModalOpen] = useState(false);
     const router = useRouter();
 
     const bottomRef = useRef<HTMLDivElement>(null); // 펼쳐졌을 때 하단 영역
-    const unOpenBottomRef = useRef<HTMLDivElement>(null); // 접혀있을 때 펼치기 버튼
     const semiHeaderRef = useRef<HTMLDivElement>(null); // 세미 헤더 (있다면)
+    const confirmHeaderRef = useRef<HTMLDivElement>(null);
 
     const [bottomHeight, setBottomHeight] = useState(160);
 
@@ -218,12 +212,10 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     }, [initialCartItems, isLoading]);
 
     useEffect(() => {
-        if (!bottomRef.current || !unOpenBottomRef.current) return;
+        if (!bottomRef.current) return;
 
         const updateBottomHeight = () => {
-            const bottom = open
-                ? bottomRef.current!.getBoundingClientRect().height + 20
-                : unOpenBottomRef.current!.getBoundingClientRect().height;
+            const bottom = bottomRef.current!.getBoundingClientRect().height + 20;
             setBottomHeight(bottom);
         };
 
@@ -231,7 +223,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
 
         const resizeObserver = new ResizeObserver(updateBottomHeight);
         if (bottomRef.current) resizeObserver.observe(bottomRef.current);
-        if (unOpenBottomRef.current) resizeObserver.observe(unOpenBottomRef.current);
 
         window.addEventListener('resize', updateBottomHeight);
 
@@ -239,13 +230,13 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             resizeObserver.disconnect();
             window.removeEventListener('resize', updateBottomHeight);
         };
-    }, [open]);
+    }, []);
 
     if (isLoading) {
         return (
             <Box
                 sx={{
-                    minHeight: '100vh',
+                    minHeight: '100svh',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
@@ -276,12 +267,16 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 )}
 
                 <ConfirmHeader isMobile={isMobile}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '50%' }} ref={confirmHeaderRef}>
                         <ShoppingCart />
-                        <ConfirmHeaderTitle className="header-title">{cartBasic?.title}</ConfirmHeaderTitle>
+                        <EllipsisTooltip
+                            parentRef={confirmHeaderRef}
+                            title={cartBasic?.title as string}
+                            isMobile={isMobile}
+                        />
                     </Box>
 
-                    <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
+                    <Box sx={{ width: '50%', display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
                         {!isMobile ? (
                             <Tooltip title="요약 보기" placement="top" arrow>
                                 <Box onClick={() => setSummaryModalOpen(true)} sx={{ cursor: 'pointer' }}>
@@ -367,16 +362,13 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <Box
                         sx={{
                             // minHeight,
-                            minHeight: !open
-                                ? `calc(100vh - 18vh - 64px - 30px)`
-                                : ` calc(100vh - 18vh - 64px - 160px)`,
+                            minHeight: `calc(100vh - 18vh - ${semiHeaderRef.current?.getBoundingClientRect().height}px - ${bottomHeight}px)`,
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginBottom: '16px',
                             textAlign: 'center',
-                            backgroundColor: COLORS_DARK.background.lighter,
                             borderRadius: 3
                         }}
                     >
@@ -414,9 +406,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                     <ItemImage>
                                         <CardMedia
                                             component="img"
-                                            image={
-                                                'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
-                                            }
+                                            image={item.drinkImageUrl}
                                             alt={item.drinkName}
                                             sx={{
                                                 width: '100%',
@@ -453,7 +443,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                             </Box>
 
                                             <Box display="flex" alignItems="center" mb={1}>
-                                                <UserAvatar src={`/user-img/face1.png`} alt={item.createdByName}>
+                                                <UserAvatar src={item.imageUrl} alt={item.createdByName}>
                                                     {getUserInitial(item.createdByName)}
                                                 </UserAvatar>
                                                 <Typography variant="body2" sx={{ color: COLORS_DARK.text.secondary }}>
@@ -483,120 +473,120 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 )}
             </ScrollableCartList>
 
-            <>
-                {/* 펼치기 버튼 */}
-                {!open && (
+            {/* 펼치기 버튼 */}
+            {!open && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        bottom: 0,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        zIndex: 1200
+                    }}
+                >
+                    <IconButton
+                        onClick={() => setOpen(true)}
+                        sx={{
+                            width: 80,
+                            height: 25,
+                            borderRadius: '10px 10px 0 0',
+                            backgroundColor: COLORS_DARK.theme.blue,
+                            color: '#fff'
+                        }}
+                    >
+                        <ExpandLess />
+                    </IconButton>
+                </Box>
+            )}
+
+            {/* Slide로 감싼 OrderFooter */}
+            <Slide in={open} direction="up" mountOnEnter unmountOnExit timeout={300}>
+                <OrderFooter ref={bottomRef}>
+                    {/* 접기 버튼 */}
                     <Box
                         sx={{
-                            position: 'fixed',
-                            bottom: 0,
+                            position: 'absolute',
+                            bottom: '100%',
                             left: '50%',
                             transform: 'translateX(-50%)',
                             zIndex: 1200
                         }}
-                        ref={unOpenBottomRef}
                     >
                         <IconButton
-                            onClick={() => setOpen(true)}
+                            onClick={() => setOpen(false)}
                             sx={{
                                 width: 80,
                                 height: 20,
                                 borderRadius: '10px 10px 0 0',
                                 backgroundColor: COLORS_DARK.theme.blue,
-                                color: '#fff'
+                                transform: 'translateY(10%)',
+                                color: '#fff',
+                                '&:hover': {
+                                    backgroundColor: `${COLORS_DARK.theme.blue} !important`
+                                }
                             }}
                         >
-                            <ExpandLess />
+                            <ExpandMore />
                         </IconButton>
                     </Box>
-                )}
 
-                {/* Slide로 감싼 OrderFooter */}
-                <Slide in={open} direction="up" mountOnEnter unmountOnExit timeout={300}>
-                    <OrderFooter ref={bottomRef}>
-                        {/* 접기 버튼 */}
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                bottom: '100%',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                zIndex: 1200
-                            }}
-                        >
-                            <IconButton
-                                onClick={() => setOpen(false)}
-                                sx={{
-                                    width: 80,
-                                    height: 20,
-                                    borderRadius: '10px 10px 0 0',
-                                    backgroundColor: COLORS_DARK.theme.blue,
-                                    transform: 'translateY(10%)',
-                                    color: '#fff'
+                    {/* 실제 OrderFooter 내용 */}
+                    <Container disableGutters sx={{ maxWidth: '900px' }}>
+                        {!isCartReallyInactive && (
+                            <OrderAmountCard>
+                                <Box display="flex" justifyContent="space-between" alignItems="center">
+                                    <OrderLabelTypography variant="subtitle1">내 주문 금액</OrderLabelTypography>
+                                    <OrderPriceTypography variant="h5">
+                                        {totalPrice.toLocaleString()}원
+                                    </OrderPriceTypography>
+                                </Box>
+                            </OrderAmountCard>
+                        )}
+
+                        <ButtonsContainer disabledAll={isCartReallyInactive}>
+                            <FooterButton
+                                onClick={() => {
+                                    if (user.userName) {
+                                        router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
+                                    } else {
+                                        router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
+                                    }
                                 }}
+                                disabled={isCartReallyInactive}
                             >
-                                <ExpandMore />
-                            </IconButton>
-                        </Box>
+                                <ButtonIcon disabled={isCartReallyInactive}>
+                                    <CupSoda />
+                                </ButtonIcon>
+                                메뉴 담기
+                            </FooterButton>
 
-                        {/* 실제 OrderFooter 내용 */}
-                        <Container disableGutters sx={{ maxWidth: '900px' }}>
-                            {!isCartReallyInactive && (
-                                <OrderAmountCard>
-                                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                                        <OrderLabelTypography variant="subtitle1">내 주문 금액</OrderLabelTypography>
-                                        <OrderPriceTypography variant="h5">
-                                            {totalPrice.toLocaleString()}원
-                                        </OrderPriceTypography>
-                                    </Box>
-                                </OrderAmountCard>
-                            )}
-
-                            <ButtonsContainer disabledAll={isCartReallyInactive}>
+                            {isCreator ? (
                                 <FooterButton
-                                    onClick={() => {
-                                        if (user.userName) {
-                                            router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
-                                        } else {
-                                            router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
-                                        }
-                                    }}
                                     disabled={isCartReallyInactive}
+                                    variant="contained"
+                                    onClick={() => setPaymentModalOpen(true)}
                                 >
                                     <ButtonIcon disabled={isCartReallyInactive}>
-                                        <CupSoda />
+                                        <LockIcon />
                                     </ButtonIcon>
-                                    메뉴 담기
+                                    주문 마감하기
                                 </FooterButton>
-
-                                {isCreator ? (
-                                    <FooterButton
-                                        disabled={isCartReallyInactive}
-                                        variant="contained"
-                                        onClick={() => setPaymentModalOpen(true)}
-                                    >
-                                        <ButtonIcon disabled={isCartReallyInactive}>
-                                            <LockIcon />
-                                        </ButtonIcon>
-                                        주문 마감하기
-                                    </FooterButton>
-                                ) : (
-                                    <FooterButton
-                                        variant="contained"
-                                        disabled={isCartReallyInactive}
-                                        onClick={() => setPaymentModalOpen(true)}
-                                    >
-                                        <ButtonIcon disabled={isCartReallyInactive}>
-                                            <CircleDollarSign />
-                                        </ButtonIcon>
-                                        송금하기
-                                    </FooterButton>
-                                )}
-                            </ButtonsContainer>
-                        </Container>
-                    </OrderFooter>
-                </Slide>
-            </>
+                            ) : (
+                                <FooterButton
+                                    variant="contained"
+                                    disabled={isCartReallyInactive}
+                                    onClick={() => setPaymentModalOpen(true)}
+                                >
+                                    <ButtonIcon disabled={isCartReallyInactive}>
+                                        <CircleDollarSign />
+                                    </ButtonIcon>
+                                    송금하기
+                                </FooterButton>
+                            )}
+                        </ButtonsContainer>
+                    </Container>
+                </OrderFooter>
+            </Slide>
 
             {reloadDialogOpen && (
                 <CartConfirmModal
@@ -639,7 +629,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <SnackbarDialogText>URL이 복사되었습니다!</SnackbarDialogText>
                 </SnackbarDialogContent>
             </Dialog>
-            {/*{isMobile && <MobileShareButton bottomHeight={bottomHeight} cartTitle={cartBasic?.title as string} />}*/}
         </Container>
     );
 };

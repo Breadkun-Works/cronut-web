@@ -12,8 +12,6 @@ import {
     Container,
     DialogContent,
     SnackbarContent,
-    Tab,
-    Tabs,
     Typography
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
@@ -24,14 +22,6 @@ import { keyframes } from '@emotion/react';
 interface ConfirmHeaderProps {
     isMobile: boolean;
 }
-const marquee = keyframes`
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-`;
 
 const slideMarquee = keyframes`
   0% {
@@ -139,7 +129,7 @@ export const ConfirmHeader = styled(Box, {
     position: 'sticky',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     padding: 16,
     marginBottom: isMobile ? 0 : 16,
     borderBottom: `1px solid ${COLORS_DARK.border.default}`,
@@ -160,8 +150,18 @@ export const ConfirmHeader = styled(Box, {
     }
 }));
 
-export const ConfirmHeaderTitle = styled(Typography)(({ theme }) => ({
+export const ConfirmHeaderTitle = styled(Typography, {
+    shouldForwardProp: prop => prop !== 'isMobile' && prop !== 'maxWidth'
+})<{
+    isMobile: boolean;
+    maxWidth?: number;
+}>(({ isMobile, maxWidth, theme }) => ({
     marginLeft: '0.8rem',
+    maxWidth: maxWidth ? `${maxWidth - 32}px` : isMobile ? '160px' : '400px',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    cursor: isMobile ? 'pointer' : 'default',
     fontWeight: 700,
     color: COLORS_DARK.text.primary,
     fontSize: '1.2rem',
@@ -204,7 +204,6 @@ export const CartBadge = styled(Badge)({
 export const CartConfirmContainer = styled(Container)({
     display: 'flex',
     flexDirection: 'column'
-    // minHeight: '100vh'
 });
 
 export const LinkShareCard = styled(Card)(({ theme }) => ({
@@ -286,10 +285,6 @@ export const ButtonIcon = styled(Box)<{ disabled?: boolean }>(({ disabled }) => 
         color: disabled ? COLORS_DARK.text.disabled : COLORS_DARK.accent.main
     }
 }));
-
-export const ConfirmContainer = styled(Box)`
-    flex: 1;
-`;
 
 export const OrderFooter = styled.div`
     position: fixed;
@@ -401,7 +396,7 @@ export const CartItemCard = styled(Card)({
     marginBottom: 16,
     overflow: 'hidden',
     transition: 'all 0.2s ease-in-out',
-    borderRadius: '20px',
+    borderRadius: '12px',
     '&:hover': {
         transform: 'translateY(-2px)'
     }

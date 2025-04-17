@@ -189,7 +189,8 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     };
 
     return (
-        <PageContainer ref={containerRef}>
+        /*Container 는 maxWidth가 지정되면 그 브레이크포인트에 따라 max-width가 자동으로 설정, false로 줘야 max-width:950px에 맞춰서 표현 가능*/
+        <PageContainer ref={containerRef} maxWidth={false}>
             <Header>
                 <CafeHeader entry={entry} cartId={cartId} />
                 <HeaderContent>
@@ -205,7 +206,6 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                     />
                 ))}
             </CategoryTabs>
-
             <ScrollableContent className={isMobile ? 'mobile' : ''}>
                 {CafeMenuData.map(cafeMenu => (
                     <CafeMenuTabPanel key={cafeMenu.index} value={tabValue} index={cafeMenu.index} isMobile={isMobile}>

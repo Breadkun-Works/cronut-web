@@ -61,9 +61,11 @@ export const CartConfirmModal = (props: ICartExpiredModalTypes) => {
                     justifyContent: 'center'
                 }}
             >
-                <Button sx={{ border: `1px solid ${COLORS_DARK.accent.main}` }} onClick={onClose}>
-                    취소
-                </Button>
+                {onClose && (
+                    <Button sx={{ border: `1px solid ${COLORS_DARK.accent.main}` }} onClick={onClose}>
+                        취소
+                    </Button>
+                )}
                 <Button
                     onClick={onConfirm}
                     sx={{

@@ -54,7 +54,6 @@ export default async function ConfirmPage({
     const encryptedData = searchParams.data;
     const cartData = await fetchCart(params.id);
     const status = cartData.data.cafeCart.status;
-    const isCartInactive = status === 'INACTIVE';
 
     const cookieStore = cookies();
     const uuid = cookieStore.get('BRK-UUID')?.value;
@@ -75,14 +74,6 @@ export default async function ConfirmPage({
             />
         );
     } else {
-        return (
-            <ConfirmClientV3
-                cartId={params.id}
-                status={status}
-                isCartInactive={isCartInactive}
-                isCreator={isCreator}
-                user={{ uuid, userName }}
-            />
-        );
+        return <ConfirmClientV3 cartId={params.id} status={status} isCreator={isCreator} user={{ uuid, userName }} />;
     }
 }

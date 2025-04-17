@@ -174,7 +174,9 @@ const CartPage = () => {
                             </Box>
                         )}
                     </Box>
-                    <CartButton onClick={handleCreateCart}>주문하기</CartButton>
+                    <CartButton onClick={handleCreateCart} disabled={isPending}>
+                        주문하기
+                    </CartButton>
                 </CartContainer>
             </div>
             {showLoading && <NotificationBox firstText={'장바구니 생성 중...'} secText={'잠시만 기다려 주세요.'} />}

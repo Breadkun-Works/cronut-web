@@ -75,6 +75,7 @@ export const CartButton = styled.button`
     padding: 0 10px;
     text-align: center;
     margin: 20px 0;
+    cursor: pointer;
 `;
 
 export const StyledMenuTitle = styled(Typography)({

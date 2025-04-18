@@ -45,12 +45,12 @@ export function ShareCartDialog({
         }
     };
 
-    const handleAmaranthShare = (message: string) => {
+    const handleAmaranthShare = () => {
         const payload = {
             type: 'MSG',
             data: {
                 recvEmpSeq: [],
-                content: message
+                content: `띵동~ 빵돌이의 장바구니 도착!\n\n🛒 ${cartTitle} 장바구니에 입장해주세요~!\n   👉 ${window.location.href}`
             }
         };
 
@@ -129,7 +129,7 @@ export function ShareCartDialog({
 
                 {/* 아마란스 쪽지 공유 */}
                 <Box
-                    onClick={() => handleAmaranthShare(`${cartTitle}에 초대합니다! 음료를 담아주세요!`)}
+                    onClick={handleAmaranthShare}
                     sx={{
                         flex: 1,
                         py: paddingY,
@@ -146,11 +146,9 @@ export function ShareCartDialog({
                     <Image
                         src="/icon/post-thick.svg"
                         alt="아마란스 쪽지 공유 아이콘"
-                        style={{
-                            width: iconSize,
-                            height: iconSize,
-                            objectFit: 'contain'
-                        }}
+                        width={iconSize}
+                        height={iconSize}
+                        objectFit={'contain'}
                     />
                     <Typography sx={{ mt: 1, fontSize, textAlign: 'center' }}>
                         아마란스

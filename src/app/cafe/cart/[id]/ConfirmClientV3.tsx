@@ -96,6 +96,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
     const [open, setOpen] = useState(true);
+    const [isCollapsed, setIsCollapsed] = useState(false); // Slide가 완전히 닫히고 나서 버튼 나게 나게 하기 위해
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const router = useRouter();
@@ -470,24 +471,30 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             </ScrollableCartList>
 
             {/* 펼치기 버튼 */}
-            {!open && (
+            {isCollapsed && (
                 <Box
                     sx={{
                         position: 'fixed',
                         bottom: 0,
                         left: '50%',
                         transform: 'translateX(-50%)',
-                        zIndex: 1200
+                        zIndex: 1000
                     }}
                 >
                     <IconButton
-                        onClick={() => setOpen(true)}
+                        disableRipple
+                        disableFocusRipple
+                        onClick={() => {
+                            setOpen(true);
+                            setIsCollapsed(false);
+                        }}
                         sx={{
                             width: 80,
                             height: 25,
                             borderRadius: '10px 10px 0 0',
                             backgroundColor: COLORS_DARK.theme.blue,
-                            color: '#fff'
+                            color: '#fff',
+                            transition: 'none !important'
                         }}
                     >
                         <ExpandLess />
@@ -496,7 +503,14 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             )}
 
             {/* Slide로 감싼 OrderFooter */}
-            <Slide in={open} direction="up" mountOnEnter unmountOnExit timeout={300}>
+            <Slide
+                in={open}
+                onExited={() => setIsCollapsed(true)}
+                direction="up"
+                mountOnEnter
+                unmountOnExit
+                timeout={300}
+            >
                 <OrderFooter ref={bottomRef}>
                     {/* 접기 버튼 */}
                     <Box
@@ -509,6 +523,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         }}
                     >
                         <IconButton
+                            disableRipple
+                            disableFocusRipple
                             onClick={() => setOpen(false)}
                             sx={{
                                 width: 80,
@@ -522,11 +538,10 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                 }
                             }}
                         >
-                            <ExpandMore sx={{ width: 80, height: 20 }} />
+                            <ExpandMore />
                         </IconButton>
                     </Box>
 
-                    {/* 실제 OrderFooter 내용 */}
                     <Container disableGutters sx={{ maxWidth: '900px' }}>
                         {!isCartReallyInactive && (
                             <OrderAmountCard>

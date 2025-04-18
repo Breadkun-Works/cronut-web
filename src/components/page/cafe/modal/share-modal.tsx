@@ -32,13 +32,15 @@ export function ShareCartDialog({
                     text: `[${cartTitle}]에 놀러오세요~!☕️🍞🥐`,
                     url: window.location.href
                 });
+                onClose();
             } catch (err) {
                 console.error('공유 취소 또는 오류', err);
             }
         } else {
             try {
                 await navigator.clipboard.writeText(window.location.href);
-                alert('링크가 복사되었습니다.'); // ✅ 토스트로 바꿔도 됨
+                alert('링크가 복사되었습니다.');
+                onClose();
             } catch (err) {
                 console.error('클립보드 복사 실패', err);
             }
@@ -50,7 +52,7 @@ export function ShareCartDialog({
             type: 'MSG',
             data: {
                 recvEmpSeq: [],
-                content: `띵동~ 빵돌이의 장바구니 도착!\n\n🛒 ${cartTitle} 장바구니에 입장해주세요~!\n   👉 ${window.location.href}`
+                content: `띵동🛎️~ 빵돌이의 장바구니 도착!\n\n🛒 ${cartTitle} 장바구니에 입장해주세요~!\n   👉 ${window.location.href}`
             }
         };
 
@@ -62,7 +64,10 @@ export function ShareCartDialog({
 
         const shareUrl = `amaranth10://amaranth10/write?${base64}`;
 
-        window.open(shareUrl);
+        const win = window.open(shareUrl, '_blank', 'noopener,noreferrer');
+        if (win) {
+            onClose();
+        }
     };
 
     useEffect(() => {

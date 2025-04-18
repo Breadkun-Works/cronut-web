@@ -8,7 +8,6 @@ import {
     CartWarningText,
     CartWarningWrapper,
     ConfirmHeader,
-    ConfirmHeaderTitle,
     ConfirmTemperatureBadge,
     DrinkNameTypography,
     FooterButton,
@@ -29,16 +28,7 @@ import {
     SnackbarDialogText,
     UserAvatar
 } from '@/styles/cart/cart.styles';
-import {
-    CircleDollarSign,
-    ClipboardList,
-    CopyIcon,
-    CupSoda,
-    LockIcon,
-    Share2,
-    ShoppingCart,
-    Trash2
-} from 'lucide-react';
+import { CircleDollarSign, ClipboardList, CopyIcon, CupSoda, LockIcon, Share2, Trash2 } from 'lucide-react';
 import {
     Box,
     CardMedia,
@@ -63,6 +53,7 @@ import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-moda
 import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-modal';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
+import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
@@ -105,9 +96,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
     const [reloadDialogOpen, setReloadDialogOpen] = useState<boolean>(false);
     const [open, setOpen] = useState(true);
-
+    const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [summaryModalOpen, setSummaryModalOpen] = useState(false);
     const router = useRouter();
 
     const bottomRef = useRef<HTMLDivElement>(null); // 펼쳐졌을 때 하단 영역
@@ -267,8 +257,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 )}
 
                 <ConfirmHeader isMobile={isMobile}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', width: '50%' }} ref={confirmHeaderRef}>
-                        <ShoppingCart />
+                    <Box sx={{ width: '50%' }} ref={confirmHeaderRef}>
+                        {/*<ShoppingCart />*/}
                         <EllipsisTooltip
                             parentRef={confirmHeaderRef}
                             title={cartBasic?.title as string}
@@ -279,19 +269,25 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <Box sx={{ width: '50%', display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
                         {!isMobile ? (
                             <Tooltip title="요약 보기" placement="top" arrow>
-                                <Box onClick={() => setSummaryModalOpen(true)} sx={{ cursor: 'pointer' }}>
+                                <Box
+                                    onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
+                                    sx={{ cursor: 'pointer' }}
+                                >
                                     <ClipboardList />
                                 </Box>
                             </Tooltip>
                         ) : (
                             <>
                                 <Box
-                                    onClick={() => setSummaryModalOpen(true)}
+                                    onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
                                     sx={{ cursor: 'pointer', marginRight: 1 }}
                                 >
                                     <ClipboardList />
                                 </Box>
-                                <Box onClick={() => {}} sx={{ cursor: 'pointer' }}>
+                                <Box
+                                    sx={{ cursor: 'pointer' }}
+                                    onClick={() => setHeaderModalOpen({ type: 'share', open: true })}
+                                >
                                     <Share2 />
                                 </Box>
                             </>
@@ -428,7 +424,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                                         />
                                                     )}
                                                 </Box>
-                                                {item.createdById === user.uuid && (
+                                                {item.createdById === user.uuid && cartBasic?.status !== 'INACTIVE' && (
                                                     <IconButton
                                                         size="small"
                                                         onClick={() => removeItem(item.id)}
@@ -526,7 +522,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                 }
                             }}
                         >
-                            <ExpandMore />
+                            <ExpandMore sx={{ width: 80, height: 20 }} />
                         </IconButton>
                     </Box>
 
@@ -607,8 +603,11 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     handlePayment={setPaymentModalOpen}
                 />
             )}
-            {summaryModalOpen && (
-                <CafeSummaryModal open={summaryModalOpen} onClose={() => setSummaryModalOpen(false)} />
+            {headerModalOpen.open && headerModalOpen.type === 'summary' && (
+                <CafeSummaryModal
+                    open={headerModalOpen.open}
+                    onClose={() => setHeaderModalOpen({ type: '', open: false })}
+                />
             )}
             <Dialog
                 open={snackbarOpen}
@@ -629,6 +628,16 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <SnackbarDialogText>URL이 복사되었습니다!</SnackbarDialogText>
                 </SnackbarDialogContent>
             </Dialog>
+
+            {headerModalOpen.open && headerModalOpen.type === 'share' && (
+                <ShareCartDialog
+                    cartTitle={cartBasic?.title as string}
+                    open={headerModalOpen.open && headerModalOpen.type === 'share'}
+                    onClose={() => {
+                        setHeaderModalOpen({ open: false, type: '' });
+                    }}
+                />
+            )}
         </Container>
     );
 };

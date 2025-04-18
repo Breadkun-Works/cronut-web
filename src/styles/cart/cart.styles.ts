@@ -157,7 +157,6 @@ export const ConfirmHeaderTitle = styled(Typography, {
     isMobile: boolean;
     maxWidth?: number;
 }>(({ isMobile, maxWidth, theme }) => ({
-    marginLeft: '0.8rem',
     maxWidth: maxWidth ? `${maxWidth - 32}px` : isMobile ? '160px' : '400px',
     overflow: 'hidden',
     whiteSpace: 'nowrap',

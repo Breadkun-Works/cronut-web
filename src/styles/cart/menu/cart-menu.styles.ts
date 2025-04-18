@@ -47,7 +47,7 @@ export const MenuGrid = styled(Box)({
     gridTemplateColumns: 'repeat(3, 1fr)', // 기본 3개씩 표시 (웹)
     gap: 16,
     width: '100%',
-    '@media (max-width: 600px)': {
+    '@media (max-width: 480px)': {
         gridTemplateColumns: 'repeat(2, 1fr)' // 모바일에서는 2개씩 표시
     }
 });

@@ -631,7 +631,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 </OrderFooter>
             </Slide>
 
-            {reloadDialogOpen && (
+            {reloadDialogOpen && !isCartReallyInactive && (
                 <CartConfirmModal
                     open={reloadDialogOpen}
                     disableEscapeKeyDown

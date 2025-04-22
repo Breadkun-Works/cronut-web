@@ -164,14 +164,25 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                         <X size={18} />
                     </IconButton>
                 </Box>
-                {/* Scrollable Content */}
                 <Box
                     sx={{
                         px: 2,
                         pt: 2,
                         pb: 1,
                         overflowY: 'auto',
-                        flex: 1
+                        flex: 1,
+                        '&::-webkit-scrollbar': {
+                            width: '4px' // 얇게
+                        },
+                        '&::-webkit-scrollbar-track': {
+                            backgroundColor: 'transparent'
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                            borderRadius: '4px'
+                        },
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: 'rgba(255,255,255,0.15) transparent'
                     }}
                 >
                     {groupedMenuList.map(group => (
@@ -188,7 +199,6 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                                 mb: 1.5
                             }}
                         >
-                            {/* 이미지 + 이름 */}
                             <Box display="flex" alignItems="center" sx={{ overflow: 'hidden' }}>
                                 <MenuImageContainer>
                                     <Box
@@ -236,7 +246,6 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                         </Box>
                     ))}
                 </Box>
-                {/* Footer Button */}
                 <Box
                     sx={{
                         py: 1.5,

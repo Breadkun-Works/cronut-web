@@ -180,7 +180,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         eventSource.addEventListener(eventName, handleEvent);
 
         eventSource.onerror = err => {
-            if (status === 'INACTIVE' || cartBasic?.status === 'INACTIVE') {
+            if (isCartReallyInactive) {
                 setUnAccessibleCart(true);
             } else {
                 setReloadDialogOpen(true);
@@ -194,7 +194,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             eventSource.removeEventListener(eventName, handleEvent);
             eventSource.close();
         };
-    }, [cartId, cartBasic]);
+    }, [cartId]);
 
     useEffect(() => {
         if (!isLoading && initialCartItems) {
@@ -267,8 +267,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 )}
 
                 <ConfirmHeader isMobile={isMobile}>
-                    <Box sx={{ width: '60%' }} ref={confirmHeaderRef}>
-                        {/*<ShoppingCart />*/}
+                    <Box sx={{ width: '80%' }} ref={confirmHeaderRef}>
                         <EllipsisTooltip
                             parentRef={confirmHeaderRef}
                             title={cartBasic?.title as string}
@@ -278,7 +277,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
 
                     <Box
                         sx={{
-                            width: '40%',
+                            width: '20%',
                             display: 'flex',
                             justifyContent: 'flex-end',
                             gap: 0.5,

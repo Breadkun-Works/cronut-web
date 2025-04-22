@@ -167,13 +167,13 @@ export const ConfirmHeaderTitle = styled(Typography, {
     cursor: isMobile ? 'pointer' : 'default',
     fontWeight: 700,
     color: COLORS_DARK.text.primary,
-    fontSize: '1.3rem',
+    fontSize: '1.2rem',
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '1.4rem'
+        fontSize: '1.3rem'
     },
     [theme.breakpoints.up('md')]: {
-        fontSize: '1.5rem'
+        fontSize: '1.4rem'
     }
 }));
 
@@ -438,19 +438,19 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     // xs (모바일)
     width: 26,
     height: 26,
-    fontSize: '0.6875rem',
+    fontSize: '0.7rem',
     marginRight: 6,
 
     [theme.breakpoints.up('sm')]: {
         width: 32,
         height: 32,
-        fontSize: '0.8125rem',
+        fontSize: '0.875rem',
         marginRight: 8
     },
     [theme.breakpoints.up('md')]: {
         width: 38,
         height: 38,
-        fontSize: '0.875rem'
+        fontSize: '1rem'
     }
 }));
 

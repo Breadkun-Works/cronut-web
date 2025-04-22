@@ -11,13 +11,13 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         title: cart.title,
         description: cart.description,
         openGraph: {
-            title: cart.title,
-            description: cart.description,
-            images: ''
+            title: `${cart.title} 장바구니에 놀러오세요!`,
+            description: `띵동🛎️~ 빵돌이의 장바구니 도착!\n\n🛒 ${cart.title} 장바구니에 입장해주세요~☕️🍞🥐`,
+            images: `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/og-image.png`
         }
     };
 }
-const fetchCart = async (cafeCartId: string): Promise<any> => {
+const fetchCart = async (cafeCartId: string) => {
     const secretKey: string = process.env.SECRET_ENCRYPT_KEY!;
     const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {
         headers: {

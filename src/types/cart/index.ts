@@ -143,3 +143,15 @@ export interface CafeCartItem {
     isPersonalCup: boolean;
     quantity: number;
 }
+
+export interface GroupedCafeData {
+    [key: string]: {
+        cafeMenuId: number;
+        drinkName: string;
+        drinkImageUrl: string;
+        drinkTemperature: 'HOT' | 'ICED';
+        totalQuantity: number;
+        totalPrice: number;
+        items: CafeCartItem[];
+    };
+}

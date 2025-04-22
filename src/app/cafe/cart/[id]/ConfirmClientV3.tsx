@@ -11,7 +11,6 @@ import {
     ConfirmTemperatureBadge,
     DrinkNameTypography,
     FooterButton,
-    ItemDetails,
     ItemImage,
     LinkShareCard,
     LinkShareContent,
@@ -24,7 +23,6 @@ import {
     ScrollableCartList,
     ShoppingCartIcon,
     SnackbarDialogContent,
-    SnackbarDialogIcon,
     SnackbarDialogText,
     UserAvatar
 } from '@/styles/cart/cart.styles';
@@ -37,13 +35,14 @@ import {
     IconButton,
     InputAdornment,
     Slide,
+    Snackbar,
     TextField,
     Tooltip,
     Typography
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
-import { useIsMobile } from '@/utils/hook';
+import { getUserInitial, useMaxWidthByViewport, useResponsive } from '@/utils/hook';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
 import { useQuery } from '@tanstack/react-query';
@@ -84,7 +83,7 @@ interface CartItem {
 }
 
 export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user }: ConfirmClientPageProps) => {
-    const isMobile = useIsMobile();
+    const { isMobile } = useResponsive();
     const searchParams = useSearchParams();
     const { data: cartBasic } = useGetCartById(cartId);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -98,7 +97,9 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [open, setOpen] = useState(true);
     const [isCollapsed, setIsCollapsed] = useState(false); // Slide가 완전히 닫히고 나서 버튼 나게 나게 하기 위해
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', variant: '', device: '' });
+    const { fontSize } = useMaxWidthByViewport();
+
     const router = useRouter();
 
     const bottomRef = useRef<HTMLDivElement>(null); // 펼쳐졌을 때 하단 영역
@@ -107,16 +108,11 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
 
     const [bottomHeight, setBottomHeight] = useState(160);
 
-    // 사용자 이니셜 가져오기 (이미지가 없을 경우 대체용)
-    const getUserInitial = (name: string) => {
-        return name.charAt(0);
-    };
-
     // 링크 복사 함수
     const copyLinkToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(shareLink);
-            setSnackbarOpen(true);
+            setSnackbar({ open: true, message: '🔗 URL이 복사되었습니다!', variant: 'success', device: 'PC' });
         } catch (err) {
             console.error('Failed to copy link: ', err);
         }
@@ -153,7 +149,11 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         .reduce((sum, item) => sum + item.drinkTotalPrice, 0);
 
     const handleCloseSnackbar = () => {
-        setSnackbarOpen(false);
+        setSnackbar({ open: false, message: '', variant: '', device: '' });
+    };
+
+    const showSnackbar = (message: string, variant: 'success' | 'error' = 'success') => {
+        setSnackbar({ open: true, message, variant, device: 'MOBILE' });
     };
 
     useEffect(() => {
@@ -223,6 +223,15 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         };
     }, []);
 
+    useEffect(() => {
+        if (snackbar.open && snackbar.device === 'PC') {
+            const timer = setTimeout(() => {
+                setSnackbar(prev => ({ ...prev, open: false }));
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [snackbar.open, snackbar.device]);
+
     if (isLoading) {
         return (
             <Box
@@ -258,7 +267,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 )}
 
                 <ConfirmHeader isMobile={isMobile}>
-                    <Box sx={{ width: '50%' }} ref={confirmHeaderRef}>
+                    <Box sx={{ width: '60%' }} ref={confirmHeaderRef}>
                         {/*<ShoppingCart />*/}
                         <EllipsisTooltip
                             parentRef={confirmHeaderRef}
@@ -267,15 +276,23 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         />
                     </Box>
 
-                    <Box sx={{ width: '50%', display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
+                    <Box
+                        sx={{
+                            width: '40%',
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            gap: 0.5,
+                            marginTop: isMobile ? 0.5 : 0
+                        }}
+                    >
                         {!isMobile ? (
                             <Tooltip title="요약 보기" placement="top" arrow>
-                                <Box
+                                <IconButton
                                     onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
                                     sx={{ cursor: 'pointer' }}
                                 >
                                     <ClipboardList />
-                                </Box>
+                                </IconButton>
                             </Tooltip>
                         ) : (
                             <>
@@ -308,7 +325,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                     color: COLORS_DARK.accent.main
                                 }}
                             />
-                            <Typography variant="subtitle2" fontWeight="medium">
+                            <Typography variant="subtitle2" fontSize={'1rem'} fontWeight="medium">
                                 장바구니 공유하기
                             </Typography>
                         </Box>
@@ -358,7 +375,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 {cartItems.length === 0 ? (
                     <Box
                         sx={{
-                            // minHeight,
                             minHeight: `calc(100vh - 18vh - ${semiHeaderRef.current?.getBoundingClientRect().height}px - ${bottomHeight}px)`,
                             display: 'flex',
                             flexDirection: 'column',
@@ -399,7 +415,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     cartItems.map(item => (
                         <CartItemCard key={item.id}>
                             <CartItemContent>
-                                <Box display={'flex'} alignItems={'stretch'}>
+                                <Box display="flex" alignItems="stretch" justifyContent={'space-between'}>
+                                    {/* 이미지 */}
                                     <ItemImage>
                                         <CardMedia
                                             component="img"
@@ -412,57 +429,73 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                             }}
                                         />
                                     </ItemImage>
-                                    <ItemDetails>
-                                        <Box>
-                                            <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                                                <Box display="flex" alignItems="center">
-                                                    <DrinkNameTypography>{item.drinkName}</DrinkNameTypography>
-                                                    {item.drinkTemperature && (
-                                                        <ConfirmTemperatureBadge
-                                                            temperature={item.drinkTemperature}
-                                                            label={item.drinkTemperature}
-                                                            size="small"
-                                                        />
-                                                    )}
-                                                </Box>
-                                                {item.createdById === user.uuid && cartBasic?.status !== 'INACTIVE' && (
-                                                    <IconButton
+
+                                    {/* 텍스트 콘텐츠 */}
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        justifyContent="space-between"
+                                        flex={1}
+                                        ml={{ xs: 1.5, md: 2 }}
+                                    >
+                                        {/* 상단 (이름/온도/삭제) */}
+                                        <Box
+                                            display="flex"
+                                            position="relative"
+                                            justifyContent="space-between"
+                                            alignItems="flex-start"
+                                        >
+                                            <Box display="flex" alignItems="center">
+                                                <DrinkNameTypography fontSize={fontSize}>
+                                                    {item.drinkName}
+                                                </DrinkNameTypography>
+                                                {item.drinkTemperature && (
+                                                    <ConfirmTemperatureBadge
+                                                        temperature={item.drinkTemperature}
+                                                        label={item.drinkTemperature}
                                                         size="small"
-                                                        onClick={() => removeItem(item.id)}
-                                                        sx={{
-                                                            color: COLORS_DARK.text.secondary,
-                                                            padding: 0
-                                                        }}
-                                                    >
-                                                        <Trash2 fontSize="small" />
-                                                    </IconButton>
+                                                    />
                                                 )}
                                             </Box>
+                                            {item.createdById === user.uuid && cartBasic?.status !== 'INACTIVE' && (
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => removeItem(item.id)}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        right: 0,
+                                                        bottom: 1.5,
+                                                        color: COLORS_DARK.text.secondary,
+                                                        p: 0
+                                                    }}
+                                                >
+                                                    <Trash2 fontSize={fontSize} />
+                                                </IconButton>
+                                            )}
+                                        </Box>
 
-                                            <Box display="flex" alignItems="center" mb={1}>
-                                                <UserAvatar src={item.imageUrl} alt={item.createdByName}>
-                                                    {getUserInitial(item.createdByName)}
-                                                </UserAvatar>
-                                                <Typography variant="body2" sx={{ color: COLORS_DARK.text.secondary }}>
-                                                    {item.createdByName}
-                                                </Typography>
-                                            </Box>
+                                        {/* 작성자 */}
+                                        <Box display="flex" alignItems="center" mt={1}>
+                                            <UserAvatar src={item.imageUrl} alt={item.createdByName}>
+                                                {getUserInitial(item.createdByName)}
+                                            </UserAvatar>
+                                            <Typography>{item.createdByName}</Typography>
                                         </Box>
 
                                         <Box
                                             display="flex"
                                             justifyContent="space-between"
-                                            alignItems="center"
+                                            alignItems="flex-end"
                                             width="100%"
+                                            mt={{ xs: 1.5, md: 'auto' }}
+                                            flexDirection={{ xs: 'row', md: 'row' }}
                                         >
-                                            <QuantityTypography variant="body2">
-                                                수량: {item.quantity}잔
-                                            </QuantityTypography>
-                                            <PriceTypography variant="subtitle2">
-                                                {item.drinkTotalPrice.toLocaleString()}&nbsp;원
+                                            <QuantityTypography>수량: {item.quantity}잔</QuantityTypography>
+                                            <PriceTypography>
+                                                {item.drinkTotalPrice.toLocaleString()} 원
                                             </PriceTypography>
                                         </Box>
-                                    </ItemDetails>
+                                    </Box>
                                 </Box>
                             </CartItemContent>
                         </CartItemCard>
@@ -620,29 +653,32 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             )}
             {headerModalOpen.open && headerModalOpen.type === 'summary' && (
                 <CafeSummaryModal
+                    cartItems={cartItems}
                     open={headerModalOpen.open}
                     onClose={() => setHeaderModalOpen({ type: '', open: false })}
                 />
             )}
-            <Dialog
-                open={snackbarOpen}
-                onClose={handleCloseSnackbar}
-                PaperProps={{
-                    sx: {
-                        backgroundColor: 'transparent',
-                        boxShadow: 'none',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: '16px'
-                    }
-                }}
-            >
-                <SnackbarDialogContent>
-                    <SnackbarDialogIcon />
-                    <SnackbarDialogText>URL이 복사되었습니다!</SnackbarDialogText>
-                </SnackbarDialogContent>
-            </Dialog>
+            {snackbar.open && snackbar.device === 'PC' && (
+                <Dialog
+                    open={snackbar.open && snackbar.device === 'PC'}
+                    onClose={handleCloseSnackbar}
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: 'transparent',
+                            boxShadow: 'none',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: '16px'
+                        }
+                    }}
+                >
+                    <SnackbarDialogContent>
+                        {/*<SnackbarDialogIcon />*/}
+                        <SnackbarDialogText>{snackbar.message}</SnackbarDialogText>
+                    </SnackbarDialogContent>
+                </Dialog>
+            )}
 
             {headerModalOpen.open && headerModalOpen.type === 'share' && (
                 <ShareCartDialog
@@ -650,6 +686,25 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     open={headerModalOpen.open && headerModalOpen.type === 'share'}
                     onClose={() => {
                         setHeaderModalOpen({ open: false, type: '' });
+                    }}
+                    showToast={showSnackbar}
+                />
+            )}
+
+            {snackbar.open && snackbar.device === 'MOBILE' && (
+                <Snackbar
+                    open={snackbar.open && snackbar.device === 'MOBILE'}
+                    autoHideDuration={2000}
+                    onClose={handleCloseSnackbar}
+                    message={snackbar.message}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    ContentProps={{
+                        sx: {
+                            backgroundColor: COLORS_DARK.accent.main,
+                            color: '#fff',
+                            fontSize: 14,
+                            fontWeight: 'bold'
+                        }
                     }}
                 />
             )}

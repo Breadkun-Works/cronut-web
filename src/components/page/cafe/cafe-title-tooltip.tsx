@@ -41,6 +41,8 @@ export const EllipsisTooltip = forwardRef<HTMLDivElement, Props>(({ title, isMob
         };
     }, [title, parentRef]);
 
+    console.log(maxWidth);
+
     const content = (
         <ConfirmHeaderTitle
             ref={localRef}

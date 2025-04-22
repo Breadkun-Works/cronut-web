@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
 import { CafeHeader } from '@/components/page/cafe/header';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
-import { useIsMobile } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 import {
     CategoryTabs,
     CategoryTab,
@@ -58,7 +58,7 @@ const CafeMenuTabPanel = ({ children, value, index, isMobile }: any) => {
 const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; cartId?: string }) => {
     const [tabValue, setTabValue] = useState(0);
     const { company } = useCompanyContext();
-    const isMobile = useIsMobile();
+    const { isMobile } = useResponsive();
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -213,7 +213,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                             <MenuGrid>
                                 {data?.pages?.map(page =>
                                     page.records.map((record, idx) => (
-                                        <React.Fragment key={`menu_${idx}`}>
+                                        <React.Fragment key={`menu_${record.name}`}>
                                             <MenuItemCard isMenu={entry === 'menu'}>
                                                 <MenuItem
                                                     record={record}

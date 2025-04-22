@@ -7,15 +7,15 @@ import { useGetCartById } from '@/apis/cafe/cafe-api';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { COLORS_DARK } from '@/data';
-import { useIsMobile } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 
 const CartMenuById = ({ params }: { params: { id: string; userId: string } }) => {
     const name = getCookie('BRK-UserName');
-    const { data: cartInfo, isLoading, isSuccess } = useGetCartById(params.id);
+    const { data: cartInfo, isSuccess } = useGetCartById(params.id);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
 
-    const isMobile = useIsMobile();
+    const { isMobile } = useResponsive();
 
     const handleClose = () => {
         setOpenModal(false);

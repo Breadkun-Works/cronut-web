@@ -13,12 +13,12 @@ import {
     Paper,
     Divider
 } from '@mui/material';
-import { Copy, Check, ScanQrCode } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import QRCodeComponent from '@/components/QRCodeComponent';
-import { useIsMobile } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 
 export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, handlePayment }: any) {
-    const isMobile = useIsMobile();
+    const { isMobile } = useResponsive();
     const [tab, setTab] = useState('bank');
     const [copied, setCopied] = useState(false);
 

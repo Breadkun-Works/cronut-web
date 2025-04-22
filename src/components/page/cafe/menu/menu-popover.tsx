@@ -22,8 +22,8 @@ import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
 import { getCookie } from '@/utils/cookie';
 import { useAddMenuCart } from '@/apis/cafe/cafe-api';
 import { COLORS_DARK } from '@/data';
-import { useIsMobile } from '@/utils/hook';
 import { HotToggleButton, IcedToggleButton, StyledToggleButtonGroup } from '@/styles/cart/menu/cart-menu.styles';
+import { useResponsive } from '@/utils/hook';
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -35,7 +35,7 @@ const Transition = forwardRef(function Transition(
 });
 
 export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSuccess }: ICafeMenuPopoverProps) => {
-    const isMobile = useIsMobile();
+    const { isMobile } = useResponsive();
     const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
     const userName = getCookie('BRK-UserName');
     const uuid = getCookie('BRK-UUID');
@@ -68,7 +68,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
     const imageSize = isMobile ? `${width * 0.2}px` : `${width * 0.25}px`;
     const maxImageSize = '120px'; // 최대 크기 제한
 
-    const handleChange = (name: string, value: any, type?: string) => {
+    const handleChange = (name: string, value: any) => {
         if (name === 'drinkTemperature') {
             const newMenu = popoverProps.options.find(p => p.drinkTemperature === value);
             setSelectedTempMenu({
@@ -233,7 +233,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                             transform: 'scale(1.05)'
                                         }
                                     }}
-                                    src={selectedTempMenu.imageUrl || ''}
+                                    src={selectedTempMenu.imageUrl ?? ''}
                                     alt={popoverProps.menuName}
                                 />
                             </Card>
@@ -343,7 +343,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     }}
                                 >
                                     <IconButton
-                                        onClick={() => handleChange('quantity', selectedTempMenu.quantity - 1, 'minus')}
+                                        onClick={() => handleChange('quantity', selectedTempMenu.quantity - 1)}
                                         disabled={selectedTempMenu.quantity <= 1 || !selectedTempMenu.available}
                                         sx={{
                                             bgcolor: 'rgba(255, 158, 68, 0.1)',
@@ -372,7 +372,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                         {selectedTempMenu?.quantity}
                                     </Typography>
                                     <IconButton
-                                        onClick={() => handleChange('quantity', selectedTempMenu.quantity + 1, 'plus')}
+                                        onClick={() => handleChange('quantity', selectedTempMenu.quantity + 1)}
                                         sx={{
                                             bgcolor: 'rgba(255, 158, 68, 0.1)',
                                             color: COLORS_DARK.accent.main,
@@ -431,19 +431,6 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     >
                                         {(selectedTempMenu.quantity * selectedTempMenu.price).toLocaleString()}원
                                     </Typography>
-                                    {/*{usePersonalTumbler && (*/}
-                                    {/*    <Typography*/}
-                                    {/*        variant="caption"*/}
-                                    {/*        sx={{*/}
-                                    {/*           color: COLORS.text.secondary,*/}
-                                    {/*            display: 'block',*/}
-                                    {/*            textAlign: 'right',*/}
-                                    {/*            fontSize: '0.8rem'*/}
-                                    {/*        }}*/}
-                                    {/*    >*/}
-                                    {/*        (텀블러 할인 적용)*/}
-                                    {/*    </Typography>*/}
-                                    {/*)}*/}
                                 </Box>
                             </Box>
 

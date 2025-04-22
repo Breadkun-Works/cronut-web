@@ -3,9 +3,9 @@ import { MapPin, Utensils } from 'lucide-react';
 import { Company, companyDropdownItem, companyMealDropdownItem } from '@/types/common';
 import React from 'react';
 import { useCompanyContext } from '@/context/CompanyContext';
-import { Box, Container, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Container, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { COLORS_DARK } from '@/data';
-import { useIsMobile } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 
 export const CompanySelect = ({ entry }: { entry?: string }) => {
     const { company, setCompany } = useCompanyContext();
@@ -16,7 +16,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
         localStorage.setItem('recentCompany', selectedCompany);
     };
 
-    const isMobile = useIsMobile();
+    const { isMobile } = useResponsive();
 
     return (
         <Container>

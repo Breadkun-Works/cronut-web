@@ -29,9 +29,14 @@ import {
 import { CircleDollarSign, ClipboardList, CopyIcon, CupSoda, LockIcon, Share2, Trash2 } from 'lucide-react';
 import {
     Box,
+    Button,
     CardMedia,
     Container,
     Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     IconButton,
     InputAdornment,
     Slide,
@@ -42,6 +47,8 @@ import {
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
+import { expireCart } from '@/apis/cafe/cafe-api';
+import { IUserInfo } from '@/types/cart';
 import {
     getUserInitial,
     useBottomHeight,
@@ -51,7 +58,7 @@ import {
 } from '@/utils/hook';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import PaymentModal from '@/app/cafe/cart/[id]/PaymentModal';
 import { CafeCartItem, IDeleteCartItem } from '@/types/cart';
 import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-modal';
@@ -59,15 +66,13 @@ import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-moda
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
 import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
+import { useSnackbar } from '@/context/SnackBarContext';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
     status: string;
     isCreator: boolean;
-    user: {
-        uuid?: string;
-        userName?: string;
-    };
+    user: IUserInfo;
 }
 interface CartItem {
     id: string;
@@ -95,7 +100,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [unAccessibleCart, setUnAccessibleCart] = useState(false);
     const isCartReallyInactive = unAccessibleCart || cartBasic?.status === 'INACTIVE' || status === 'INACTIVE';
-
+    const { showSnackbar: showSnackBar2 } = useSnackbar();
     // 샘플 공유 링크
     const shareLink = window.location.href;
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
@@ -104,9 +109,11 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [isCollapsed, setIsCollapsed] = useState(false); // Slide가 완전히 닫히고 나서 버튼 나게 나게 하기 위해
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
     const [snackbar, setSnackbar] = useState({ open: false, message: '', variant: '', device: '' });
+    const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
     // const { fontSize, iconSize, chipSize } = useMaxWidthByViewport();
     const { fontSize, iconSize, chipSize, maxWidth, marginTop } = useResponsiveConfig('cart');
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const bottomRef = useRef<HTMLDivElement>(null); // 펼쳐졌을 때 하단 영역
     const semiHeaderRef = useRef<HTMLDivElement>(null); // 세미 헤더 (있다면)
@@ -228,6 +235,19 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         }
     }, [cartItems.length, open]);
 
+    const handleExpireCart = async () => {
+        const res = await expireCart({ cafeCartId: cartId, user });
+        if (res) {
+            showSnackBar2('주문이 마감되었습니다.');
+            queryClient.setQueryData(['cart', cartId], (oldData: any) => ({
+                ...oldData,
+                status: 'INACTIVE'
+            }));
+        } else {
+            showSnackBar2('마감중 오류가 발생했습니다.');
+        }
+        setOpenConfirmDialog(false);
+    };
     if (isLoading) {
         return (
             <Box
@@ -613,7 +633,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                 <FooterButton
                                     disabled={isCartReallyInactive}
                                     variant="contained"
-                                    onClick={() => setPaymentModalOpen(true)}
+                                    onClick={() => setOpenConfirmDialog(open)}
                                 >
                                     <ButtonIcon disabled={isCartReallyInactive}>
                                         <LockIcon />
@@ -713,6 +733,28 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     }}
                 />
             )}
+            <Dialog
+                open={openConfirmDialog}
+                onClose={() => setOpenConfirmDialog(false)}
+                aria-labelledby="responsive-dialog-title"
+            >
+                <DialogTitle id="responsive-dialog-title">주문 마감</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        주문을 마감하면 더 이상 사용자들이 장바구니에 상품을 추가하거나 수정할 수 없습니다.
+                        <br />
+                        마감하시겠습니까?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={() => setOpenConfirmDialog(false)}>
+                        취소
+                    </Button>
+                    <Button onClick={handleExpireCart} autoFocus>
+                        마감
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };

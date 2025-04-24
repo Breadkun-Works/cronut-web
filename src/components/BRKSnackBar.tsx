@@ -42,7 +42,7 @@ const BRKSnackBar: React.FC<ISnackBarProps> = ({
             autoHideDuration={duration}
             onClose={handleOnClose}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            sx={{ marginBottom: '40px' }}
+            sx={{ marginBottom: '80px', width: { sx: '90%', sm: '90%' } }}
         >
             <Alert
                 onClose={handleOnClose}

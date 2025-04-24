@@ -56,8 +56,8 @@ export default async function ConfirmPage({
     const status = cartData.data.cafeCart.status;
 
     const cookieStore = cookies();
-    const uuid = cookieStore.get('BRK-UUID')?.value;
-    const userName = cookieStore.get('BRK-UserName')?.value;
+    const uuid = cookieStore.get('BRK-UUID')?.value || '';
+    const userName = cookieStore.get('BRK-UserName')?.value || '';
     const isCreator = uuid === cartData.data.cafeCart.createdById;
 
     if (encryptedData && status === 'ACTIVE') {

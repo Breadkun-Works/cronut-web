@@ -20,6 +20,7 @@ import {
     Typography
 } from '@mui/material';
 import { CompanySelect } from '@/components/CompanySelect';
+import { useSnackbar } from '@/context/SnackBarContext';
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -43,6 +44,8 @@ const CssTextField = styled(TextField)({
 });
 
 const CartPage = () => {
+    const { showSnackbar } = useSnackbar();
+
     const [newCart, setNewCart] = useState({ title: '', description: '' });
     const [paymentType, setPaymentType] = useState<PaymentType>('treat');
     const [bankName, setBankName] = useState('');
@@ -64,11 +67,25 @@ const CartPage = () => {
     const showLoading = useConditionalTimeout(isPending && !isSuccess, 1000);
 
     const handleCreateCart = () => {
+        if (!validateForm()) {
+            return;
+        }
         mutate({
             cafeLocation: company,
             title: newCart.title,
             ...(newCart.description && { description: newCart.description })
         });
+    };
+    const validateForm = () => {
+        if (!newCart.title.trim()) {
+            showSnackbar('장바구니의 이름을 입력해주세요', 'warning');
+            return false;
+        }
+        if (paymentType === 'dutch' && (!bankName || !accountNumber)) {
+            showSnackbar('계좌 정보를 입력해주세요', 'warning');
+            return false;
+        }
+        return true;
     };
     /* 추가 및 수정해야됨 */
     const banks = ['토스뱅크', '국민은행', '신한은행', '우리은행', '하나은행', 'NH농협'];
@@ -95,6 +112,7 @@ const CartPage = () => {
                             width: '100%',
                             mt: 2
                         }}
+                        required
                     />
                     <CssTextField
                         label="설명"
@@ -175,7 +193,7 @@ const CartPage = () => {
                         )}
                     </Box>
                     <CartButton onClick={handleCreateCart} disabled={isPending}>
-                        주문하기
+                        장바구니 생성하기
                     </CartButton>
                 </CartContainer>
             </div>

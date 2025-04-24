@@ -119,6 +119,7 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                 zIndex: 1300,
                 backgroundColor: 'rgba(0, 0, 0, 0.55)',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center'
             }}
@@ -246,30 +247,30 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                         </Box>
                     ))}
                 </Box>
-                <Box
+            </Box>
+            <Box
+                sx={{
+                    py: 1.5,
+                    px: 2,
+                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+            >
+                <Button
+                    onClick={onClose}
                     sx={{
-                        py: 1.5,
-                        px: 2,
-                        borderTop: '1px solid rgba(255,255,255,0.05)',
-                        display: 'flex',
-                        justifyContent: 'center'
+                        border: `2px solid ${COLORS_DARK.accent.main}`,
+                        color: COLORS_DARK.accent.main,
+                        fontWeight: 'bold',
+                        fontSize,
+                        px: 4,
+                        py: 1,
+                        borderRadius: 2
                     }}
                 >
-                    <Button
-                        onClick={onClose}
-                        sx={{
-                            border: `1px solid ${COLORS_DARK.accent.main}`,
-                            color: COLORS_DARK.accent.main,
-                            fontWeight: 'bold',
-                            fontSize,
-                            px: 4,
-                            py: 1,
-                            borderRadius: 2
-                        }}
-                    >
-                        닫기
-                    </Button>
-                </Box>
+                    닫기
+                </Button>
             </Box>
         </Backdrop>
     );

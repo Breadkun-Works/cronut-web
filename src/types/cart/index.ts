@@ -118,6 +118,8 @@ export interface ICafeMenuPopoverProps {
 
 export interface TemperatureBadgeProps {
     temperature: 'ICED' | 'HOT';
+    height?: number;
+    marginTop?: number;
 }
 
 export interface IDeleteCartItem {

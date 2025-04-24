@@ -326,15 +326,18 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
         fontSize: '1rem',
         padding: '8px 0'
     },
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '1.1rem'
+    },
+    [theme.breakpoints.up('lg')]: {
         fontSize: '1.2rem'
     },
-    [theme.breakpoints.up('xl')]: {
-        fontSize: '1.25rem'
-    },
-    [theme.breakpoints.up('xxl')]: {
-        fontSize: '1.3rem'
-    },
+    // [theme.breakpoints.up('xl')]: {
+    //     fontSize: '1.25rem'
+    // },
+    // [theme.breakpoints.up('xxl')]: {
+    //     fontSize: '1.3rem'
+    // }
     '@media (max-height: 700px)': {
         fontSize: '0.875rem'
     },
@@ -436,71 +439,73 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     color: COLORS_DARK.text.primary,
 
     // xs (모바일)
-    width: 26,
-    height: 26,
-    fontSize: '0.7rem',
+    width: 24,
+    height: 24,
+    fontSize: '0.875rem',
     marginRight: 6,
 
     [theme.breakpoints.up('sm')]: {
-        width: 32,
-        height: 32,
-        fontSize: '0.875rem',
+        width: 28,
+        height: 28,
+        fontSize: '1rem',
         marginRight: 8
     },
     [theme.breakpoints.up('md')]: {
-        width: 38,
-        height: 38,
-        fontSize: '1rem'
+        width: 32,
+        height: 32
     }
 }));
 
-export const ConfirmTemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, temperature }) => ({
-    height: 20,
+export const ConfirmTemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, temperature, height }) => ({
+    height: height,
     borderRadius: 4,
     fontWeight: 600,
     fontSize: '0.65rem',
     backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
     color: '#fff',
     marginLeft: 8,
+    marginTop: -1,
     boxShadow: 'none',
     [theme.breakpoints.down('sm')]: {
-        fontSize: '0.6rem',
-        height: '0.875rem'
+        fontSize: '0.6rem'
     },
     [theme.breakpoints.up('md')]: {
-        fontSize: '0.75rem',
-        height: 22
+        fontSize: '0.75rem'
     }
 }));
 
 export const ScrollableCartList = styled(Box, {
-    shouldForwardProp: prop => prop !== 'bottomHeight' && prop !== 'isEmpty'
-})<{ bottomHeight: number; isEmpty?: boolean }>(({ theme }) => ({
-    flex: 1,
-    paddingTop: 16,
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
+    shouldForwardProp: prop =>
+        prop !== 'bottomHeight' && prop !== 'isEmpty' && prop !== 'footerOpen' && prop !== 'isScrollable'
+})<{ bottomHeight: number; isEmpty?: boolean; footerOpen: boolean; isScrollable: boolean }>(
+    ({ theme, footerOpen, bottomHeight, isScrollable }) => ({
+        flex: 1,
+        paddingTop: 16,
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingBottom: footerOpen && bottomHeight > 24 ? bottomHeight : 24,
 
-    '&::-webkit-scrollbar': {
-        width: 0,
-        height: 0
-    },
-    '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'transparent'
-    },
-
-    [theme.breakpoints.up('sm')]: {
         '&::-webkit-scrollbar': {
-            width: '6px'
+            width: 0,
+            height: 0
         },
-        '&::-webkit-scrollbar-track': {
-            backgroundColor: COLORS_DARK.background.main
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'transparent'
         },
-        scrollbarWidth: 'thin',
-        scrollbarColor: 'auto #212529'
-    }
-}));
+
+        [theme.breakpoints.up('sm')]: {
+            '&::-webkit-scrollbar': {
+                width: '6px'
+            },
+            '&::-webkit-scrollbar-track': {
+                backgroundColor: COLORS_DARK.background.main
+            },
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'auto #212529'
+        }
+    })
+);
 
 export const ShoppingCartIcon = styled(ShoppingCart)(({ theme }) => ({
     width: 60,
@@ -569,17 +574,12 @@ export const OrderLabelTypography = styled(Typography)(({ theme }) => ({
     fontSize: '0.875rem', // 기본값: xs
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '1.25rem'
+        fontSize: '1rem'
     },
     [theme.breakpoints.up('md')]: {
-        fontSize: '1.3rem'
+        fontSize: '1.15rem'
     },
-    [theme.breakpoints.up('xl')]: {
-        fontSize: '1.35rem'
-    },
-    [theme.breakpoints.up('xxl')]: {
-        fontSize: '1.4rem'
-    },
+
     '@media (max-height: 700px)': {
         fontSize: '0.875rem'
     }
@@ -591,16 +591,16 @@ export const OrderPriceTypography = styled(Typography)(({ theme }) => ({
     fontSize: '1rem', // 기본값: xs
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '1.35rem'
+        fontSize: '1rem'
     },
     [theme.breakpoints.up('md')]: {
-        fontSize: '1.4rem'
+        fontSize: '1.3rem'
     },
     [theme.breakpoints.up('xl')]: {
-        fontSize: '1.45rem'
+        fontSize: '1.35rem'
     },
     [theme.breakpoints.up('xxl')]: {
-        fontSize: '1.5rem'
+        fontSize: '1.4rem'
     }
 }));
 
@@ -626,13 +626,10 @@ export const PriceTypography = styled(Typography)(({ theme }) => ({
     fontSize: '1rem', // 기본값(xs 기준)
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '1.2rem'
+        fontSize: '1.1rem'
     },
     [theme.breakpoints.up('md')]: {
-        fontSize: '1.25rem'
-    },
-    [theme.breakpoints.up('lg')]: {
-        fontSize: '1.3rem'
+        fontSize: '1.2rem'
     }
 }));
 

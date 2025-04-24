@@ -42,7 +42,13 @@ import {
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
-import { getUserInitial, useMaxWidthByViewport, useResponsive } from '@/utils/hook';
+import {
+    getUserInitial,
+    useBottomHeight,
+    useMaxWidthByViewport,
+    useResponsive,
+    useResponsiveConfig
+} from '@/utils/hook';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
 import { useQuery } from '@tanstack/react-query';
@@ -98,15 +104,17 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [isCollapsed, setIsCollapsed] = useState(false); // Slide가 완전히 닫히고 나서 버튼 나게 나게 하기 위해
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
     const [snackbar, setSnackbar] = useState({ open: false, message: '', variant: '', device: '' });
-    const { fontSize } = useMaxWidthByViewport();
-
+    // const { fontSize, iconSize, chipSize } = useMaxWidthByViewport();
+    const { fontSize, iconSize, chipSize, maxWidth, marginTop } = useResponsiveConfig('cart');
     const router = useRouter();
 
     const bottomRef = useRef<HTMLDivElement>(null); // 펼쳐졌을 때 하단 영역
     const semiHeaderRef = useRef<HTMLDivElement>(null); // 세미 헤더 (있다면)
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [isScrollable, setIsScrollable] = useState(false);
 
-    const [bottomHeight, setBottomHeight] = useState(160);
+    const bottomHeight = useBottomHeight(bottomRef, [open]);
 
     // 링크 복사 함수
     const copyLinkToClipboard = async () => {
@@ -203,27 +211,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     }, [initialCartItems, isLoading]);
 
     useEffect(() => {
-        if (!bottomRef.current) return;
-
-        const updateBottomHeight = () => {
-            const bottom = bottomRef.current!.getBoundingClientRect().height + 20;
-            setBottomHeight(bottom);
-        };
-
-        updateBottomHeight();
-
-        const resizeObserver = new ResizeObserver(updateBottomHeight);
-        if (bottomRef.current) resizeObserver.observe(bottomRef.current);
-
-        window.addEventListener('resize', updateBottomHeight);
-
-        return () => {
-            resizeObserver.disconnect();
-            window.removeEventListener('resize', updateBottomHeight);
-        };
-    }, []);
-
-    useEffect(() => {
         if (snackbar.open && snackbar.device === 'PC') {
             const timer = setTimeout(() => {
                 setSnackbar(prev => ({ ...prev, open: false }));
@@ -231,6 +218,15 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             return () => clearTimeout(timer);
         }
     }, [snackbar.open, snackbar.device]);
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (el) {
+            console.log(el.scrollHeight, el.clientHeight);
+
+            setIsScrollable(el.scrollHeight > window.innerHeight);
+        }
+    }, [cartItems.length, open]);
 
     if (isLoading) {
         return (
@@ -252,8 +248,10 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         <Container
             sx={{
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                px: { xs: 2, sm: 2, md: 3 }
             }}
+            ref={scrollRef}
         >
             <Box ref={semiHeaderRef}>
                 {isCartReallyInactive && (
@@ -287,27 +285,31 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         {!isMobile ? (
                             <Tooltip title="요약 보기" placement="top" arrow>
                                 <IconButton
+                                    disabled={cartItems.length === 0}
                                     onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
-                                    sx={{ cursor: 'pointer' }}
+                                    sx={{ cursor: 'pointer', padding: '8px 0 0 8px' }}
                                 >
                                     <ClipboardList />
                                 </IconButton>
                             </Tooltip>
                         ) : (
-                            <>
-                                <Box
-                                    onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
-                                    sx={{ cursor: 'pointer', marginRight: 1 }}
+                            <Box sx={{ display: 'flex', gap: 1.5 }}>
+                                <IconButton
+                                    disabled={cartItems.length === 0}
+                                    onClick={() =>
+                                        cartItems.length > 0 && setHeaderModalOpen({ type: 'summary', open: true })
+                                    }
+                                    sx={{ cursor: 'pointer', padding: 0 }}
                                 >
                                     <ClipboardList />
-                                </Box>
-                                <Box
-                                    sx={{ cursor: 'pointer' }}
+                                </IconButton>
+                                <IconButton
+                                    sx={{ cursor: 'pointer', padding: 0 }}
                                     onClick={() => setHeaderModalOpen({ type: 'share', open: true })}
                                 >
                                     <Share2 />
-                                </Box>
-                            </>
+                                </IconButton>
+                            </Box>
                         )}
                     </Box>
                 </ConfirmHeader>
@@ -334,7 +336,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                 variant="outlined"
                                 size="small"
                                 value={shareLink}
-                                // disabled={isCartReallyInactive}
                                 InputProps={{
                                     readOnly: true,
                                     style: { color: COLORS_DARK.text.primary },
@@ -343,7 +344,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                             <Box display="flex" alignItems="center">
                                                 <IconButton
                                                     edge="end"
-                                                    // disabled={isCartReallyInactive}
                                                     onClick={copyLinkToClipboard}
                                                     sx={{
                                                         color: COLORS_DARK.accent.main,
@@ -370,7 +370,12 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     </LinkShareContent>
                 </LinkShareCard>
             )}
-            <ScrollableCartList bottomHeight={bottomHeight} isEmpty={cartItems.length === 0}>
+            <ScrollableCartList
+                isScrollable={isScrollable}
+                bottomHeight={bottomHeight}
+                isEmpty={cartItems.length === 0}
+                footerOpen={open}
+            >
                 {cartItems.length === 0 ? (
                     <Box
                         sx={{
@@ -452,7 +457,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                                     <ConfirmTemperatureBadge
                                                         temperature={item.drinkTemperature}
                                                         label={item.drinkTemperature}
-                                                        size="small"
+                                                        height={chipSize as number}
+                                                        marginTop={marginTop}
                                                     />
                                                 )}
                                             </Box>
@@ -468,7 +474,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                                         p: 0
                                                     }}
                                                 >
-                                                    <Trash2 fontSize={fontSize} />
+                                                    <Trash2 size={iconSize} />
                                                 </IconButton>
                                             )}
                                         </Box>

@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material';
 import { DrinkCategory } from '@/types/common';
-import { Coffee, CoffeeIcon as Tea, Wine } from 'lucide-react';
+import { Coffee, CoffeeIcon as Tea, Sparkles, Wine } from 'lucide-react';
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
@@ -12,15 +12,113 @@ declare module '@mui/material/styles' {
         xxl: true;
         xxxl: true;
     }
+
+    interface Theme {
+        custom: {
+            responsiveConfig: typeof responsiveConfig;
+        };
+    }
+
+    interface ThemeOptions {
+        custom?: {
+            responsiveConfig: typeof responsiveConfig;
+        };
+    }
 }
 
+export const responsiveConfig = {
+    fontSizeSteps: {
+        cart: {
+            xs: '0.9rem',
+            sm: '0.95rem',
+            md: '1rem',
+            lg: '1.05rem',
+            xl: '1.1rem',
+            xxl: '1.15rem',
+            xxxl: '1.2rem'
+        },
+        menu: {
+            xs: '0.9rem',
+            sm: '0.95rem',
+            md: '1rem',
+            lg: '1.05rem',
+            xl: '1.1rem',
+            xxl: '1.15rem',
+            xxxl: '1.2rem'
+        },
+        cartRegister: {
+            xs: '0.8rem',
+            sm: '0.85rem',
+            md: '0.9rem',
+            lg: '0.95rem',
+            xl: '1rem',
+            xxl: '1.05rem',
+            xxxl: '1.1rem'
+        }
+    },
+    iconSizeSteps: {
+        cart: {
+            xs: 20,
+            sm: 22,
+            md: 24,
+            lg: 26,
+            xl: 28,
+            xxl: 30,
+            xxxl: 32
+        },
+        menu: {
+            xs: 18,
+            sm: 20,
+            md: 22,
+            lg: 24,
+            xl: 26,
+            xxl: 28,
+            xxxl: 30
+        }
+    },
+    chipSizeSteps: {
+        cart: {
+            xs: 18,
+            sm: 20,
+            md: 22,
+            lg: 24,
+            xl: 26,
+            xxl: 28,
+            xxxl: 30
+        },
+        cartRegister: {
+            xs: 16,
+            sm: 18,
+            md: 20,
+            lg: 22,
+            xl: 24,
+            xxl: 26,
+            xxxl: 28
+        }
+    },
+    paddingSteps: {
+        cartItem: {
+            xs: 1,
+            sm: 1.25,
+            md: 1.5,
+            lg: 2,
+            xl: 2.5,
+            xxl: 3,
+            xxxl: 3.5
+        }
+    }
+};
+
 export const MuiTheme = createTheme({
+    custom: {
+        responsiveConfig
+    },
     breakpoints: {
         values: {
             xs: 0, // 기존대로 유지 (사실상 xxs 역할)
             sm: 360, // 일반적인 소형 스마트폰
             md: 480, // 일반 스마트폰
-            lg: 768, // 태블릿
+            lg: 600, // 태블릿
             xl: 1024, // 노트북
             xxl: 1280, // 데스크탑
             xxxl: 1440 // 대형 데스크탑
@@ -83,18 +181,6 @@ export const MuiTheme = createTheme({
         }
     }
 });
-
-export const CafeMenuData = [
-    {
-        name: 'COFFEE',
-        index: 0,
-        value: DrinkCategory.COFFEE,
-        icon: Coffee,
-        sx: { fontSize: '20px' }
-    },
-    { name: 'TEA', index: 1, value: DrinkCategory.TEA, icon: Tea, sx: { fontSize: '20px' } },
-    { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK, icon: Wine, sx: { fontSize: '20px' } }
-];
 
 export const COLORS_LIGHT = {
     background: {

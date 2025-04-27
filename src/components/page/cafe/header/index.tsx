@@ -17,33 +17,30 @@ export const CafeHeader = ({ entry, title, cartId }: any) => {
             sx={{ display: 'flex', justifyContent: entry === 'menu' ? 'space-between' : 'flex-end' }}
         >
             {entry === 'menu' && <CompanySelect entry={'cafe'} />}
-            {entry !== 'menu' ? (
-                <CartBadge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    badgeContent={1}
-                    color="error"
-                    sx={{
-                        '& .MuiBadge-badge': {
-                            top: 6,
-                            right: 6,
-                            backgroundColor: COLORS_DARK.badge.hot,
-                            color: '#fff',
-                            fontWeight: 'bold',
-                            boxShadow: '0 0 0 2px #212529'
-                        }
-                    }}
+            {/*{entry !== 'menu' ? (*/}
+            <CartBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                badgeContent={1}
+                color="error"
+                sx={{
+                    '& .MuiBadge-badge': {
+                        top: 6,
+                        right: 6,
+                        backgroundColor: COLORS_DARK.badge.hot,
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        boxShadow: '0 0 0 2px #212529'
+                    }
+                }}
+            >
+                <IconButton
+                    sx={{ color: COLORS_DARK.text.primary }}
+                    onClick={() => router.push(`/cafe/cart/${cartId}`)}
                 >
-                    <IconButton
-                        sx={{ color: COLORS_DARK.text.primary }}
-                        onClick={() => router.push(`/cafe/cart/${cartId}`)}
-                    >
-                        <ShoppingCart />
-                    </IconButton>
-                </CartBadge>
-            ) : (
-                <HeaderCartButton />
-            )}
+                    <ShoppingCart />
+                </IconButton>
+            </CartBadge>
         </Box>
     );
 };

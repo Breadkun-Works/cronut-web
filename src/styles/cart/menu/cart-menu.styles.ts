@@ -4,28 +4,24 @@ import { COLORS_DARK } from '@/data';
 
 export const CategoryTabs = styled(Tabs)({
     minHeight: 48,
-    marginBottom: 8,
-    '& .MuiTabs-flexContainer': {
-        justifyContent: 'center',
-        gap: 16
-    },
-    padding: '0 0 16px 0',
-    borderBottom: `1px solid ${COLORS_DARK.divider}`
+    padding: '0 10px 12px 10px',
+    borderBottom: `2px solid ${COLORS_DARK.divider}`
 });
 
-export const CategoryTab = styled(Tab)`
-    padding: 8px 4px;
-    minheight: 40;
-
-    &.Mui-selected {
-        color: ${COLORS_DARK.accent.main};
-        font-weight: bold;
+export const CategoryTab = styled(Tab)(({ theme }) => ({
+    minHeight: 40,
+    '&.Mui-selected': {
+        color: COLORS_DARK.accent.main,
+        fontWeight: 'bold',
+        fontSize: '0.9rem', // 기본값
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '1rem'
+        }
+    },
+    '&:hover': {
+        color: COLORS_DARK.accent.main
     }
-
-    &:hover {
-        color: ${COLORS_DARK.accent.main};
-    }
-`;
+}));
 
 export const MenuItemContent = styled(CardContent)({
     padding: '12px !important',
@@ -47,7 +43,7 @@ export const MenuGrid = styled(Box)({
     gridTemplateColumns: 'repeat(3, 1fr)', // 기본 3개씩 표시 (웹)
     gap: 16,
     width: '100%',
-    '@media (max-width: 480px)': {
+    '@media (max-width: 599px)': {
         gridTemplateColumns: 'repeat(2, 1fr)' // 모바일에서는 2개씩 표시
     }
 });

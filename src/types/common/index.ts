@@ -49,5 +49,38 @@ export enum DrinkTemperature {
 export enum DrinkCategory {
     COFFEE = 'COFFEE',
     TEA = 'TEA',
-    DRINK = 'DRINK'
+    DRINK = 'DRINK',
+    SEASON = 'SEASON'
 }
+
+export const CafeMenuData = [
+    {
+        name: 'COFFEE',
+        index: 0,
+        value: DrinkCategory.COFFEE,
+        sx: { fontSize: '20px' }
+    },
+    {
+        name: 'TEA',
+        index: 1,
+        value: DrinkCategory.TEA,
+        sx: { fontSize: '20px' }
+    },
+    {
+        name: 'BEVERAGE',
+        index: 2,
+        value: DrinkCategory.DRINK,
+        sx: { fontSize: '20px' }
+    },
+
+    ...(localStorage.getItem('recentCompany') === 'EULJI'
+        ? [
+              {
+                  name: 'SEASON',
+                  index: 3,
+                  value: DrinkCategory.SEASON,
+                  sx: { fontSize: '20px' }
+              }
+          ]
+        : [])
+];

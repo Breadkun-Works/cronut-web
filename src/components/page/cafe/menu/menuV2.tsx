@@ -1,17 +1,10 @@
-import {
-    Box,
-    Button,
-    CardActionArea,
-    Dialog,
-    DialogContent,
-    InputAdornment,
-    TextField,
-    Typography
-} from '@mui/material';
-import { COLORS_DARK } from '@/data';
+'use client';
+
+import { Box, Button, CardActionArea, Dialog, DialogContent, Typography } from '@mui/material';
+import { CafeMenuData, COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
-import { DrinkCategory, CafeMenuData } from '@/types/common';
+import { DrinkCategory } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
 import {
     Header,
@@ -23,20 +16,20 @@ import {
     TabIcon,
     TemperatureBadge
 } from '@/styles/cart/cart.styles';
-import { Coffee, Leaf, Search, Sparkles, Wine } from 'lucide-react';
+import { Coffee, Leaf, Wine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
+import { CafeHeader } from '@/components/page/cafe/header';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useResponsive } from '@/utils/hook';
 import {
-    CategoryTab,
     CategoryTabs,
+    CategoryTab,
     MenuGrid,
     MenuImage,
     MenuItemCard,
     MenuItemContent
 } from '@/styles/cart/menu/cart-menu.styles';
-import styled from '@emotion/styled';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -44,16 +37,12 @@ const returnIcon = (cafeMenu: DrinkCategory) => {
             return <Coffee />;
         case DrinkCategory.TEA:
             return <Leaf />;
-        case DrinkCategory.SEASON:
-            return <Sparkles />;
         default:
             return <Wine />;
     }
 };
 
-const CafeMenuTabPanel = ({ children, value, index }: any) => {
-    const { isMobile, isDesktop, isXs, isSmall } = useResponsive();
-
+const CafeMenuTabPanel = ({ children, value, index, isMobile }: any) => {
     return (
         <div
             role="tabpanel"
@@ -61,7 +50,7 @@ const CafeMenuTabPanel = ({ children, value, index }: any) => {
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
         >
-            {value === index && (isSmall ? children : <Box sx={{ padding: '16px 0 16px 0' }}>{children}</Box>)}
+            {value === index && (isMobile ? children : <Box sx={{ p: 3 }}>{children}</Box>)}
         </div>
     );
 };
@@ -69,7 +58,7 @@ const CafeMenuTabPanel = ({ children, value, index }: any) => {
 const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; cartId?: string }) => {
     const [tabValue, setTabValue] = useState(0);
     const { company } = useCompanyContext();
-    const { isMobile, isDesktop, isSmall } = useResponsive();
+    const { isMobile } = useResponsive();
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -79,11 +68,6 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     const containerRef = useRef<HTMLDivElement>(null);
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
     const [dialogWidth, setDialogWidth] = useState<number>(0);
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
-    };
 
     const [query, setQuery] = useState({
         size: 12,
@@ -159,127 +143,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         );
     };
 
-    const ToggleButton = styled(Button)(({ theme }) => ({
-        position: 'absolute',
-        bottom: 8,
-        right: 8,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        color: '#fff',
-        fontSize: '9px',
-        padding: '3px 8px',
-        minWidth: 'auto',
-        borderRadius: 20,
-        backdropFilter: 'blur(4px)',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-        zIndex: 2,
-        transition: 'all 0.2s ease',
-
-        '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            transform: 'translateY(-2px)'
-        },
-
-        [theme.breakpoints.up('sm')]: {
-            bottom: 10,
-            right: 10,
-            fontSize: '10px',
-            padding: '4px 9px'
-        },
-
-        [theme.breakpoints.up('md')]: {
-            bottom: 12,
-            right: 12,
-            fontSize: '10px',
-            padding: '4px 10px'
-        },
-
-        [theme.breakpoints.up('lg')]: {
-            bottom: 14,
-            right: 14,
-            fontSize: '11px',
-            padding: '5px 11px'
-        },
-
-        [theme.breakpoints.up('xl')]: {
-            bottom: 16,
-            right: 16,
-            fontSize: '12px',
-            padding: '6px 12px'
-        }
-    }));
-
-    const SearchRow = styled(Box)`
-        display: flex;
-        width: 100%;
-        padding: 0 8px;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 12px;
-
-        @media (min-width: 1024px) {
-            justify-content: flex-end;
-            padding: 0 16px;
-        }
-    `;
-
-    const SearchField = styled(TextField)`
-        flex: 1;
-
-        @media (min-width: 600px) {
-            flex: 0 0 240px;
-        }
-
-        .MuiOutlinedInput-root {
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.08);
-            font-size: 0.9rem;
-
-            fieldset {
-                border-color: rgba(255, 255, 255, 0.15);
-            }
-        }
-
-        .MuiInputBase-input {
-            padding: 8px 12px;
-            color: white;
-            &::placeholder {
-                color: rgba(255, 255, 255, 0.5);
-            }
-        }
-    `;
-
-    const SearchButton = styled(Button)`
-        display: none;
-
-        @media (min-width: 481px) {
-            display: inline-flex;
-            background-color: ${COLORS_DARK.accent.main};
-            color: #fff;
-            font-weight: bold;
-            border-radius: 8px;
-            padding: 6px 16px;
-            min-width: 72px;
-            height: 40px;
-
-            &:hover {
-                background-color: #d97706;
-            }
-        }
-    `;
-
     const MenuItem = ({ record, onClick, entry }: any) => {
-        const [showIced, setShowIced] = useState(false);
-        // 토글 버튼 클릭 핸들러
-        const handleToggleClick = (e: React.MouseEvent) => {
-            e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
-            setShowIced(prev => !prev);
-        };
-
-        // 핫/아이스 옵션 확인
-        const hotOption = record.options.find((opt: ICafeMenuOption) => opt.drinkTemperature === 'HOT');
-        const icedOption = record.options.find((opt: ICafeMenuOption) => opt.drinkTemperature === 'ICED');
-        const hasBothOptions = hotOption && icedOption;
-
         // 공통 컨텐츠
         const content = (
             <MenuItemContent>
@@ -289,25 +153,20 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                         <MenuCardMedia
                             isMenu={entry === 'menu'}
                             image={
-                                record.options?.[showIced ? 1 : 0]?.imageUrl ??
+                                record.options?.[0]?.imageUrl ??
                                 'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
                             }
                             sx={{ backgroundSize: 'contain' }}
                             title={record.name}
                         />
-                        {hasBothOptions && entry === 'menu' && (
-                            <ToggleButton onClick={handleToggleClick}>
-                                {showIced ? '핫 보기' : '아이스 보기'}
-                            </ToggleButton>
-                        )}
                     </MenuImage>
                 </Box>
 
                 <Typography
+                    variant="subtitle2"
                     fontWeight="bold"
                     sx={{
                         mt: 1,
-                        fontSize: isSmall ? '0.9rem' : '1rem',
                         textAlign: 'center',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -319,12 +178,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                 <Typography
                     variant="body2"
                     fontWeight="medium"
-                    sx={{
-                        color: COLORS_DARK.accent.main,
-                        textAlign: 'center',
-                        mt: 0.5,
-                        fontSize: isSmall ? '0.9rem' : '1rem'
-                    }}
+                    sx={{ color: COLORS_DARK.accent.main, textAlign: 'center', mt: 0.5 }}
                 >
                     {record.options[0].price.toLocaleString()}원
                 </Typography>
@@ -335,95 +189,26 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     };
 
     return (
-        <PageContainer ref={containerRef}>
-            <Box>
-                {/*<CafeHeader entry={entry} cartId={cartId} />*/}
+        /*Container 는 maxWidth가 지정되면 그 브레이크포인트에 따라 max-width가 자동으로 설정, false로 줘야 max-width:950px에 맞춰서 표현 가능*/
+        <PageContainer ref={containerRef} maxWidth={false}>
+            <Header>
+                <CafeHeader entry={entry} cartId={cartId} />
                 <HeaderContent>
                     <StyledMenuTitle>{title}</StyledMenuTitle>
                 </HeaderContent>
-                <SearchRow>
-                    <SearchField
-                        placeholder="메뉴명을 입력하세요."
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        size="small"
-                        InputProps={{
-                            ...(isMobile && {
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Search size={18} color={COLORS_DARK.accent.main} />
-                                    </InputAdornment>
-                                )
-                            })
-                        }}
-                    />
-                    <SearchButton onClick={() => {}}>
-                        {!isMobile && (
-                            <Box component="span" mr={0.5} display="flex" alignItems="center">
-                                <Search size={18} color="#fff" />
-                            </Box>
-                        )}
-                        검색
-                    </SearchButton>
-                </SearchRow>
-
-                {/*<Box display="flex" justifyContent="flex-end" px={2} mb={1}>*/}
-                {/*    <SearchField*/}
-                {/*        placeholder="메뉴 검색..."*/}
-                {/*        variant="outlined"*/}
-                {/*        value={searchTerm}*/}
-                {/*        onChange={handleSearchChange}*/}
-                {/*        InputProps={{*/}
-                {/*            startAdornment: (*/}
-                {/*                <InputAdornment position="start">*/}
-                {/*                    <Search size={18} color="rgba(255, 255, 255, 0.5)" />*/}
-                {/*                </InputAdornment>*/}
-                {/*            )*/}
-                {/*        }}*/}
-                {/*        size="small"*/}
-                {/*        sx={{*/}
-                {/*            width: {*/}
-                {/*                xs: '100%', // 모바일에서는 전체 너비*/}
-                {/*                sm: '100%', // 태블릿 이상에서는 작게*/}
-                {/*                md: '100%',*/}
-                {/*                lg: '250px'*/}
-                {/*            },*/}
-                {/*            transition: 'width 0.2s ease-in-out'*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</Box>*/}
-            </Box>
-            <CategoryTabs
-                value={tabValue}
-                onChange={handleTabChange}
-                centered
-                variant={isSmall ? 'fullWidth' : undefined}
-            >
+            </Header>
+            <CategoryTabs value={tabValue} onChange={handleTabChange} centered>
                 {CafeMenuData.map(cafeMenu => (
                     <CategoryTab
-                        sx={{
-                            ...(isSmall && {
-                                minWidth: 0, // 탭이 최소 너비 이상으로 벌어지지 않게
-                                padding: '6px 4px', // 패딩 줄여서 공간 확보
-                                fontSize: '0.85rem' // 텍스트 크기도 줄임
-                            })
-                        }}
-                        disableRipple
                         key={cafeMenu.index}
                         icon={<TabIcon>{returnIcon(cafeMenu.value)}</TabIcon>}
                         label={cafeMenu.name}
                     />
                 ))}
             </CategoryTabs>
-
-            <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
+            <ScrollableContent className={isMobile ? 'mobile' : ''}>
                 {CafeMenuData.map(cafeMenu => (
-                    <CafeMenuTabPanel
-                        key={cafeMenu.index}
-                        value={tabValue}
-                        index={cafeMenu.index}
-                        isMobile={!isDesktop}
-                    >
+                    <CafeMenuTabPanel key={cafeMenu.index} value={tabValue} index={cafeMenu.index} isMobile={isMobile}>
                         <Box ref={loadMoreRef} component="div">
                             <MenuGrid>
                                 {data?.pages?.map(page =>

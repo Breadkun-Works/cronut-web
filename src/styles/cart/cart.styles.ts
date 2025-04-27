@@ -110,11 +110,21 @@ export const MenuCardMedia = styled(CardMedia, {
     })
 }));
 
-export const PageContainer = styled(Container)({
+export const PageContainer = styled(Container)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: COLORS_DARK.background.main
-});
+    backgroundColor: theme.palette.background.default,
+    padding: 16, // 기본값
+    [theme.breakpoints.up('sm')]: {
+        padding: 16
+    },
+    [theme.breakpoints.up('md')]: {
+        padding: 16
+    },
+    [theme.breakpoints.up('lg')]: {
+        padding: 24
+    }
+}));
 
 export const Header = styled(Box)({
     position: 'sticky',
@@ -182,13 +192,12 @@ export const HeaderContent = styled(Box)({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    marginTop: '1rem',
-    marginBottom: '1rem'
+    // marginTop: '1rem',
+    marginBottom: '1.2rem'
 });
 
 export const ScrollableContent = styled(Box)`
     flex: 1;
-    padding: 0 16px 16px 16px;
     overflow-y: auto;
 
     &.mobile {

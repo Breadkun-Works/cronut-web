@@ -93,7 +93,7 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
                                 onClick={copyAccountNumber}
                                 sx={{ borderColor: 'gray', ':hover': { bgcolor: 'gray.800' } }}
                             >
-                                {copied ? '복사완료' : '복사하기'}
+                                {copied ? '완료' : '복사'}
                             </Button>
                         </Box>
                         <Divider sx={{ bgcolor: 'gray', my: 2 }} />

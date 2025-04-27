@@ -1,10 +1,10 @@
 'use client';
 
 import { Box, Button, CardActionArea, Dialog, DialogContent, Typography } from '@mui/material';
-import { CafeMenuData, COLORS_DARK } from '@/data';
+import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
-import { DrinkCategory } from '@/types/common';
+import { CafeMenuData, DrinkCategory } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
 import {
     Header,

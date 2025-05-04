@@ -8,10 +8,13 @@ import { Company, mealMenu } from '@/types/common';
 import { getMealImagePath } from '@/utils/image-return';
 import { useCompanyContext } from '@/context/CompanyContext';
 import { CompanySelect } from '@/components/CompanySelect';
+import { Box } from '@mui/material';
+import { useResponsive } from '@/utils/hook';
 
 const ms = classNames.bind(styles);
 
 const Meal = () => {
+    const { isMobile } = useResponsive();
     const getWeekNumber = (date: Date): number => {
         // 월요일이 0이 되도록 요일을 조정합니다.
         const dayOfWeek = (date.getDay() + 6) % 7;
@@ -29,8 +32,7 @@ const Meal = () => {
         return weekNumber;
     };
 
-    // const [company, setCompany] = useState('강촌'); // 강촌, 을지
-    const { company } = useCompanyContext(); // company와 setCompany를 가져옵니다.
+    const { company } = useCompanyContext();
 
     const [days, setDays] = useState<string[]>();
     const today = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; // 오늘 요일 표시 => 월:0 ~ 일:6
@@ -147,7 +149,9 @@ const Meal = () => {
 
     return (
         <div className={ms('meal')}>
-            <CompanySelect entry={'meal'} />
+            <Box margin={isMobile ? '10px 20px' : '20px 30px'}>
+                <CompanySelect entry={'meal'} />
+            </Box>
 
             <div className={ms('days')}>
                 {company === Company.KANGCHON &&

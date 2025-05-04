@@ -42,7 +42,7 @@ export const useCreateCart = (
 
 const getCafeMenu = async (
     pageParam: number,
-    query: { size: number; category?: DrinkCategory; name?: string; cafeLocation?: Company }
+    query: { size: number; category?: DrinkCategory | string; name?: string; cafeLocation?: Company }
 ): Promise<{
     records: Array<ICafeMenuBoardResponse>;
     pageInfo: { first: boolean; last: boolean; currentPage: number; nextPage: number | null };
@@ -69,7 +69,7 @@ const getCafeMenu = async (
 
 export const useGetCafeMenuInfinite = (query: {
     size: number;
-    category?: DrinkCategory;
+    category?: DrinkCategory | string;
     name?: string;
     cafeLocation?: Company;
 }) => {

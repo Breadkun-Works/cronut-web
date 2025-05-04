@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { TemperatureBadgeProps } from '@/types/cart';
-import { LinkIcon, ShoppingCart } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { keyframes } from '@emotion/react';
 
 interface ConfirmHeaderProps {
@@ -72,13 +72,18 @@ export const CartButton = styled.button`
     cursor: pointer;
 `;
 
-export const StyledMenuTitle = styled(Typography)({
+export const StyledMenuTitle = styled(Typography)(({ theme }) => ({
     fontWeight: 'bold',
-    fontSize: '1.5rem',
+    fontSize: '1.3rem', // 기본값 (sm 이하)
+
     color: COLORS_DARK.text.primary,
     textAlign: 'center',
-    whiteSpace: 'pre-line'
-});
+    whiteSpace: 'pre-line',
+
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '1.5rem' // md(480px) 이상부터 1.5rem
+    }
+}));
 
 // 온도 뱃지를 위한 Box 컴포넌트
 export const StyledMenuTempBox = styled.div`
@@ -113,16 +118,15 @@ export const MenuCardMedia = styled(CardMedia, {
 export const PageContainer = styled(Container)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
+    width: '100%',
+
     backgroundColor: theme.palette.background.default,
-    padding: 16, // 기본값
-    [theme.breakpoints.up('sm')]: {
-        padding: 16
-    },
-    [theme.breakpoints.up('md')]: {
-        padding: 16
-    },
+    padding: 16,
+
     [theme.breakpoints.up('lg')]: {
-        padding: 24
+        padding: '24px 16px 16px 16px',
+        width: '90%',
+        margin: '0 auto'
     }
 }));
 
@@ -192,7 +196,6 @@ export const HeaderContent = styled(Box)({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    // marginTop: '1rem',
     marginBottom: '1.2rem'
 });
 
@@ -213,45 +216,16 @@ export const CartBadge = styled(Badge)({
         boxShadow: '0 0 0 2px #212529'
     }
 });
-export const CartConfirmContainer = styled(Container)({
-    display: 'flex',
-    flexDirection: 'column'
-});
 
 export const LinkShareCard = styled(Card)(({ theme }) => ({
     overflow: 'hidden',
     backgroundColor: COLORS_DARK.theme.blue,
     border: `1px solid ${COLORS_DARK.background.lighter}`,
     borderRadius: '20px'
-
-    // marginBottom: '8px',
-    //
-    // [theme.breakpoints.down('xxxl')]: {
-    //     marginBottom: '12px'
-    // }
 }));
 
 export const LinkShareContent = styled(CardContent)({
     padding: '12px !important'
-});
-
-export const ItemDetails = styled(Box)({
-    marginLeft: 16,
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'column'
-});
-
-export const BottomSummary = styled(Box)({
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 16,
-    backgroundColor: COLORS_DARK.theme.blue,
-    borderTop: `1px solid ${COLORS_DARK.background.lighter}`,
-    boxShadow: 'none'
 });
 
 export const ButtonsContainer = styled(Box, {
@@ -341,12 +315,7 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
     [theme.breakpoints.up('lg')]: {
         fontSize: '1.2rem'
     },
-    // [theme.breakpoints.up('xl')]: {
-    //     fontSize: '1.25rem'
-    // },
-    // [theme.breakpoints.up('xxl')]: {
-    //     fontSize: '1.3rem'
-    // }
+
     '@media (max-height: 700px)': {
         fontSize: '0.875rem'
     },
@@ -376,35 +345,6 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
             color: theme.palette.action.disabled
         }
     })
-}));
-
-export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ temperature }) => ({
-    height: 22,
-    borderRadius: 4,
-    fontWeight: 600,
-    fontSize: '0.75rem',
-    padding: '0 6px',
-    backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
-    color: '#fff',
-    boxShadow: temperature === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)',
-    display: 'inline-flex', // ✅ 핵심 포인트
-    alignItems: 'center',
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    zIndex: 2,
-
-    '& .MuiChip-label': {
-        padding: 0, // ✅ 기본 Chip 내부 padding 제거
-        display: 'inline-block',
-        lineHeight: 1
-    },
-
-    '@media (max-width: 400px)': {
-        fontSize: '0.6875rem',
-        height: 20,
-        padding: '0 5px'
-    }
 }));
 
 export const CartItemCard = styled(Card)({
@@ -675,25 +615,6 @@ export const SnackbarDialogContent = styled(DialogContent)(({ theme }) => ({
     width: 'auto',
     minHeight: '90px',
     boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.5)'
-}));
-
-export const SnackbarDialogIcon = styled(LinkIcon)(({ theme }) => ({
-    flexShrink: 0,
-    color: COLORS_DARK.accent.main,
-    width: '1rem',
-    height: '1rem',
-    [theme.breakpoints.up('md')]: {
-        width: '1.2rem',
-        height: '1.2rem'
-    },
-    [theme.breakpoints.up('lg')]: {
-        width: '1.25rem',
-        height: '1.25rem'
-    },
-    [theme.breakpoints.up('xl')]: {
-        width: '1.35rem',
-        height: '1.35rem'
-    }
 }));
 
 export const SnackbarDialogText = styled(Typography)(({ theme }) => ({

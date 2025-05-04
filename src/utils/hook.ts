@@ -1,5 +1,7 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { RefObject, useEffect, useState } from 'react';
+import { BASE_MENU, CafeMenuTab, SEASON_MENU } from '@/types/common';
+import { useCompanyContext } from '@/context/CompanyContext';
 
 export function useResponsive() {
     const theme = useTheme();
@@ -13,6 +15,9 @@ export function useResponsive() {
         isSmall: useMediaQuery(theme.breakpoints.between('xs', 'sm')),
         isMobile: useMediaQuery(theme.breakpoints.between('xs', 'md')), // 예: 360 이하
         isTablet: useMediaQuery(theme.breakpoints.between('sm', 'lg')),
+        isTabletOnly: useMediaQuery('(min-width:768px) and (max-width:1023px)'),
+        tillTablet: useMediaQuery('(min-width:320px) and (max-width:768px)'),
+        overTablet: useMediaQuery('(min-width:768px)'),
         isDesktop: useMediaQuery(theme.breakpoints.up('lg'))
     };
 }
@@ -150,3 +155,40 @@ export function useBottomHeight(ref: RefObject<HTMLElement>, deps: any[] = []): 
 
     return bottomHeight;
 }
+
+export const useCafeMenuData = () => {
+    const [menuData, setMenuData] = useState<CafeMenuTab[]>([]);
+    const { company } = useCompanyContext(); // company를 가져온다
+    const updateMenu = () => {
+        if (company === 'EULJI') {
+            setMenuData([...BASE_MENU, SEASON_MENU]);
+        } else {
+            setMenuData(BASE_MENU);
+        }
+    };
+
+    useEffect(() => {
+        updateMenu();
+    }, [company]);
+
+    return menuData;
+};
+
+export const useCurrentBreakpoint = () => {
+    const theme = useTheme();
+
+    const isXxxl = useMediaQuery(theme.breakpoints.up('xxxl'));
+    const isXxl = useMediaQuery(theme.breakpoints.up('xxl'));
+    const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+    const isLg = useMediaQuery(theme.breakpoints.up('lg'));
+    const isMd = useMediaQuery(theme.breakpoints.up('md'));
+    const isSm = useMediaQuery(theme.breakpoints.up('sm'));
+
+    if (isXxxl) return 'xxxl';
+    if (isXxl) return 'xxl';
+    if (isXl) return 'xl';
+    if (isLg) return 'lg';
+    if (isMd) return 'md';
+    if (isSm) return 'sm';
+    return 'xs';
+};

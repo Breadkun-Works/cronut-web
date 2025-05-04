@@ -1,47 +1,54 @@
+'use client';
 import {
+    Badge,
     Box,
     Button,
     CardActionArea,
     Dialog,
     DialogContent,
-    InputAdornment,
-    TextField,
+    IconButton,
+    ToggleButtonGroup,
     Typography
 } from '@mui/material';
-import { COLORS_DARK } from '@/data';
+import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
-import { DrinkCategory, CafeMenuData } from '@/types/common';
+import { DrinkCategory, DrinkTemperature } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
 import {
-    Header,
     HeaderContent,
     MenuCardMedia,
     PageContainer,
     ScrollableContent,
     StyledMenuTitle,
-    TabIcon,
-    TemperatureBadge
+    TabIcon
 } from '@/styles/cart/cart.styles';
-import { Coffee, Leaf, Search, Sparkles, Wine } from 'lucide-react';
+import { Leaf, Search, Sparkles, Wine, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
-import { useResponsive } from '@/utils/hook';
+import { useCafeMenuData, useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import {
     CategoryTab,
     CategoryTabs,
+    GlowContainer,
+    GlowingIcon,
     MenuGrid,
     MenuImage,
     MenuItemCard,
-    MenuItemContent
+    MenuItemContent,
+    SearchIconButton,
+    TemperatureBadge,
+    TempToggleButton
 } from '@/styles/cart/menu/cart-menu.styles';
-import styled from '@emotion/styled';
+import { CompanySelect } from '@/components/CompanySelect';
+import { LocalCafeOutlined } from '@mui/icons-material';
+import { SearchBar } from '@/components/page/cafe/menu/searchbar';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
         case DrinkCategory.COFFEE:
-            return <Coffee />;
+            return <LocalCafeOutlined />;
         case DrinkCategory.TEA:
             return <Leaf />;
         case DrinkCategory.SEASON:
@@ -52,7 +59,7 @@ const returnIcon = (cafeMenu: DrinkCategory) => {
 };
 
 const CafeMenuTabPanel = ({ children, value, index }: any) => {
-    const { isMobile, isDesktop, isXs, isSmall } = useResponsive();
+    const { isSmall } = useResponsive();
 
     return (
         <div
@@ -85,14 +92,44 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         setSearchTerm(event.target.value);
     };
 
+    const handleSearchSubmit = () => {
+        setQuery(prev => ({
+            ...prev,
+            category: '',
+            name: searchTerm
+        }));
+    };
+
     const [query, setQuery] = useState({
         size: 12,
-        category: DrinkCategory.COFFEE,
+        category: 'COFFEE',
         name: '',
         cafeLocation: company
     });
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
+
+    const cafeMenuData = useCafeMenuData();
+    const { iconSizeSteps } = responsiveConfig;
+    const breakpoint = useCurrentBreakpoint();
+    const iconSize = iconSizeSteps.menu[breakpoint];
+
+    const [showSearch, setShowSearch] = useState(false);
+
+    const handleSearchToggle = () => {
+        const next = !showSearch;
+        setShowSearch(next);
+
+        if (!next) {
+            setSearchTerm('');
+            setQuery(prev => ({
+                ...prev,
+                category: DrinkCategory.COFFEE,
+                name: ''
+            }));
+            setTabValue(0);
+        }
+    };
 
     useEffect(() => {
         if (!loadMoreRef.current) return;
@@ -131,10 +168,12 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
             category: DrinkCategory.COFFEE // 초기화
         }));
         setTabValue(0);
+        setShowSearch(false);
+        setSearchTerm('');
     }, [company]);
 
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
-        const selectedCategory = CafeMenuData[newTabValue].value;
+        const selectedCategory = cafeMenuData[newTabValue].value;
         setTabValue(newTabValue);
         setQuery(prev => ({ ...prev, category: selectedCategory }));
     };
@@ -146,160 +185,83 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
 
     const handleCloseDialog = () => setOpenDialog(false);
 
-    const getTemperatureChip = (option: Array<ICafeMenuOption>) => {
-        if (option.length === 2) return null;
+    const getTempType = (options: Array<ICafeMenuOption>) => {
+        const hasHot = options.some(o => o.drinkTemperature === 'HOT');
+        const hasIced = options.some(o => o.drinkTemperature === 'ICED');
 
-        const isIced = option.length === 1 && option[0].drinkTemperature === 'ICED';
-        return (
-            <TemperatureBadge
-                temperature={isIced ? 'ICED' : 'HOT'}
-                label={isIced ? 'ICE ONLY' : 'HOT ONLY'}
-                size="small"
-            />
-        );
+        if (hasHot && hasIced) return 'BOTH';
+        if (hasHot) return 'HOT_ONLY';
+        if (hasIced) return 'ICE_ONLY';
+        return 'NONE';
     };
 
-    const ToggleButton = styled(Button)(({ theme }) => ({
-        position: 'absolute',
-        bottom: 8,
-        right: 8,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        color: '#fff',
-        fontSize: '9px',
-        padding: '3px 8px',
-        minWidth: 'auto',
-        borderRadius: 20,
-        backdropFilter: 'blur(4px)',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-        zIndex: 2,
-        transition: 'all 0.2s ease',
+    const CafeMenuTempUI = ({ temp, onToggle, options }: any) => {
+        const tempType = getTempType(options);
 
-        '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            transform: 'translateY(-2px)'
-        },
+        if (tempType === 'ICE_ONLY') return <TemperatureBadge temperature="ICED" label="ICE ONLY" size="small" />;
 
-        [theme.breakpoints.up('sm')]: {
-            bottom: 10,
-            right: 10,
-            fontSize: '10px',
-            padding: '4px 9px'
-        },
+        if (tempType === 'HOT_ONLY') return <TemperatureBadge temperature="HOT" label="HOT ONLY" size="small" />;
 
-        [theme.breakpoints.up('md')]: {
-            bottom: 12,
-            right: 12,
-            fontSize: '10px',
-            padding: '4px 10px'
-        },
+        if (tempType === 'BOTH') {
+            return (
+                <ToggleButtonGroup
+                    exclusive
+                    value={temp}
+                    onChange={(_, value) => {
+                        if (value !== null) onToggle(value);
+                    }}
+                    sx={{
+                        position: 'absolute',
+                        top: 8,
+                        left: 8,
+                        zIndex: 2,
+                        overflow: 'hidden',
+                        height: 22,
+                        '@media (max-width: 400px)': {
+                            fontSize: '0.6875rem',
+                            height: 20,
+                            padding: '0 5px'
+                        }
+                    }}
+                >
+                    <TempToggleButton value="HOT" valueType={DrinkTemperature.HOT} selectedValue={temp}>
+                        <span style={{ display: 'inline-block' }}>HOT</span>
+                    </TempToggleButton>
 
-        [theme.breakpoints.up('lg')]: {
-            bottom: 14,
-            right: 14,
-            fontSize: '11px',
-            padding: '5px 11px'
-        },
-
-        [theme.breakpoints.up('xl')]: {
-            bottom: 16,
-            right: 16,
-            fontSize: '12px',
-            padding: '6px 12px'
-        }
-    }));
-
-    const SearchRow = styled(Box)`
-        display: flex;
-        width: 100%;
-        padding: 0 8px;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 12px;
-
-        @media (min-width: 1024px) {
-            justify-content: flex-end;
-            padding: 0 16px;
-        }
-    `;
-
-    const SearchField = styled(TextField)`
-        flex: 1;
-
-        @media (min-width: 600px) {
-            flex: 0 0 240px;
+                    <TempToggleButton value="ICED" valueType={DrinkTemperature.ICED} selectedValue={temp}>
+                        <span style={{ display: 'inline-block' }}>ICE</span>
+                    </TempToggleButton>
+                </ToggleButtonGroup>
+            );
         }
 
-        .MuiOutlinedInput-root {
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.08);
-            font-size: 0.9rem;
-
-            fieldset {
-                border-color: rgba(255, 255, 255, 0.15);
-            }
-        }
-
-        .MuiInputBase-input {
-            padding: 8px 12px;
-            color: white;
-            &::placeholder {
-                color: rgba(255, 255, 255, 0.5);
-            }
-        }
-    `;
-
-    const SearchButton = styled(Button)`
-        display: none;
-
-        @media (min-width: 481px) {
-            display: inline-flex;
-            background-color: ${COLORS_DARK.accent.main};
-            color: #fff;
-            font-weight: bold;
-            border-radius: 8px;
-            padding: 6px 16px;
-            min-width: 72px;
-            height: 40px;
-
-            &:hover {
-                background-color: #d97706;
-            }
-        }
-    `;
+        return null;
+    };
 
     const MenuItem = ({ record, onClick, entry }: any) => {
-        const [showIced, setShowIced] = useState(false);
-        // 토글 버튼 클릭 핸들러
-        const handleToggleClick = (e: React.MouseEvent) => {
-            e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
-            setShowIced(prev => !prev);
-        };
-
-        // 핫/아이스 옵션 확인
-        const hotOption = record.options.find((opt: ICafeMenuOption) => opt.drinkTemperature === 'HOT');
-        const icedOption = record.options.find((opt: ICafeMenuOption) => opt.drinkTemperature === 'ICED');
-        const hasBothOptions = hotOption && icedOption;
+        const [temp, setTemp] = useState<DrinkTemperature>(record.options[0].drinkTemperature);
 
         // 공통 컨텐츠
         const content = (
             <MenuItemContent>
                 <Box position="relative" width="100%">
                     <MenuImage>
-                        {getTemperatureChip(record.options)}
+                        <CafeMenuTempUI
+                            temp={temp}
+                            onToggle={(value: DrinkTemperature) => {
+                                setTemp(value);
+                            }}
+                            options={record.options}
+                        />
                         <MenuCardMedia
                             isMenu={entry === 'menu'}
                             image={
-                                record.options?.[showIced ? 1 : 0]?.imageUrl ??
+                                record.options?.[temp === DrinkTemperature.ICED ? 1 : 0]?.imageUrl ??
                                 'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
                             }
                             sx={{ backgroundSize: 'contain' }}
                             title={record.name}
                         />
-                        {hasBothOptions && entry === 'menu' && (
-                            <ToggleButton onClick={handleToggleClick}>
-                                {showIced ? '핫 보기' : '아이스 보기'}
-                            </ToggleButton>
-                        )}
                     </MenuImage>
                 </Box>
 
@@ -335,89 +297,108 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     };
 
     return (
-        <PageContainer ref={containerRef}>
+        <PageContainer ref={containerRef} maxWidth={false} disableGutters>
             <Box>
-                {/*<CafeHeader entry={entry} cartId={cartId} />*/}
+                <Box display={'flex'} justifyContent={'space-between'} mb={2}>
+                    <CompanySelect entry={'cafe'} />
+                    <Box display={'flex'} justifyContent={'center'} gap={1} alignItems={'center'}>
+                        <SearchIconButton
+                            onClick={handleSearchToggle}
+                            sx={{
+                                width: { xs: 24, sm: 28, lg: 32 },
+                                height: { xs: 24, sm: 28, lg: 32 },
+                                '&:hover': {
+                                    backgroundColor: 'transparent'
+                                }
+                            }}
+                        >
+                            {showSearch ? <X size={iconSize} /> : <Search size={iconSize} />}
+                        </SearchIconButton>
+
+                        <IconButton
+                            sx={{
+                                borderRadius: 0,
+                                position: 'relative',
+                                width: { xs: 24, sm: 28, lg: 32 },
+                                height: { xs: 24, sm: 28, lg: 32 },
+                                padding: 0,
+                                '&:hover': {
+                                    backgroundColor: 'transparent'
+                                },
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Badge
+                                overlap="circular"
+                                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                badgeContent={
+                                    <Box
+                                        sx={{
+                                            width: 14,
+                                            height: 14,
+                                            borderRadius: '50%',
+                                            backgroundColor: COLORS_DARK.accent.main,
+                                            color: '#fff',
+                                            fontSize: '1rem',
+                                            fontWeight: 'bold',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        +
+                                    </Box>
+                                }
+                            >
+                                <GlowContainer>
+                                    <GlowingIcon size={iconSize} color="white" />
+                                </GlowContainer>
+                            </Badge>
+                        </IconButton>
+                    </Box>
+                </Box>
+
                 <HeaderContent>
                     <StyledMenuTitle>{title}</StyledMenuTitle>
                 </HeaderContent>
-                <SearchRow>
-                    <SearchField
-                        placeholder="메뉴명을 입력하세요."
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        size="small"
-                        InputProps={{
-                            ...(isMobile && {
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Search size={18} color={COLORS_DARK.accent.main} />
-                                    </InputAdornment>
-                                )
-                            })
-                        }}
-                    />
-                    <SearchButton onClick={() => {}}>
-                        {!isMobile && (
-                            <Box component="span" mr={0.5} display="flex" alignItems="center">
-                                <Search size={18} color="#fff" />
-                            </Box>
-                        )}
-                        검색
-                    </SearchButton>
-                </SearchRow>
 
-                {/*<Box display="flex" justifyContent="flex-end" px={2} mb={1}>*/}
-                {/*    <SearchField*/}
-                {/*        placeholder="메뉴 검색..."*/}
-                {/*        variant="outlined"*/}
-                {/*        value={searchTerm}*/}
-                {/*        onChange={handleSearchChange}*/}
-                {/*        InputProps={{*/}
-                {/*            startAdornment: (*/}
-                {/*                <InputAdornment position="start">*/}
-                {/*                    <Search size={18} color="rgba(255, 255, 255, 0.5)" />*/}
-                {/*                </InputAdornment>*/}
-                {/*            )*/}
-                {/*        }}*/}
-                {/*        size="small"*/}
-                {/*        sx={{*/}
-                {/*            width: {*/}
-                {/*                xs: '100%', // 모바일에서는 전체 너비*/}
-                {/*                sm: '100%', // 태블릿 이상에서는 작게*/}
-                {/*                md: '100%',*/}
-                {/*                lg: '250px'*/}
-                {/*            },*/}
-                {/*            transition: 'width 0.2s ease-in-out'*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</Box>*/}
+                <SearchBar
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    show={showSearch}
+                    onSubmit={handleSearchSubmit}
+                />
             </Box>
-            <CategoryTabs
-                value={tabValue}
-                onChange={handleTabChange}
-                centered
-                variant={isSmall ? 'fullWidth' : undefined}
-            >
-                {CafeMenuData.map(cafeMenu => (
-                    <CategoryTab
-                        sx={{
-                            ...(isSmall && {
-                                minWidth: 0, // 탭이 최소 너비 이상으로 벌어지지 않게
-                                padding: '6px 4px', // 패딩 줄여서 공간 확보
-                                fontSize: '0.85rem' // 텍스트 크기도 줄임
-                            })
-                        }}
-                        disableRipple
-                        key={cafeMenu.index}
-                        icon={<TabIcon>{returnIcon(cafeMenu.value)}</TabIcon>}
-                        label={cafeMenu.name}
-                    />
-                ))}
-            </CategoryTabs>
+
+            {!showSearch && (
+                <CategoryTabs
+                    value={tabValue}
+                    onChange={handleTabChange}
+                    centered
+                    variant={isSmall ? 'fullWidth' : undefined}
+                >
+                    {cafeMenuData.map(cafeMenu => (
+                        <CategoryTab
+                            sx={{
+                                ...(isSmall && {
+                                    minWidth: 0, // 탭이 최소 너비 이상으로 벌어지지 않게
+                                    padding: '6px 4px', // 패딩 줄여서 공간 확보
+                                    fontSize: '0.85rem' // 텍스트 크기도 줄임
+                                })
+                            }}
+                            disableRipple
+                            key={cafeMenu.index}
+                            icon={<TabIcon>{returnIcon(cafeMenu.value)}</TabIcon>}
+                            label={cafeMenu.name}
+                        />
+                    ))}
+                </CategoryTabs>
+            )}
 
             <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
-                {CafeMenuData.map(cafeMenu => (
+                {cafeMenuData.map(cafeMenu => (
                     <CafeMenuTabPanel
                         key={cafeMenu.index}
                         value={tabValue}

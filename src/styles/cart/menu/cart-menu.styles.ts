@@ -1,6 +1,25 @@
 import styled from '@emotion/styled';
-import { Box, Card, CardContent, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Card, CardContent, Chip, IconButton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { COLORS_DARK } from '@/data';
+import { DrinkTemperature } from '@/types/common';
+import { TemperatureBadgeProps } from '@/types/cart';
+import { keyframes } from '@emotion/react';
+import { ShoppingCart } from 'lucide-react';
+
+const pulseGlow = keyframes`
+    0% {
+        filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.8)) drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
+        stroke: #fff;
+    }
+    50% {
+        filter: drop-shadow(0 0 6px rgba(255, 140, 0, 1)) drop-shadow(0 0 12px rgba(255, 140, 0, 0.8));
+        stroke: #ffb347;
+    }
+    100% {
+        filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.8)) drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
+        stroke: #fff;
+    }
+`;
 
 export const CategoryTabs = styled(Tabs)({
     minHeight: 48,
@@ -138,3 +157,139 @@ export const IcedToggleButton = styled(StyledToggleButton)(() => ({
         }
     }
 }));
+
+export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ temperature }) => ({
+    height: 22,
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: '0.75rem',
+    padding: '0 6px',
+    backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
+    color: '#fff',
+    boxShadow: temperature === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)',
+    display: 'inline-flex', // ✅ 핵심 포인트
+    alignItems: 'center',
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    zIndex: 2,
+
+    '& .MuiChip-label': {
+        padding: 0, // ✅ 기본 Chip 내부 padding 제거
+        display: 'inline-block',
+        lineHeight: 1
+    },
+
+    '@media (max-width: 400px)': {
+        fontSize: '0.6875rem',
+        height: 20,
+        padding: '0 5px'
+    }
+}));
+
+export const TempToggleButton = styled(ToggleButton, {
+    shouldForwardProp: prop => prop !== 'selectedValue' && prop !== 'valueType'
+})<{
+    selectedValue: DrinkTemperature;
+    valueType: DrinkTemperature;
+}>(({ selectedValue, valueType }) => ({
+    padding: '2px 6px',
+    height: 20,
+    minWidth: 20,
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    color: '#fff',
+    border: 'none',
+    textTransform: 'none',
+    backgroundColor: 'lightgray',
+
+    '&.Mui-selected': {
+        backgroundColor: selectedValue === DrinkTemperature.ICED ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
+        color: '#fff'
+    },
+    '&.Mui-selected:hover': {
+        backgroundColor: selectedValue === DrinkTemperature.ICED ? 'rgba(77, 171, 247, 1)' : 'rgba(255, 107, 107, 1)'
+    },
+
+    '&:hover': {
+        backgroundColor: valueType === DrinkTemperature.ICED ? 'rgba(77, 171, 247, 0.7)' : 'rgba(255, 107, 107, 0.7)',
+        opacity: 1
+    }
+}));
+
+// 검색 아이콘 버튼 스타일링
+export const SearchIconButton = styled(IconButton)(({ theme }) => ({
+    color: 'white',
+    padding: 0,
+    '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)'
+    }
+}));
+
+export const GlowContainer = styled.div`
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before {
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 179, 71, 0.3) 0%, rgba(255, 179, 71, 0) 70%);
+        animation: ${keyframes`
+            0% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                opacity: 0.2;
+            }
+        `} 2s infinite ease-in-out;
+        z-index: 0;
+    }
+`;
+
+export const GlowingIcon = styled(ShoppingCart)`
+    color: white;
+    animation: ${pulseGlow} 2s infinite ease-in-out;
+
+    & path,
+    & circle,
+    & line,
+    & polyline {
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+`;
+
+export const SearchContainer = styled(Box)`
+    display: flex;
+    position: relative;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.15);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 16px;
+`;
+
+export const SearchButtonStyled = styled(IconButton)`
+    position: absolute;
+    right: 0;
+    color: white;
+    background-color: ${COLORS_DARK.accent.main};
+    border-radius: 0 4px 4px 0;
+    padding: 8px;
+    height: 100%;
+
+    &:hover {
+        background-color: #d97706;
+    }
+`;

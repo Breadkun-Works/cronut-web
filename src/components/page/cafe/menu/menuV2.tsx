@@ -13,8 +13,7 @@ import {
     PageContainer,
     ScrollableContent,
     StyledMenuTitle,
-    TabIcon,
-    TemperatureBadge
+    TabIcon
 } from '@/styles/cart/cart.styles';
 import { Coffee, Leaf, Wine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -28,7 +27,8 @@ import {
     MenuGrid,
     MenuImage,
     MenuItemCard,
-    MenuItemContent
+    MenuItemContent,
+    TemperatureBadge
 } from '@/styles/cart/menu/cart-menu.styles';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {

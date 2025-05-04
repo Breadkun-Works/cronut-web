@@ -53,34 +53,27 @@ export enum DrinkCategory {
     SEASON = 'SEASON'
 }
 
-export const CafeMenuData = [
-    {
-        name: 'COFFEE',
-        index: 0,
-        value: DrinkCategory.COFFEE,
-        sx: { fontSize: '20px' }
-    },
-    {
-        name: 'TEA',
-        index: 1,
-        value: DrinkCategory.TEA,
-        sx: { fontSize: '20px' }
-    },
-    {
-        name: 'BEVERAGE',
-        index: 2,
-        value: DrinkCategory.DRINK,
-        sx: { fontSize: '20px' }
-    },
+export interface CafeMenuTab {
+    name: string;
+    index: number;
+    value: DrinkCategory;
+}
 
-    ...(localStorage.getItem('recentCompany') === 'EULJI'
-        ? [
-              {
-                  name: 'SEASON',
-                  index: 3,
-                  value: DrinkCategory.SEASON,
-                  sx: { fontSize: '20px' }
-              }
-          ]
-        : [])
+export const BASE_MENU: CafeMenuTab[] = [
+    { name: 'COFFEE', index: 0, value: DrinkCategory.COFFEE },
+    { name: 'TEA', index: 1, value: DrinkCategory.TEA },
+    { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK }
+];
+
+export const SEASON_MENU: CafeMenuTab = {
+    name: 'SEASON',
+    index: 3,
+    value: DrinkCategory.SEASON
+};
+
+export const CafeMenuData = [
+    { name: 'COFFEE', index: 0, value: DrinkCategory.COFFEE },
+    { name: 'TEA', index: 1, value: DrinkCategory.TEA },
+    { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK },
+    { name: 'SEASON', index: 3, value: DrinkCategory.SEASON }
 ];

@@ -1,6 +1,4 @@
 import { createTheme } from '@mui/material';
-import { DrinkCategory } from '@/types/common';
-import { Coffee, CoffeeIcon as Tea, Sparkles, Wine } from 'lucide-react';
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
@@ -28,6 +26,15 @@ declare module '@mui/material/styles' {
 
 export const responsiveConfig = {
     fontSizeSteps: {
+        companySelect: {
+            xs: '1rem',
+            sm: '1.1rem',
+            md: '1.2rem',
+            lg: '1.25rem',
+            xl: '1.25rem',
+            xxl: '1.25rem',
+            xxxl: '1.25rem'
+        },
         cart: {
             xs: '0.9rem',
             sm: '0.95rem',
@@ -67,11 +74,11 @@ export const responsiveConfig = {
             xxxl: 32
         },
         menu: {
-            xs: 18,
-            sm: 20,
-            md: 22,
+            xs: 22,
+            sm: 24,
+            md: 24,
             lg: 24,
-            xl: 26,
+            xl: 28,
             xxl: 28,
             xxxl: 30
         }

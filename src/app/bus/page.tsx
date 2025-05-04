@@ -9,6 +9,11 @@ import NotificationBox from '@/components/NotificationBox';
 import { useMenuContext } from '@/context/MenuContext';
 import Image from 'next/image';
 import useKakaoLoader from '../../components/UseKakaoLoader';
+import { Box, Typography } from '@mui/material';
+import { CompanySelect } from '@/components/CompanySelect';
+import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
+import { BusFront } from 'lucide-react';
+import { responsiveConfig } from '@/data';
 
 interface BusStations {
     arrivalTimeH?: number;
@@ -27,6 +32,11 @@ const bs = classNames.bind(styles);
 
 function Bus({ params }: { params: { destination: string } }) {
     useKakaoLoader();
+    const { isMobile, isTabletOnly } = useResponsive();
+    const { fontSizeSteps } = responsiveConfig;
+    const breakpoint = useCurrentBreakpoint();
+    const fontSize = fontSizeSteps.companySelect[breakpoint];
+    const iconSize = isMobile ? 18 : isTabletOnly ? 22 : 24; // 모바일 18px, 태블릿 22px, 데스크탑 24px
 
     const [loaded, setLoaded] = useState(false);
     const { setMenuBox } = useMenuContext();
@@ -188,18 +198,23 @@ function Bus({ params }: { params: { destination: string } }) {
     return (
         <>
             <div className={bs('bus')}>
-                <div className={bs('title')}>
-                    <div className={bs('title__icon')}>
-                        <Image
-                            src="/icon/bus-title-icon.webp"
-                            alt="before-button"
-                            width={22}
-                            height={22}
-                            style={{ height: '5.64vw', maxHeight: '22px' }}
-                        />
-                    </div>
-                    <div className={bs('title__letter')}>강촌 퇴근 버스</div>
-                </div>
+                <Box margin={isMobile ? '10px 16px' : '20px 30px'} display={'flex'} alignItems="center" gap={1}>
+                    <BusFront size={iconSize} />
+                    <Typography fontSize={fontSize}>강촌 퇴근 버스</Typography>
+                    {/*<CompanySelect entry={'bus'} />*/}
+                </Box>
+                {/*<div className={bs('title')}>*/}
+                {/*    <div className={bs('title__icon')}>*/}
+                {/*        <Image*/}
+                {/*            src="/icon/bus-title-icon.webp"*/}
+                {/*            alt="before-button"*/}
+                {/*            width={22}*/}
+                {/*            height={22}*/}
+                {/*            style={{ height: '5.64vw', maxHeight: '22px' }}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*    <div className={bs('title__letter')}>강촌 퇴근 버스</div>*/}
+                {/*</div>*/}
                 <div className={bs('bus__body')}>
                     <KakaoMap
                         mapHeight={'64.1vw'}

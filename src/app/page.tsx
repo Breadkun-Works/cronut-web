@@ -15,11 +15,14 @@ import { getCookie, setCookie } from '@/utils/cookie';
 import { useCompanyContext } from '@/context/CompanyContext';
 import { Company } from '@/types/common';
 import { CompanySelect } from '@/components/CompanySelect';
+import { Box } from '@mui/material';
+import { useResponsive } from '@/utils/hook';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    const { company, setCompany } = useCompanyContext(); // company와 setCompany를 가져옵니다.
+    const { company, setCompany } = useCompanyContext();
+    const { isMobile } = useResponsive();
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
     const [weatherRequestCompleted, setWeatherRequestCompleted] = useState(false);
@@ -209,7 +212,9 @@ export default function Home() {
     return (
         <>
             <div className={hs('home')}>
-                <CompanySelect entry={'home'} />
+                <Box margin={isMobile ? '10px 16px' : '20px 30px'}>
+                    <CompanySelect entry={'home'} />
+                </Box>
                 <div className={hs('home__body')}>
                     <div className={hs('home__weather')}>
                         <div className={hs('home__weather--now')}>

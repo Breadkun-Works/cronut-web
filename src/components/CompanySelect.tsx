@@ -45,12 +45,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
                         '&:hover:not(.Mui-disabled):before': { borderBottom: 'none' }
                     }}
                     renderValue={(selected: string) => (
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            gap={1}
-                            sx={{ fontSize }} // 🔥 여기
-                        >
+                        <Box display="flex" alignItems="center" gap={1} sx={{ fontSize }}>
                             {entry === 'meal' ? <Utensils size={iconSize} /> : <MapPin size={iconSize} />}
                             {entry === 'meal'
                                 ? companyMealDropdownItem.find(c => c.value === selected)?.label

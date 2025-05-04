@@ -329,6 +329,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                 alignItems: 'center',
                                 justifyContent: 'center'
                             }}
+                            onClick={() => router.push('/cafe/cart')}
                         >
                             <Badge
                                 overlap="circular"

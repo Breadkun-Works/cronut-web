@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { CompanySelect } from '@/components/CompanySelect';
 import { useSnackbar } from '@/context/SnackBarContext';
+import { useResponsive } from '@/utils/hook';
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -45,6 +46,7 @@ const CssTextField = styled(TextField)({
 
 const CartPage = () => {
     const { showSnackbar } = useSnackbar();
+    const { isMobile } = useResponsive();
 
     const [newCart, setNewCart] = useState({ title: '', description: '' });
     const [paymentType, setPaymentType] = useState<PaymentType>('treat');
@@ -92,7 +94,9 @@ const CartPage = () => {
 
     return (
         <PageWrapper>
-            <CompanySelect />
+            <Box margin={isMobile ? '10px 16px' : '20px 30px'} padding={!isMobile ? '4px 0 0 30px' : 0}>
+                <CompanySelect entry={'cafe'} />
+            </Box>
             <div className={'cart-wrapper'}>
                 <CartContainer>
                     <div style={{ fontSize: '20px', margin: '20px 0', textAlign: 'center' }}>

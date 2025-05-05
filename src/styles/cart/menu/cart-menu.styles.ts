@@ -23,7 +23,8 @@ const pulseGlow = keyframes`
 
 export const CategoryTabs = styled(Tabs)({
     minHeight: 48,
-    padding: '0 10px'
+    padding: '0 10px',
+    width: '100%'
 });
 
 export const CategoryTab = styled(Tab)(({ theme }) => ({
@@ -295,7 +296,6 @@ export const TabSearchWrapper = styled(Box)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: '12px',
     borderBottom: `2px solid ${COLORS_DARK.divider}`,
     [theme.breakpoints.up('lg')]: {
         padding: '14px 8px 16px 8px'

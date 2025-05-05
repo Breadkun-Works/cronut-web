@@ -131,6 +131,7 @@ export const MuiTheme = createTheme({
             xxxl: 1440 // 대형 데스크탑
         }
     },
+
     typography: {
         fontFamily:
             "'DungGeunMo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
@@ -171,7 +172,11 @@ export const MuiTheme = createTheme({
                 }
             }
         },
-
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true
+            }
+        },
         MuiTab: {
             styleOverrides: {
                 root: {

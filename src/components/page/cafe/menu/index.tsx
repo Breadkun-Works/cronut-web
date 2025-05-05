@@ -226,11 +226,21 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                         }
                     }}
                 >
-                    <TempToggleButton value="HOT" valueType={DrinkTemperature.HOT} selectedValue={temp}>
+                    <TempToggleButton
+                        onClick={e => e.stopPropagation()}
+                        value="HOT"
+                        valueType={DrinkTemperature.HOT}
+                        selectedValue={temp}
+                    >
                         <span style={{ display: 'inline-block' }}>HOT</span>
                     </TempToggleButton>
 
-                    <TempToggleButton value="ICED" valueType={DrinkTemperature.ICED} selectedValue={temp}>
+                    <TempToggleButton
+                        onClick={e => e.stopPropagation()}
+                        value="ICED"
+                        valueType={DrinkTemperature.ICED}
+                        selectedValue={temp}
+                    >
                         <span style={{ display: 'inline-block' }}>ICE</span>
                     </TempToggleButton>
                 </ToggleButtonGroup>

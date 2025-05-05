@@ -195,6 +195,7 @@ export const HeaderContent = styled(Box)({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+    marginTop: '1.5rem',
     marginBottom: '1.2rem'
 });
 

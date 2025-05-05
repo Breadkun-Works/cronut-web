@@ -93,7 +93,6 @@ export const StyledMenuTempBox = styled.div`
     justify-content: flex-start;
 `;
 
-// TabIcon styled component 추가
 export const TabIcon = styled(StyledMenuTempBox)`
     margin-bottom: 0.5rem;
     display: flex;
@@ -217,12 +216,12 @@ export const CartBadge = styled(Badge)({
     }
 });
 
-export const LinkShareCard = styled(Card)(({ theme }) => ({
+export const LinkShareCard = styled(Card)({
     overflow: 'hidden',
     backgroundColor: COLORS_DARK.theme.blue,
     border: `1px solid ${COLORS_DARK.background.lighter}`,
     borderRadius: '20px'
-}));
+});
 
 export const LinkShareContent = styled(CardContent)({
     padding: '12px !important'
@@ -427,7 +426,7 @@ export const ScrollableCartList = styled(Box, {
     shouldForwardProp: prop =>
         prop !== 'bottomHeight' && prop !== 'isEmpty' && prop !== 'footerOpen' && prop !== 'isScrollable'
 })<{ bottomHeight: number; isEmpty?: boolean; footerOpen: boolean; isScrollable: boolean }>(
-    ({ theme, footerOpen, bottomHeight, isScrollable }) => ({
+    ({ theme, footerOpen, bottomHeight }) => ({
         flex: 1,
         paddingTop: 16,
         overflowY: 'auto',
@@ -485,6 +484,7 @@ export const DrinkNameTypography = styled(Typography, {
 
 export const CartWarningWrapper = styled('div')(({ theme }) => ({
     width: '100%',
+    maxWidth: 902,
     overflow: 'hidden',
     padding: '10px',
     borderRadius: '12px',
@@ -605,7 +605,7 @@ export const CustomSnackbarContent = styled(SnackbarContent)(({ theme }) => ({
     }
 }));
 
-export const SnackbarDialogContent = styled(DialogContent)(({ theme }) => ({
+export const SnackbarDialogContent = styled(DialogContent)({
     backgroundColor: COLORS_DARK.theme.purple,
     borderRadius: '16px',
     display: 'flex',
@@ -615,7 +615,7 @@ export const SnackbarDialogContent = styled(DialogContent)(({ theme }) => ({
     width: 'auto',
     minHeight: '90px',
     boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.5)'
-}));
+});
 
 export const SnackbarDialogText = styled(Typography)(({ theme }) => ({
     fontWeight: 700,
@@ -661,7 +661,7 @@ export const MenuImageContainer = styled(Box)(({ theme }) => ({
     }
 }));
 
-export const MenuCount = styled(Box)(({ theme }) => ({
+export const MenuCount = styled(Box)({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -669,4 +669,4 @@ export const MenuCount = styled(Box)(({ theme }) => ({
     color: '#FFFFFF',
     borderRadius: '20%',
     fontWeight: 'bold'
-}));
+});

@@ -19,16 +19,14 @@ export const SearchBar = ({ value, onChange, show, onSubmit }: Props) => {
 
     return (
         <Box
-            sx={theme => ({
+            sx={{
                 display: show ? 'flex' : 'none',
                 flexDirection: 'column',
                 alignItems: 'center',
                 width: '100%',
-                borderBottom: `2px solid #333`,
-                [theme.breakpoints.up('lg')]: {
-                    padding: '16px 12px'
-                }
-            })}
+                minHeight: 68,
+                justifyContent: 'center'
+            }}
         >
             <SearchContainer
                 sx={{

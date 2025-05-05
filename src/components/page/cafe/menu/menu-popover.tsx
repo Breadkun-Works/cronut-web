@@ -296,26 +296,30 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                     }}
                                     aria-label="temperature selection"
                                 >
-                                    <HotToggleButton
-                                        value={DrinkTemperature.HOT}
-                                        aria-label="hot option"
-                                        disabled={popoverProps.options.every(
-                                            o => o.drinkTemperature !== DrinkTemperature.HOT
-                                        )}
-                                        selected={selectedTempMenu.drinkTemperature === DrinkTemperature.HOT}
-                                    >
-                                        HOT
-                                    </HotToggleButton>
-                                    <IcedToggleButton
-                                        selected={selectedTempMenu.drinkTemperature === DrinkTemperature.ICED}
-                                        value={DrinkTemperature.ICED}
-                                        aria-label="iced option"
-                                        disabled={popoverProps.options.every(
-                                            o => o.drinkTemperature !== DrinkTemperature.ICED
-                                        )}
-                                    >
-                                        ICED
-                                    </IcedToggleButton>
+                                    {popoverProps.options.find(p => p.drinkTemperature === DrinkTemperature.HOT) && (
+                                        <HotToggleButton
+                                            value={DrinkTemperature.HOT}
+                                            aria-label="hot option"
+                                            disabled={popoverProps.options.every(
+                                                o => o.drinkTemperature !== DrinkTemperature.HOT
+                                            )}
+                                            selected={selectedTempMenu.drinkTemperature === DrinkTemperature.HOT}
+                                        >
+                                            HOT
+                                        </HotToggleButton>
+                                    )}
+                                    {popoverProps.options.find(p => p.drinkTemperature === DrinkTemperature.ICED) && (
+                                        <IcedToggleButton
+                                            selected={selectedTempMenu.drinkTemperature === DrinkTemperature.ICED}
+                                            value={DrinkTemperature.ICED}
+                                            aria-label="iced option"
+                                            disabled={popoverProps.options.every(
+                                                o => o.drinkTemperature !== DrinkTemperature.ICED
+                                            )}
+                                        >
+                                            ICED
+                                        </IcedToggleButton>
+                                    )}
                                 </StyledToggleButtonGroup>
                             </Box>
 
@@ -446,9 +450,9 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                                         backgroundColor: COLORS_DARK.accent.light
                                     },
                                     fontSize: {
-                                        xs: '1rem', // 0 ~ 359px
-                                        sm: '1.125rem', // 360 ~ 479px
-                                        md: '1.15rem' // 480 ~ 767px
+                                        xs: '1rem',
+                                        sm: '1.125rem',
+                                        md: '1.15rem'
                                     },
                                     fontWeight: 'bold',
                                     py: 1.5,

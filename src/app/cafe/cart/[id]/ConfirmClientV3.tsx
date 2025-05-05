@@ -31,7 +31,6 @@ import {
     Box,
     Button,
     CardMedia,
-    Container,
     Dialog,
     DialogActions,
     DialogContent,
@@ -47,20 +46,12 @@ import {
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
-import { expireCart } from '@/apis/cafe/cafe-api';
-import { IUserInfo } from '@/types/cart';
-import {
-    getUserInitial,
-    useBottomHeight,
-    useMaxWidthByViewport,
-    useResponsive,
-    useResponsiveConfig
-} from '@/utils/hook';
+import { expireCart, deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
+import { IUserInfo, CafeCartItem, IDeleteCartItem } from '@/types/cart';
+import { getUserInitial, useBottomHeight, useResponsive, useResponsiveConfig } from '@/utils/hook';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import PaymentModal from '@/app/cafe/cart/[id]/PaymentModal';
-import { CafeCartItem, IDeleteCartItem } from '@/types/cart';
 import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-modal';
 import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-modal';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -110,8 +101,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
     const [snackbar, setSnackbar] = useState({ open: false, message: '', variant: '', device: '' });
     const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
-    // const { fontSize, iconSize, chipSize } = useMaxWidthByViewport();
-    const { fontSize, iconSize, chipSize, maxWidth, marginTop } = useResponsiveConfig('cart');
+    const { fontSize, iconSize, chipSize, marginTop } = useResponsiveConfig('cart');
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -265,7 +255,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     }
 
     return (
-        <Container
+        <Box
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -278,8 +268,12 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <CartWarningWrapper>
                         <CartWarningText>
                             ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이 불가합니다. ⚠️
-                            &nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이
-                            불가합니다. ⚠️
+                            {isMobile && (
+                                <>
+                                    &nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및
+                                    송금이 불가합니다. ⚠️
+                                </>
+                            )}
                         </CartWarningText>
                     </CartWarningWrapper>
                 )}
@@ -600,7 +594,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         </IconButton>
                     </Box>
 
-                    <Container disableGutters sx={{ maxWidth: '900px' }}>
+                    <Box sx={{ width: '100%', maxWidth: '902px', margin: '0 auto' }}>
                         {!isCartReallyInactive && (
                             <OrderAmountCard>
                                 <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -653,7 +647,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                 </FooterButton>
                             )}
                         </ButtonsContainer>
-                    </Container>
+                    </Box>
                 </OrderFooter>
             </Slide>
 
@@ -755,6 +749,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Container>
+        </Box>
     );
 };

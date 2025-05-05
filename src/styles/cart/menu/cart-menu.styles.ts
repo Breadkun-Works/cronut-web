@@ -23,8 +23,7 @@ const pulseGlow = keyframes`
 
 export const CategoryTabs = styled(Tabs)({
     minHeight: 48,
-    padding: '0 10px 12px 10px',
-    borderBottom: `2px solid ${COLORS_DARK.divider}`
+    padding: '0 10px'
 });
 
 export const CategoryTab = styled(Tab)(({ theme }) => ({
@@ -38,7 +37,7 @@ export const CategoryTab = styled(Tab)(({ theme }) => ({
         }
     },
     '&:hover': {
-        color: COLORS_DARK.accent.main
+        color: COLORS_DARK.accent.dark
     }
 }));
 
@@ -218,13 +217,10 @@ export const TempToggleButton = styled(ToggleButton, {
 }));
 
 // 검색 아이콘 버튼 스타일링
-export const SearchIconButton = styled(IconButton)(({ theme }) => ({
+export const SearchIconButton = styled(IconButton)({
     color: 'white',
-    padding: 0,
-    '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)'
-    }
-}));
+    padding: 0
+});
 
 export const GlowContainer = styled.div`
     position: relative;
@@ -277,7 +273,6 @@ export const SearchContainer = styled(Box)`
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
-    margin-bottom: 16px;
 `;
 
 export const SearchButtonStyled = styled(IconButton)`
@@ -293,3 +288,16 @@ export const SearchButtonStyled = styled(IconButton)`
         background-color: #d97706;
     }
 `;
+
+export const TabSearchWrapper = styled(Box)(({ theme }) => ({
+    width: '100%',
+    minHeight: 80,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: '12px',
+    borderBottom: `2px solid ${COLORS_DARK.divider}`,
+    [theme.breakpoints.up('lg')]: {
+        padding: '14px 8px 16px 8px'
+    }
+}));

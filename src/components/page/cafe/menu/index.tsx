@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
-import { useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
+import { useGetCafeMenuInfinite, useGetCartById } from '@/apis/cafe/cafe-api';
 import { DrinkCategory, DrinkTemperature } from '@/types/common';
 import { useCompanyContext } from '@/context/CompanyContext';
 import {
@@ -20,10 +20,9 @@ import {
     MenuCardMedia,
     PageContainer,
     ScrollableContent,
-    StyledMenuTitle,
-    TabIcon
+    StyledMenuTitle
 } from '@/styles/cart/cart.styles';
-import { Leaf, Search, Sparkles, Wine, X } from 'lucide-react';
+import { Leaf, MapPin, Search, Sparkles, Wine, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
@@ -38,6 +37,7 @@ import {
     MenuItemCard,
     MenuItemContent,
     SearchIconButton,
+    TabSearchWrapper,
     TemperatureBadge,
     TempToggleButton
 } from '@/styles/cart/menu/cart-menu.styles';
@@ -76,7 +76,7 @@ const CafeMenuTabPanel = ({ children, value, index }: any) => {
 const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; cartId?: string }) => {
     const [tabValue, setTabValue] = useState(0);
     const { company } = useCompanyContext();
-    const { isMobile, isDesktop, isSmall } = useResponsive();
+    const { isMobile, isDesktop, isSmall, isTabletOnly } = useResponsive();
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -108,11 +108,13 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     });
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
+    const { data: cartBasic } = useGetCartById(cartId as string);
 
     const cafeMenuData = useCafeMenuData();
-    const { iconSizeSteps } = responsiveConfig;
+    const { iconSizeSteps, fontSizeSteps } = responsiveConfig;
     const breakpoint = useCurrentBreakpoint();
     const iconSize = iconSizeSteps.menu[breakpoint];
+    const fontSize = fontSizeSteps.companySelect[breakpoint];
 
     const [showSearch, setShowSearch] = useState(false);
 
@@ -300,11 +302,22 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         <PageContainer ref={containerRef} maxWidth={false} disableGutters>
             <Box>
                 <Box display={'flex'} justifyContent={'space-between'} mb={2}>
-                    <CompanySelect entry={'cafe'} />
+                    {cartId && cartBasic ? (
+                        <Box display={'flex'} alignItems="center" gap={1}>
+                            <MapPin size={isMobile ? 18 : isTabletOnly ? 22 : 24} />
+                            <Typography fontSize={fontSize}>
+                                {cartBasic?.cafeLocation === 'EULJI' ? '을지 카페' : '강촌 카페'}
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <CompanySelect entry={'cafe'} />
+                    )}
                     <Box display={'flex'} justifyContent={'center'} gap={1} alignItems={'center'}>
                         <SearchIconButton
                             onClick={handleSearchToggle}
                             sx={{
+                                color: 'white',
+                                padding: 0,
                                 width: { xs: 24, sm: 28, lg: 32 },
                                 height: { xs: 24, sm: 28, lg: 32 },
                                 '&:hover': {
@@ -364,39 +377,39 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                 <HeaderContent>
                     <StyledMenuTitle>{title}</StyledMenuTitle>
                 </HeaderContent>
-
-                <SearchBar
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    show={showSearch}
-                    onSubmit={handleSearchSubmit}
-                />
             </Box>
-
-            {!showSearch && (
-                <CategoryTabs
-                    value={tabValue}
-                    onChange={handleTabChange}
-                    centered
-                    variant={isSmall ? 'fullWidth' : undefined}
-                >
-                    {cafeMenuData.map(cafeMenu => (
-                        <CategoryTab
-                            sx={{
-                                ...(isSmall && {
-                                    minWidth: 0, // 탭이 최소 너비 이상으로 벌어지지 않게
-                                    padding: '6px 4px', // 패딩 줄여서 공간 확보
-                                    fontSize: '0.85rem' // 텍스트 크기도 줄임
-                                })
-                            }}
-                            disableRipple
-                            key={cafeMenu.index}
-                            icon={<TabIcon>{returnIcon(cafeMenu.value)}</TabIcon>}
-                            label={cafeMenu.name}
-                        />
-                    ))}
-                </CategoryTabs>
-            )}
+            <TabSearchWrapper>
+                {showSearch ? (
+                    <SearchBar
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        show={showSearch}
+                        onSubmit={handleSearchSubmit}
+                    />
+                ) : (
+                    <CategoryTabs
+                        value={tabValue}
+                        onChange={handleTabChange}
+                        centered
+                        variant={isSmall ? 'fullWidth' : undefined}
+                    >
+                        {cafeMenuData.map(cafeMenu => (
+                            <CategoryTab
+                                key={cafeMenu.index}
+                                icon={returnIcon(cafeMenu.value)}
+                                label={cafeMenu.name}
+                                sx={{
+                                    ...(isSmall && {
+                                        minWidth: 0,
+                                        padding: '6px 4px',
+                                        fontSize: '0.85rem'
+                                    })
+                                }}
+                            />
+                        ))}
+                    </CategoryTabs>
+                )}
+            </TabSearchWrapper>
 
             <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
                 {cafeMenuData.map(cafeMenu => (
@@ -451,16 +464,29 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
 
                             {!hasNextPage &&
                                 isFetched &&
-                                ((data?.pages?.[0]?.records?.length ?? 0) > 0 ? (
+                                ((data?.pages?.[0]?.records?.length ?? 0) === 0 ? (
+                                    query.name !== '' ? (
+                                        <Box display="flex" justifyContent="center" mt={30}>
+                                            <Typography variant="body2" fontSize="large" textAlign="center">
+                                                이런! 🫢
+                                                <br />
+                                                <strong style={{ color: '#ff6b6b' }}>{query.name}</strong> 메뉴는 아직
+                                                없어요.
+                                                <br />
+                                                다른 키워드로 다시 한번 검색해볼까요? 🔍
+                                            </Typography>
+                                        </Box>
+                                    ) : (
+                                        <Box display="flex" justifyContent="center" mt={30}>
+                                            <Typography variant="body2" fontSize="large" textAlign="center">
+                                                아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올 예정이에요
+                                                ☕️🍰
+                                            </Typography>
+                                        </Box>
+                                    )
+                                ) : (
                                     <Box display="flex" justifyContent="center" mt={3}>
                                         <Typography variant="body2">끝~</Typography>
-                                    </Box>
-                                ) : (
-                                    <Box display="flex" justifyContent="center" mt={30}>
-                                        <Typography variant="body2" fontSize={'large'} textAlign={'center'}>
-                                            아직 등록된 메뉴가 없어요.
-                                            <br />곧 맛있는 메뉴들이 올라올 예정이에요 ☕️🍰
-                                        </Typography>
                                     </Box>
                                 ))}
                         </Box>

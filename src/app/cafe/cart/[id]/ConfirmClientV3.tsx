@@ -649,7 +649,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                             ) : (
                                 <FooterButton
                                     variant="contained"
-                                    disabled={isCartReallyInactive}
+                                    disabled={isCartReallyInactive || !decryptedData}
                                     onClick={() => setPaymentModalOpen(true)}
                                 >
                                     <ButtonIcon disabled={isCartReallyInactive}>

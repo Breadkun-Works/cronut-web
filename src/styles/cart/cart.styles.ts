@@ -383,9 +383,9 @@ export const ItemImage = styled(Box)(({ theme }) => ({
 
 export const UserAvatar = styled(Avatar)(({ theme }) => ({
     fontWeight: 600,
-    backgroundColor: COLORS_DARK.accent.main,
+    backgroundColor: 'white', //COLORS_DARK.accent.main,
     color: COLORS_DARK.text.primary,
-
+    padding: 2,
     // xs (모바일)
     width: 24,
     height: 24,

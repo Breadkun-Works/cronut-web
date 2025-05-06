@@ -76,6 +76,7 @@ export interface IAddCartMenuPayload {
 export interface IUserInfo {
     uuid: string;
     userName: string;
+    userProfile: string;
 }
 
 export interface IAddMenuCartParams {

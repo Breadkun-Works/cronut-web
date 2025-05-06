@@ -58,6 +58,7 @@ export default async function ConfirmPage({
     const cookieStore = cookies();
     const uuid = cookieStore.get('BRK-UUID')?.value || '';
     const userName = cookieStore.get('BRK-UserName')?.value || '';
+    const userProfile = cookieStore.get('BRK-UserProfile')?.value || '';
     const isCreator = uuid === cartData.data.cafeCart.createdById;
 
     if (encryptedData && status === 'ACTIVE') {
@@ -70,10 +71,17 @@ export default async function ConfirmPage({
                 cartId={params.id}
                 status={status}
                 isCreator={isCreator}
-                user={{ uuid, userName }}
+                user={{ uuid, userName, userProfile }}
             />
         );
     } else {
-        return <ConfirmClientV3 cartId={params.id} status={status} isCreator={isCreator} user={{ uuid, userName }} />;
+        return (
+            <ConfirmClientV3
+                cartId={params.id}
+                status={status}
+                isCreator={isCreator}
+                user={{ uuid, userName, userProfile }}
+            />
+        );
     }
 }

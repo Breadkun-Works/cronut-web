@@ -417,7 +417,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 {cartItems.length === 0 ? (
                     <Box
                         sx={{
-                            minHeight: `calc(100vh - 18vh - ${semiHeaderRef.current?.getBoundingClientRect().height}px - ${bottomHeight}px)`,
+                            minHeight: `calc(100vh - 9vh - ${semiHeaderRef.current?.getBoundingClientRect().height}px - ${bottomHeight}px)`,
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -558,7 +558,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     }}
                 >
                     <IconButton
-                        disableRipple
                         disableFocusRipple
                         onClick={() => {
                             setOpen(true);
@@ -599,7 +598,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         }}
                     >
                         <IconButton
-                            disableRipple
                             disableFocusRipple
                             onClick={() => setOpen(false)}
                             sx={{
@@ -717,7 +715,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     }}
                 >
                     <SnackbarDialogContent>
-                        {/*<SnackbarDialogIcon />*/}
                         <SnackbarDialogText>{snackbar.message}</SnackbarDialogText>
                     </SnackbarDialogContent>
                 </Dialog>

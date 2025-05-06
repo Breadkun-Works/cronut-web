@@ -268,7 +268,9 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                         <MenuCardMedia
                             isMenu={entry === 'menu'}
                             image={
-                                record.options?.[temp === DrinkTemperature.ICED ? 1 : 0]?.imageUrl ??
+                                (record.options.length > 1
+                                    ? record.options?.[temp === DrinkTemperature.ICED ? 1 : 0]?.imageUrl
+                                    : record.options?.[0]?.imageUrl) ??
                                 'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
                             }
                             sx={{ backgroundSize: 'contain' }}

@@ -12,10 +12,12 @@
   z-index: 80;
   opacity: 0.97;
   margin: 0 1.5vw 3vw 1.5vw;
-  height: 18vw;
+  height: 9vh;
   max-height: 80px; // 갤럭시 폴드 대응
-  border-bottom-left-radius: 35px;
-  border-bottom-right-radius: 35px;
+  @include u.desktop {
+    border-bottom-left-radius: 35px;
+    border-bottom-right-radius: 35px;
+  }
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   @include u.desktop {
     width: calc(100% - 20px);

@@ -57,6 +57,7 @@ import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-moda
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
 import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
+import ClapAnimation from '@/components/page/cafe/ClapAnimation';
 import { useSnackbar } from '@/context/SnackBarContext';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
@@ -110,6 +111,10 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isScrollable, setIsScrollable] = useState(false);
+    const [showClap, setShowClap] = useState(false);
+    const [clapPosition, setClapPosition] = useState({ x: 0 });
+    const [clapPositions, setClapPositions] = useState<{ id: string; x: number }[]>([]);
+    const lastProcessedIds = useRef<Set<string>>(new Set());
 
     const bottomHeight = useBottomHeight(bottomRef, [open]);
 
@@ -162,19 +167,35 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     };
 
     useEffect(() => {
-        // SSE 연결 설정
         const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
         const eventName = `cafe-cart-item-${cartId}`;
+
         const handleEvent = (e: MessageEvent) => {
             const eventData = JSON.parse(e.data);
+
             setCartItems(prevItems => {
                 if (eventData.event === 'CREATED') {
-                    return [
-                        ...prevItems,
-                        ...eventData.data.cafeCartItem.filter(
-                            (newItem: CartItem) => !prevItems.some(item => item.id === newItem.id)
-                        )
-                    ];
+                    const newItems = eventData.data.cafeCartItem.filter((newItem: CartItem) => {
+                        if (lastProcessedIds.current.has(newItem.id)) {
+                            return false;
+                        }
+                        lastProcessedIds.current.add(newItem.id);
+                        return !prevItems.some(item => item.id === newItem.id);
+                    });
+
+                    if (newItems.length > 0) {
+                        newItems.forEach((item: CartItem) => {
+                            const randomX = Math.random() * (window.innerWidth - 200);
+                            setClapPositions(prev => [...prev, { id: item.id, x: randomX }]);
+
+                            setTimeout(() => {
+                                setClapPositions(prev => prev.filter(pos => pos.id !== item.id));
+                                lastProcessedIds.current.delete(item.id);
+                            }, 2000);
+                        });
+                    }
+
+                    return [...prevItems, ...newItems];
                 } else if (eventData.event === 'DELETED') {
                     return prevItems.filter(item => !eventData.data.id.includes(item.id));
                 } else {
@@ -182,6 +203,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 }
             });
         };
+
         eventSource.addEventListener(eventName, handleEvent);
 
         eventSource.onerror = err => {
@@ -198,6 +220,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         return () => {
             eventSource.removeEventListener(eventName, handleEvent);
             eventSource.close();
+            lastProcessedIds.current.clear();
         };
     }, [cartId]);
 
@@ -259,7 +282,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                px: { xs: 2, sm: 2, md: 3 }
+                px: { xs: 2, sm: 2, md: 3 },
+                position: 'relative'
             }}
             ref={scrollRef}
         >
@@ -609,7 +633,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         <ButtonsContainer disabledAll={isCartReallyInactive}>
                             <FooterButton
                                 onClick={() => {
-                                    if (user.userName) {
+                                    if (user.userName && user.userProfile) {
                                         router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
                                     } else {
                                         router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
@@ -637,7 +661,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                             ) : (
                                 <FooterButton
                                     variant="contained"
-                                    disabled={isCartReallyInactive}
+                                    disabled={isCartReallyInactive || !decryptedData}
                                     onClick={() => setPaymentModalOpen(true)}
                                 >
                                     <ButtonIcon disabled={isCartReallyInactive}>
@@ -749,6 +773,23 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     </Button>
                 </DialogActions>
             </Dialog>
+            {clapPositions.map(pos => (
+                <Box
+                    key={pos.id}
+                    sx={{
+                        position: 'fixed',
+                        left: `${pos.x}px`,
+                        bottom: bottomRef.current
+                            ? `${window.innerHeight - bottomRef.current.getBoundingClientRect().top}px`
+                            : '120px',
+                        zIndex: 9999,
+                        pointerEvents: 'none',
+                        transform: 'translateX(-50%)'
+                    }}
+                >
+                    <ClapAnimation />
+                </Box>
+            ))}
         </Box>
     );
 };

@@ -53,7 +53,8 @@ export default function OrderConfirmation({ decryptedData, cartId, status }: Con
     const router = useRouter();
     const user = {
         uuid: getCookie('BRK-UUID'),
-        userName: getCookie('BRK-UserName')
+        userName: getCookie('BRK-UserName'),
+        userProfile: getCookie('BRK-UserProfile')
     };
     const { data: initialCartItems = [], isLoading } = useQuery({
         queryKey: ['orderItems', cartId],

@@ -57,6 +57,7 @@ import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-moda
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
 import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
+import ClapAnimation from '@/components/page/cafe/ClapAnimation';
 import { useSnackbar } from '@/context/SnackBarContext';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
@@ -110,6 +111,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isScrollable, setIsScrollable] = useState(false);
+    const [showClap, setShowClap] = useState(false);
+    const [clapPosition, setClapPosition] = useState({ x: 0 });
 
     const bottomHeight = useBottomHeight(bottomRef, [open]);
 
@@ -167,8 +170,16 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         const eventName = `cafe-cart-item-${cartId}`;
         const handleEvent = (e: MessageEvent) => {
             const eventData = JSON.parse(e.data);
+
             setCartItems(prevItems => {
                 if (eventData.event === 'CREATED') {
+                    const randomX = Math.random() * (window.innerWidth - 200);
+                    setClapPosition({ x: randomX });
+                    setShowClap(true);
+
+                    setTimeout(() => {
+                        setShowClap(false);
+                    }, 2000);
                     return [
                         ...prevItems,
                         ...eventData.data.cafeCartItem.filter(
@@ -259,7 +270,8 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                px: { xs: 2, sm: 2, md: 3 }
+                px: { xs: 2, sm: 2, md: 3 },
+                position: 'relative'
             }}
             ref={scrollRef}
         >
@@ -609,7 +621,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                         <ButtonsContainer disabledAll={isCartReallyInactive}>
                             <FooterButton
                                 onClick={() => {
-                                    if (user.userName) {
+                                    if (user.userName && user.userProfile) {
                                         router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
                                     } else {
                                         router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
@@ -749,6 +761,22 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     </Button>
                 </DialogActions>
             </Dialog>
+            {showClap && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        left: `${clapPosition.x}px`,
+                        bottom: bottomRef.current
+                            ? `${window.innerHeight - bottomRef.current.getBoundingClientRect().top}px`
+                            : '120px',
+                        zIndex: 9999,
+                        pointerEvents: 'none',
+                        transform: 'translateX(-50%)'
+                    }}
+                >
+                    <ClapAnimation />
+                </Box>
+            )}
         </Box>
     );
 };

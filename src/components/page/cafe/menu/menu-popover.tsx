@@ -39,7 +39,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
     const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
     const userName = getCookie('BRK-UserName');
     const uuid = getCookie('BRK-UUID');
-
+    const userProfile = getCookie('BRK-UserProfile');
     // 창 크기 변경 감지
     useEffect(() => {
         const handleResize = () => {
@@ -113,9 +113,9 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                     cafeMenuId: selectedTempMenu.id ?? 0,
                     isPersonalCup: selectedTempMenu.checked,
                     quantity: selectedTempMenu.quantity,
-                    imageUrl: selectedTempMenu.imageUrl ?? ''
+                    imageUrl: userProfile
                 },
-                user: { uuid: uuid, userName }
+                user: { uuid: uuid, userName, userProfile }
             });
         }
     };

@@ -44,6 +44,7 @@ import {
 import { CompanySelect } from '@/components/CompanySelect';
 import { LocalCafeOutlined } from '@mui/icons-material';
 import { SearchBar } from '@/components/page/cafe/menu/searchbar';
+import { useQueryClient } from '@tanstack/react-query';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -107,6 +108,7 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         cafeLocation: company
     });
 
+    const queryClient = useQueryClient();
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
     const { data: cartBasic } = useGetCartById(cartId as string);
 
@@ -453,7 +455,9 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                                         options: record.options
                                                     }}
                                                     cartId={cartId}
-                                                    onSuccess={() => setMoveToConfirm(true)}
+                                                    onSuccess={() => {
+                                                        setMoveToConfirm(true);
+                                                    }}
                                                 />
                                             )}
                                         </React.Fragment>

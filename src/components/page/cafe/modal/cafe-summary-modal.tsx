@@ -18,10 +18,10 @@ import { MenuCount, MenuImageContainer } from '@/styles/cart/cart.styles';
 import { X } from 'lucide-react';
 import { useResponsive, useMaxWidthByViewport } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
+import { ICommonModalTypes } from '@/types/common';
+import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 
-interface CafeSummaryModalProps {
-    open: boolean;
-    onClose(): void;
+interface CafeSummaryModalProps extends ICommonModalTypes {
     cartItems: CafeCartItem[];
 }
 
@@ -112,59 +112,11 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
     }, [cartItems]);
 
     return (
-        <Backdrop
+        <CommonModal
             open={open}
-            onClick={onClose}
-            sx={{
-                zIndex: 1300,
-                backgroundColor: 'rgba(0, 0, 0, 0.55)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}
-        >
-            <Box
-                onClick={e => e.stopPropagation()}
-                sx={{
-                    width: '90%',
-                    maxWidth: 500,
-                    maxHeight: '90vh',
-                    backgroundColor: COLORS_DARK.background.main,
-                    borderRadius: 3,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.5)'
-                }}
-            >
-                <Box
-                    sx={{
-                        position: 'relative',
-                        textAlign: 'center',
-                        px: 2,
-                        py: 2,
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
-                    }}
-                >
-                    <Typography fontSize={isSm ? 18 : isMd ? 20 : 22} fontWeight="bold">
-                        메뉴 요약보기
-                    </Typography>
-
-                    <IconButton
-                        onClick={onClose}
-                        size="small"
-                        sx={{
-                            position: 'absolute',
-                            right: 12,
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            color: '#fff'
-                        }}
-                    >
-                        <X size={18} />
-                    </IconButton>
-                </Box>
+            onClose={onClose}
+            title={'메뉴 요약보기'}
+            content={
                 <Box
                     sx={{
                         px: 2,
@@ -247,31 +199,7 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                         </Box>
                     ))}
                 </Box>
-            </Box>
-            <Box
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    borderTop: '1px solid rgba(255,255,255,0.05)',
-                    display: 'flex',
-                    justifyContent: 'center'
-                }}
-            >
-                <Button
-                    onClick={onClose}
-                    sx={{
-                        border: `2px solid ${COLORS_DARK.accent.main}`,
-                        color: COLORS_DARK.accent.main,
-                        fontWeight: 'bold',
-                        fontSize,
-                        px: 4,
-                        py: 1,
-                        borderRadius: 2
-                    }}
-                >
-                    닫기
-                </Button>
-            </Box>
-        </Backdrop>
+            }
+        />
     );
 }

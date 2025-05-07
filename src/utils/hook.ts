@@ -84,21 +84,21 @@ type PageConfigs = {
 
 export const responsiveConfig: PageConfigs = {
     cart: [
-        { min: 0, max: 319, fontSize: 14, chipSize: 13, iconSize: 16, maxWidth: 90 },
-        { min: 320, max: 329, fontSize: 14, chipSize: 13, iconSize: 17, maxWidth: 100 },
-        { min: 330, max: 339, fontSize: 15, chipSize: 14, iconSize: 17, maxWidth: 110 },
-        { min: 340, max: 349, fontSize: 15, chipSize: 14, iconSize: 18, maxWidth: 120 },
-        { min: 350, max: 359, fontSize: 15, chipSize: 14, iconSize: 19, maxWidth: 130 },
-        { min: 360, max: 369, fontSize: 15, chipSize: 14, iconSize: 19, maxWidth: 140 },
-        { min: 370, max: 379, fontSize: 15, chipSize: 14, iconSize: 19.5, maxWidth: 150 },
-        { min: 380, max: 389, fontSize: 15.5, chipSize: 15, iconSize: 20, maxWidth: 160 },
-        { min: 390, max: 399, fontSize: 15.5, chipSize: 15, iconSize: 20, maxWidth: 170 },
-        { min: 400, max: 409, fontSize: 15.5, chipSize: 15, iconSize: 21, maxWidth: 180 },
-        { min: 410, max: 419, fontSize: 15.5, chipSize: 15, iconSize: 21, maxWidth: 190 },
-        { min: 420, max: 429, fontSize: 15.5, chipSize: 15, iconSize: 21, maxWidth: 200 },
-        { min: 430, max: 439, fontSize: 15.5, chipSize: 15, iconSize: 21, maxWidth: 210 },
-        { min: 440, max: 479, fontSize: 16, chipSize: 16, iconSize: 21.5, maxWidth: '100%' },
-        { min: 480, max: Infinity, fontSize: 16, chipSize: 16, iconSize: 22, maxWidth: '100%' }
+        { min: 0, max: 319, fontSize: 15, chipSize: 13, iconSize: 16, maxWidth: 90 },
+        { min: 320, max: 329, fontSize: 16, chipSize: 13, iconSize: 17, maxWidth: 100 },
+        { min: 330, max: 339, fontSize: 16, chipSize: 14, iconSize: 17, maxWidth: 110 },
+        { min: 340, max: 349, fontSize: 16, chipSize: 14, iconSize: 18, maxWidth: 120 },
+        { min: 350, max: 359, fontSize: 16, chipSize: 14, iconSize: 19, maxWidth: 130 },
+        { min: 360, max: 369, fontSize: 16, chipSize: 14, iconSize: 19, maxWidth: 140 },
+        { min: 370, max: 379, fontSize: 16, chipSize: 14, iconSize: 19.5, maxWidth: 150 },
+        { min: 380, max: 389, fontSize: 16.5, chipSize: 15, iconSize: 20, maxWidth: 160 },
+        { min: 390, max: 399, fontSize: 16.5, chipSize: 15, iconSize: 20, maxWidth: 170 },
+        { min: 400, max: 409, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 180 },
+        { min: 410, max: 419, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 190 },
+        { min: 420, max: 429, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 200 },
+        { min: 430, max: 439, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 210 },
+        { min: 440, max: 479, fontSize: 17, chipSize: 16, iconSize: 21.5, maxWidth: '100%' },
+        { min: 480, max: Infinity, fontSize: 17, chipSize: 16, iconSize: 22, maxWidth: '100%' }
     ],
     'cart-register': [
         { min: 0, max: 359, fontSize: 13, iconSize: 15, maxWidth: 100 },

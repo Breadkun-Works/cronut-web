@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export const mealMenu = (company: string) => {
     const commonMenu = [
         { value: 'SPECIAL', label: '일품' },
@@ -77,3 +79,12 @@ export const CafeMenuData = [
     { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK },
     { name: 'SEASON', index: 3, value: DrinkCategory.SEASON }
 ];
+
+export interface ICommonModalTypes {
+    open: boolean;
+    onClose?(): void;
+    content?: string | ReactNode;
+    title?: string;
+    onConfirm?(): void;
+    confirmText?: string;
+}

@@ -8,6 +8,7 @@ import {
     UseQueryOptions
 } from '@tanstack/react-query';
 import {
+    IAddCartItem,
     IAddCartMenuResponse,
     IAddMenuCartParams,
     ICafeMenuBoardResponse,
@@ -157,4 +158,11 @@ export const expireCart = async ({ cafeCartId, user }: IDeleteCartItem) => {
     } catch (e) {
         console.error(e);
     }
+};
+
+export const getInitialCartItems = async (cartId: string) => {
+    const response = await fetch(`https://api.breadkun.com/api/cafe/carts/${cartId}/items?include=DETAILS`);
+    if (!response.ok) throw new Error('네트워크 응답 실패');
+    const json = await response.json();
+    return json.data?.cafeCartItem || [];
 };

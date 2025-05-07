@@ -29,13 +29,8 @@ import {
 import { CircleDollarSign, ClipboardList, CopyIcon, CupSoda, LockIcon, Share2, Trash2 } from 'lucide-react';
 import {
     Box,
-    Button,
     CardMedia,
     Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
     IconButton,
     InputAdornment,
     Slide,
@@ -46,7 +41,7 @@ import {
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
-import { expireCart, deleteCartItem, useGetCartById } from '@/apis/cafe/cafe-api';
+import { expireCart, deleteCartItem, useGetCartById, getInitialCartItems } from '@/apis/cafe/cafe-api';
 import { IUserInfo, CafeCartItem, IDeleteCartItem } from '@/types/cart';
 import { getUserInitial, useBottomHeight, useResponsive, useResponsiveConfig } from '@/utils/hook';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -59,6 +54,8 @@ import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
 import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
 import ClapAnimation from '@/components/page/cafe/ClapAnimation';
 import { useSnackbar } from '@/context/SnackBarContext';
+import { handleRefresh } from '@/utils/util';
+import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
@@ -102,7 +99,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
     const [snackbar, setSnackbar] = useState({ open: false, message: '', variant: '', device: '' });
     const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
-    const { fontSize, iconSize, chipSize, marginTop } = useResponsiveConfig('cart');
+    const { fontSize, iconSize, chipSize } = useResponsiveConfig('cart');
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -111,10 +108,9 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isScrollable, setIsScrollable] = useState(false);
-    const [showClap, setShowClap] = useState(false);
-    const [clapPosition, setClapPosition] = useState({ x: 0 });
     const [clapPositions, setClapPositions] = useState<{ id: string; x: number }[]>([]);
     const lastProcessedIds = useRef<Set<string>>(new Set());
+    const cartItemsRef = useRef<CartItem[]>([]);
 
     const bottomHeight = useBottomHeight(bottomRef, [open]);
 
@@ -128,29 +124,22 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         }
     };
 
-    const handleRefresh = () => {
-        if (typeof window !== 'undefined') {
-            window.location.reload();
-        }
-    };
-
     const removeItem = async (cafeCartId: string) => {
         if (user) {
             const res = await deleteCartItem({ cafeCartId, user } as IDeleteCartItem);
-            if (res) setCartItems(cartItems.filter(item => item.id !== cafeCartId));
+            if (res) {
+                cartItemsRef.current = cartItemsRef.current.filter(item => item.id !== cafeCartId);
+                setCartItems([...cartItemsRef.current]); // UI 업데이트
+            }
         }
     };
 
     const { data: initialCartItems = [], isLoading } = useQuery<CafeCartItem[]>({
         queryKey: ['orderItems', cartId],
-        queryFn: async () => {
-            const response = await fetch(`https://api.breadkun.com/api/cafe/carts/${cartId}/items?include=DETAILS`);
-            if (!response.ok) throw new Error('네트워크 응답 실패');
-            const json = await response.json();
-            return json.data?.cafeCartItem || [];
-        },
+        queryFn: () => getInitialCartItems(cartId),
         staleTime: 0,
-        refetchOnMount: 'always',
+        enabled: !!cartId,
+        refetchOnWindowFocus: false,
         retry: 1
     });
 
@@ -167,41 +156,18 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     };
 
     useEffect(() => {
+        if (!cartId) return;
+
         const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
         const eventName = `cafe-cart-item-${cartId}`;
 
         const handleEvent = (e: MessageEvent) => {
             const eventData = JSON.parse(e.data);
-
-            setCartItems(prevItems => {
-                if (eventData.event === 'CREATED') {
-                    const newItems = eventData.data.cafeCartItem.filter((newItem: CartItem) => {
-                        if (lastProcessedIds.current.has(newItem.id)) {
-                            return false;
-                        }
-                        lastProcessedIds.current.add(newItem.id);
-                        return !prevItems.some(item => item.id === newItem.id);
-                    });
-
-                    if (newItems.length > 0) {
-                        newItems.forEach((item: CartItem) => {
-                            const randomX = Math.random() * (window.innerWidth - 200);
-                            setClapPositions(prev => [...prev, { id: item.id, x: randomX }]);
-
-                            setTimeout(() => {
-                                setClapPositions(prev => prev.filter(pos => pos.id !== item.id));
-                                lastProcessedIds.current.delete(item.id);
-                            }, 2000);
-                        });
-                    }
-
-                    return [...prevItems, ...newItems];
-                } else if (eventData.event === 'DELETED') {
-                    return prevItems.filter(item => !eventData.data.id.includes(item.id));
-                } else {
-                    return prevItems;
-                }
-            });
+            if (eventData.event === 'CREATED') {
+                handleNewItems(eventData.data.cafeCartItem);
+            } else if (eventData.event === 'DELETED') {
+                handleDeletedItems(eventData.data.id);
+            }
         };
 
         eventSource.addEventListener(eventName, handleEvent);
@@ -213,7 +179,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                 setReloadDialogOpen(true);
             }
 
-            console.error('SSE 에러 발생:', err);
             eventSource.close();
         };
 
@@ -224,9 +189,50 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         };
     }, [cartId]);
 
+    const handleNewItems = (newItems: CafeCartItem[]) => {
+        const filteredItems = newItems.filter(item => {
+            if (lastProcessedIds.current.has(item.id)) return false;
+            lastProcessedIds.current.add(item.id);
+            return !cartItemsRef.current.some(existing => existing.id === item.id);
+        });
+
+        if (filteredItems.length > 0) {
+            cartItemsRef.current = [...cartItemsRef.current, ...filteredItems];
+            setCartItems([...cartItemsRef.current]);
+            filteredItems.forEach(item => addClapAnimation(item.id));
+        }
+    };
+
+    const handleDeletedItems = (deletedIds: string[]) => {
+        cartItemsRef.current = cartItemsRef.current.filter(item => !deletedIds.includes(item.id));
+        setCartItems([...cartItemsRef.current]);
+    };
+
+    const addClapAnimation = (id: string) => {
+        const randomX = Math.random() * (window.innerWidth - 200);
+        setClapPositions(prev => [...prev, { id, x: randomX }]);
+
+        let startTime: number | null = null;
+
+        const animate = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+
+            if (elapsed < 2000) {
+                requestAnimationFrame(animate);
+            } else {
+                setClapPositions(prev => prev.filter(pos => pos.id !== id));
+            }
+        };
+
+        requestAnimationFrame(animate);
+    };
+
+    //최초 진입시 장바구니 아이템 set하기
     useEffect(() => {
         if (!isLoading && initialCartItems) {
-            setCartItems(initialCartItems);
+            cartItemsRef.current = initialCartItems;
+            setCartItems([...cartItemsRef.current]);
         }
     }, [initialCartItems, isLoading]);
 
@@ -242,8 +248,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     useEffect(() => {
         const el = scrollRef.current;
         if (el) {
-            console.log(el.scrollHeight, el.clientHeight);
-
             setIsScrollable(el.scrollHeight > window.innerHeight);
         }
     }, [cartItems.length, open]);
@@ -496,7 +500,6 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                                         temperature={item.drinkTemperature}
                                                         label={item.drinkTemperature}
                                                         height={chipSize as number}
-                                                        marginTop={marginTop}
                                                     />
                                                 )}
                                             </Box>
@@ -522,7 +525,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                                             <UserAvatar src={item.imageUrl} alt={item.createdByName}>
                                                 {getUserInitial(item.createdByName)}
                                             </UserAvatar>
-                                            <Typography>{item.createdByName}</Typography>
+                                            <Typography fontSize={'0.9rem'}>{item.createdByName}</Typography>
                                         </Box>
 
                                         <Box
@@ -748,28 +751,59 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     }}
                 />
             )}
-            <Dialog
+            <CommonModal
                 open={openConfirmDialog}
                 onClose={() => setOpenConfirmDialog(false)}
-                aria-labelledby="responsive-dialog-title"
-            >
-                <DialogTitle id="responsive-dialog-title">주문 마감</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        주문을 마감하면 더 이상 사용자들이 장바구니에 상품을 추가하거나 수정할 수 없습니다.
-                        <br />
-                        마감하시겠습니까?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={() => setOpenConfirmDialog(false)}>
-                        취소
-                    </Button>
-                    <Button onClick={handleExpireCart} autoFocus>
-                        마감
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                title={'주문 마감'}
+                onConfirm={handleExpireCart}
+                confirmText={'마감'}
+                content={
+                    <Box padding={1.5}>
+                        <Typography
+                            sx={{
+                                whiteSpace: 'pre-wrap', // 강제 줄바꿈 허용
+                                overflowWrap: 'break-word', // 단어가 너무 길면 자동 줄바꿈
+                                maxWidth: '90%', // 텍스트 너비를 제한하여 가운데 정렬 유지
+                                fontSize: fontSize, // 반응형 글자 크기
+                                lineHeight: 1.4,
+                                textAlign: 'center', // 중앙 정렬
+                                mt: 1
+                            }}
+                        >
+                            주문 마감 시, 이 장바구니에 접근한 모든 사용자가
+                            <br />더 이상 상품을 <strong style={{ textDecoration: 'underline' }}>
+                                추가
+                            </strong>하거나 <strong style={{ textDecoration: 'underline' }}>수정</strong>할 수
+                            없습니다😭
+                            <br />
+                            <br />
+                            마감하시겠습니까?
+                        </Typography>
+                    </Box>
+                }
+            />
+            {/*<Dialog*/}
+            {/*    open={openConfirmDialog}*/}
+            {/*    onClose={() => setOpenConfirmDialog(false)}*/}
+            {/*    aria-labelledby="responsive-dialog-title"*/}
+            {/*>*/}
+            {/*    <DialogTitle id="responsive-dialog-title">주문 마감</DialogTitle>*/}
+            {/*    <DialogContent>*/}
+            {/*        <DialogContentText>*/}
+            {/*            주문을 마감하면 더 이상 사용자들이 장바구니에 상품을 추가하거나 수정할 수 없습니다.*/}
+            {/*            <br />*/}
+            {/*            마감하시겠습니까?*/}
+            {/*        </DialogContentText>*/}
+            {/*    </DialogContent>*/}
+            {/*    <DialogActions>*/}
+            {/*        <Button autoFocus onClick={() => setOpenConfirmDialog(false)}>*/}
+            {/*            취소*/}
+            {/*        </Button>*/}
+            {/*        <Button onClick={handleExpireCart} autoFocus>*/}
+            {/*            마감*/}
+            {/*        </Button>*/}
+            {/*    </DialogActions>*/}
+            {/*</Dialog>*/}
             {clapPositions.map(pos => (
                 <Box
                     key={pos.id}

@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../../../styles/Bus.module.scss';
 import classNames from 'classnames/bind';
 import axios from 'axios';
@@ -7,7 +7,8 @@ import KakaoMap from '@/components/page/bus/KakaoMap';
 import PopUpMap from '@/components/page/bus/popup/PopUpMap';
 import NotificationBox from '@/components/NotificationBox';
 import { usePathname } from 'next/navigation';
-import { useMenuContext } from '@/context/MenuContext';
+import { menuBoxAtom } from '@/atom/common-atom';
+import { useAtom } from 'jotai';
 
 interface BusStations {
     arrivalTimeH?: number;
@@ -26,7 +27,7 @@ const bs = classNames.bind(styles);
 
 function Bus(props: { loaded: boolean }) {
     const { loaded } = props;
-    const { setMenuBox } = useMenuContext();
+    const [, setMenuBox] = useAtom(menuBoxAtom);
     const pathname = usePathname(); // 현재 URL 경로: '/bus/[destination]'
     const destination = pathname.split('/')[2]; // 경로에서 "destination" 추출
     const [selectedValue, setSelectedValue] = useState(

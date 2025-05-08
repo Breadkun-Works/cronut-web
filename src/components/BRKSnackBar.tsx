@@ -1,17 +1,19 @@
 'use client';
-import React, { useState, useEffect } from 'react';
 import { Snackbar, AlertColor } from '@mui/material';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { useAtom } from 'jotai/index';
+import { snackBarAtom } from '@/atom/common-atom';
+import { forwardRef } from 'react';
 
 interface ISnackBarProps {
     open: boolean;
     message: string;
     duration?: number;
     severity?: AlertColor;
-    handleOnClose: () => void;
+    handleOnClose?: () => void;
 }
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
@@ -22,6 +24,7 @@ const BRKSnackBar: React.FC<ISnackBarProps> = ({
     duration = 2000,
     severity = 'info'
 }) => {
+    const [, setSnackBar] = useAtom(snackBarAtom);
     const style = () => {
         switch (severity) {
             case 'warning':
@@ -36,16 +39,29 @@ const BRKSnackBar: React.FC<ISnackBarProps> = ({
                 return {};
         }
     };
+
     return (
         <Snackbar
             open={open}
             autoHideDuration={duration}
-            onClose={handleOnClose}
+            onClose={() => {
+                setSnackBar(snackBarAtom.init);
+
+                if (handleOnClose) {
+                    handleOnClose();
+                }
+            }}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             sx={{ marginBottom: '80px', width: { sx: '90%', sm: '90%' } }}
         >
             <Alert
-                onClose={handleOnClose}
+                onClose={() => {
+                    setSnackBar(snackBarAtom.init);
+
+                    if (handleOnClose) {
+                        handleOnClose();
+                    }
+                }}
                 severity={severity}
                 sx={{ width: '100%', whiteSpace: 'pre-line', ...style() }}
             >

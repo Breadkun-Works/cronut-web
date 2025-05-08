@@ -6,10 +6,11 @@ import { dayNumToSpell, getWeekDates } from '@/utils/dates';
 import { fetchMealData } from '@/apis/meal/meal-api';
 import { Company, mealMenu } from '@/types/common';
 import { getMealImagePath } from '@/utils/image-return';
-import { useCompanyContext } from '@/context/CompanyContext';
 import { CompanySelect } from '@/components/CompanySelect';
 import { Box } from '@mui/material';
 import { useResponsive } from '@/utils/hook';
+import { useAtom } from 'jotai';
+import { companyAtom } from '@/atom/common-atom';
 
 const ms = classNames.bind(styles);
 
@@ -32,7 +33,7 @@ const Meal = () => {
         return weekNumber;
     };
 
-    const { company } = useCompanyContext();
+    const [company] = useAtom(companyAtom);
 
     const [days, setDays] = useState<string[]>();
     const today = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; // 오늘 요일 표시 => 월:0 ~ 일:6
@@ -74,11 +75,6 @@ const Meal = () => {
             window.scrollTo(0, 0);
         };
     }, []);
-
-    // 로컬 스토리지 업데이트
-    useEffect(() => {
-        localStorage.setItem('recentCompany', company);
-    }, [company]);
 
     // 오늘을 선택하는 effect
     useEffect(() => {

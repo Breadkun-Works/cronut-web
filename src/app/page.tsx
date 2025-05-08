@@ -12,16 +12,17 @@ import Link from 'next/link';
 import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
 import { getCookie, setCookie } from '@/utils/cookie';
-import { useCompanyContext } from '@/context/CompanyContext';
 import { Company } from '@/types/common';
 import { CompanySelect } from '@/components/CompanySelect';
 import { Box } from '@mui/material';
 import { useResponsive } from '@/utils/hook';
+import { companyAtom } from '@/atom/common-atom';
+import { useAtom } from 'jotai';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
-    const { company, setCompany } = useCompanyContext();
+    const [company] = useAtom(companyAtom);
     const { isMobile } = useResponsive();
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
@@ -55,9 +56,6 @@ export default function Home() {
     const handleTouchMove = (e: TouchEvent) => e.preventDefault(); // 스크롤 정지 함수
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
-        const recentCompany = (localStorage.getItem('recentCompany') as Company) || Company.KANGCHON;
-        setCompany(recentCompany);
-
         window.scrollTo(0, 0);
         const cookieUserInfo = getCookie('BRK-UUID');
         if (!cookieUserInfo) {
@@ -67,11 +65,6 @@ export default function Home() {
             window.scrollTo(0, 0);
         };
     }, []);
-
-    // 로컬 스토리지 업데이트
-    useEffect(() => {
-        localStorage.setItem('recentCompany', company);
-    }, [company]);
 
     useEffect(() => {
         setDust({

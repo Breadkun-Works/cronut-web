@@ -87,4 +87,5 @@ export interface ICommonModalTypes {
     title?: string;
     onConfirm?(): void;
     confirmText?: string;
+    width?: string | number;
 }

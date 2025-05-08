@@ -3,21 +3,21 @@
 import { COLORS_DARK } from '@/data';
 import { Backdrop, Box, Button, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { ICommonModalTypes } from '@/types/common';
-import { useMaxWidthByViewport, useResponsive } from '@/utils/hook';
+import { useMaxWidthByViewport } from '@/utils/hook';
 import { X } from 'lucide-react';
 
 export const CommonModal = (props: ICommonModalTypes) => {
-    const { open, onClose, content, title, onConfirm, confirmText } = props;
-    const { isMobile } = useResponsive();
+    const { open, onClose, content, title, onConfirm, confirmText, width } = props;
     const theme = useTheme();
     const isSm = useMediaQuery(theme.breakpoints.between('xs', 'sm')); // <360
     const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 360 ~ 479
-    const { maxWidth, fontSize } = useMaxWidthByViewport();
+    const { fontSize } = useMaxWidthByViewport();
 
     return (
         <Backdrop
             open={open}
             onClick={onClose}
+            aria-hidden={false}
             sx={{
                 zIndex: 1300,
                 backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -30,9 +30,9 @@ export const CommonModal = (props: ICommonModalTypes) => {
             <Box
                 onClick={e => e.stopPropagation()}
                 sx={{
-                    width: '90%',
+                    width: width ?? '90%',
                     maxWidth: 500,
-                    maxHeight: '90vh',
+                    maxHeight: '80vh',
                     backgroundColor: COLORS_DARK.background.main,
                     borderRadius: 3,
                     display: 'flex',
@@ -47,7 +47,7 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         textAlign: 'center',
                         px: 2,
                         py: 2,
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                        borderBottom: title && '1px solid rgba(255,255,255,0.05)'
                     }}
                 >
                     {title && (
@@ -91,7 +91,6 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         border: `2px solid ${COLORS_DARK.accent.main}`,
                         // color: COLORS_DARK.accent.main,
                         fontWeight: 'bold',
-                        fontSize,
                         px: 4,
                         py: 1,
                         borderRadius: 2

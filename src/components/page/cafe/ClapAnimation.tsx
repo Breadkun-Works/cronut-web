@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import { Box, keyframes } from '@mui/material';
 
+// 애니메이션 키프레임
 const floatAnimation = keyframes`
   0% {
     transform: translateY(0) scale(1);
@@ -11,7 +13,15 @@ const floatAnimation = keyframes`
   }
 `;
 
+const randomEmojis = ['🥳', '👏', '🎉', '🙌', '🎊'];
+
 const ClapAnimation = () => {
+    const [randomEmoji, setRandomEmoji] = useState('');
+
+    useEffect(() => {
+        setRandomEmoji(randomEmojis[Math.floor(Math.random() * randomEmojis.length)]);
+    }, []);
+
     return (
         <Box
             sx={{
@@ -22,7 +32,7 @@ const ClapAnimation = () => {
                 fontSize: '2rem'
             }}
         >
-            👏
+            {randomEmoji}
         </Box>
     );
 };

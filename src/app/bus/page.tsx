@@ -6,11 +6,9 @@ import axios from 'axios';
 import KakaoMap from '@/components/page/bus/KakaoMap';
 import PopUpMap from '@/components/page/bus/popup/PopUpMap';
 import NotificationBox from '@/components/NotificationBox';
-import { useMenuContext } from '@/context/MenuContext';
 import Image from 'next/image';
 import useKakaoLoader from '../../components/UseKakaoLoader';
 import { Box, Typography } from '@mui/material';
-import { CompanySelect } from '@/components/CompanySelect';
 import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import { BusFront } from 'lucide-react';
 import { responsiveConfig } from '@/data';
@@ -39,7 +37,6 @@ function Bus({ params }: { params: { destination: string } }) {
     const iconSize = isMobile ? 18 : isTabletOnly ? 22 : 24; // 모바일 18px, 태블릿 22px, 데스크탑 24px
 
     const [loaded, setLoaded] = useState(false);
-    const { setMenuBox } = useMenuContext();
 
     const destination = decodeURIComponent(params.destination || ''); // 경로에서 "destination" 추출
     const [selectedValue, setSelectedValue] = useState(destination || ''); // URL parameter 노선 or 로컬스토리지 or "강변1"(기본)
@@ -116,9 +113,6 @@ function Bus({ params }: { params: { destination: string } }) {
         setSelectedValue(e.target.value);
     };
 
-    useEffect(() => {
-        setMenuBox(false); // 메뉴 닫기(이전버튼 클릭시)
-    }, [setMenuBox]);
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -134,7 +128,7 @@ function Bus({ params }: { params: { destination: string } }) {
     }, [latLong]);
 
     useEffect(() => {
-        setSelectedValue(destination || localStorage.getItem('recentDestination') || '강변1');
+        setSelectedValue((destination || localStorage.getItem('recentDestination')) ?? '강변1');
     }, [destination]);
 
     useEffect(() => {

@@ -2,15 +2,16 @@
 
 import { Box, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { MapPin, Utensils } from 'lucide-react';
-import { useCompanyContext } from '@/context/CompanyContext';
 import { Company, companyDropdownItem, companyMealDropdownItem } from '@/types/common';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import React from 'react';
+import { useAtom } from 'jotai';
+import { companyAtom } from '@/atom/common-atom';
 
 export const CompanySelect = ({ entry }: { entry?: string }) => {
-    const { company, setCompany } = useCompanyContext();
-    const { isMobile, isTabletOnly } = useResponsive(); // 🔥
+    const [company, setCompany] = useAtom(companyAtom);
+    const { isMobile, isTabletOnly } = useResponsive();
 
     const handleChange = (event: SelectChangeEvent<string>) => {
         const selectedCompany = event.target.value as Company;

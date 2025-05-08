@@ -1,9 +1,4 @@
 import { useEffect, useState } from 'react';
-import { COLORS_DARK, COLORS_LIGHT } from '@/data';
-
-export function getPlaceholderText(input: string): string {
-    return `${input}를 입력해주세요.`;
-}
 
 export const useConditionalTimeout = (condition: boolean, delay: number) => {
     const [isTimeout, setIsTimeout] = useState(false);

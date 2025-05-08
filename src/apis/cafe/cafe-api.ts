@@ -8,7 +8,6 @@ import {
     UseQueryOptions
 } from '@tanstack/react-query';
 import {
-    IAddCartItem,
     IAddCartMenuResponse,
     IAddMenuCartParams,
     ICafeMenuBoardResponse,
@@ -43,7 +42,7 @@ export const useCreateCart = (
 
 const getCafeMenu = async (
     pageParam: number,
-    query: { size: number; category?: DrinkCategory | string; name?: string; cafeLocation?: Company }
+    query: { size: number; category?: DrinkCategory | string; name?: string; cafeLocation?: Company | string }
 ): Promise<{
     records: Array<ICafeMenuBoardResponse>;
     pageInfo: { first: boolean; last: boolean; currentPage: number; nextPage: number | null };
@@ -72,11 +71,12 @@ export const useGetCafeMenuInfinite = (query: {
     size: number;
     category?: DrinkCategory | string;
     name?: string;
-    cafeLocation?: Company;
+    cafeLocation?: Company | string;
 }) => {
     return useInfiniteQuery({
         queryKey: ['cafeMenuInfinite', { ...query }],
         refetchOnWindowFocus: false,
+        enabled: !!query.cafeLocation,
         queryFn: ({ pageParam = 0 }) => getCafeMenu(pageParam, query),
         initialPageParam: 0,
         getNextPageParam: lastPage => lastPage.pageInfo.nextPage

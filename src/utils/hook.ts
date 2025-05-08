@@ -1,7 +1,14 @@
+'use client';
+
 import { useMediaQuery, useTheme } from '@mui/material';
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { BASE_MENU, CafeMenuTab, SEASON_MENU } from '@/types/common';
-import { useCompanyContext } from '@/context/CompanyContext';
+import { useAtom } from 'jotai/index';
+import { companyAtom } from '@/atom/common-atom';
+import { cartItemsAtom } from '@/atom/cart-atom';
+import { CafeCartItem } from '@/types/cart';
+
+let eventSource: EventSource | null = null; // 전역 SSE 변수
 
 export function useResponsive() {
     const theme = useTheme();
@@ -156,20 +163,28 @@ export function useBottomHeight(ref: RefObject<HTMLElement>, deps: any[] = []): 
     return bottomHeight;
 }
 
-export const useCafeMenuData = () => {
+export const useCafeMenuData = (entry?: string, cafeLocation?: string) => {
     const [menuData, setMenuData] = useState<CafeMenuTab[]>([]);
-    const { company } = useCompanyContext(); // company를 가져온다
+    const [company] = useAtom(companyAtom); // company를 가져온다
     const updateMenu = () => {
-        if (company === 'EULJI') {
-            setMenuData([...BASE_MENU, SEASON_MENU]);
+        if (entry === 'personalCart') {
+            if (cafeLocation === 'EULJI') {
+                setMenuData([...BASE_MENU, SEASON_MENU]);
+            } else {
+                setMenuData(BASE_MENU);
+            }
         } else {
-            setMenuData(BASE_MENU);
+            if (company === 'EULJI') {
+                setMenuData([...BASE_MENU, SEASON_MENU]);
+            } else {
+                setMenuData(BASE_MENU);
+            }
         }
     };
 
     useEffect(() => {
         updateMenu();
-    }, [company]);
+    }, [entry, cafeLocation, company]);
 
     return menuData;
 };
@@ -191,4 +206,104 @@ export const useCurrentBreakpoint = () => {
     if (isMd) return 'md';
     if (isSm) return 'sm';
     return 'xs';
+};
+
+export const useCartSync = (cartId: string, withClapAnimation = false) => {
+    const [cartItems, setCartItems] = useAtom(cartItemsAtom);
+    const lastProcessedIds = useRef<Set<string>>(new Set());
+    const [clapPositions, setClapPositions] = useState<{ id: string; x: number }[]>([]);
+
+    useEffect(() => {
+        if (!cartId) return;
+
+        // SSE 중복 연결 방지
+        if (!eventSource || eventSource.url !== `https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`) {
+            eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
+        }
+
+        const eventName = `cafe-cart-item-${cartId}`;
+        const handleEvent = (e: MessageEvent) => {
+            const eventData = JSON.parse(e.data);
+            console.log('Parsed Event Data:', eventData);
+            if (eventData.event === 'CREATED') {
+                handleNewItems(eventData.data.cafeCartItem);
+            } else if (eventData.event === 'DELETED') {
+                handleDeletedItems(eventData.data.id);
+            }
+        };
+
+        eventSource.addEventListener(eventName, handleEvent);
+
+        eventSource.onerror = () => {
+            console.error('SSE Error');
+            eventSource?.close();
+            eventSource = null;
+        };
+
+        return () => {
+            eventSource?.removeEventListener(eventName, handleEvent);
+            eventSource?.close();
+            eventSource = null;
+            lastProcessedIds.current.clear();
+        };
+    }, [cartId]);
+
+    const handleNewItems = (newItems: CafeCartItem[]) => {
+        const filteredItems = newItems.filter(item => {
+            if (lastProcessedIds.current.has(item.id)) return false;
+            lastProcessedIds.current.add(item.id);
+            return !cartItems.some(existing => existing.id === item.id);
+        });
+
+        if (filteredItems.length > 0) {
+            setCartItems(prev => [...prev, ...filteredItems]);
+
+            // 클랩 애니메이션 (장바구니 페이지에서만 실행)
+            if (withClapAnimation) {
+                filteredItems.forEach(item => addClapAnimation(item.id));
+            }
+        }
+    };
+
+    const handleDeletedItems = (deletedIds: string[]) => {
+        setCartItems(prev => prev.filter(item => !deletedIds.includes(item.id)));
+    };
+
+    const addClapAnimation = (id: string) => {
+        if (!withClapAnimation) return;
+
+        const randomX = Math.random() * (window.innerWidth - 200);
+        setClapPositions(prev => [...prev, { id, x: randomX }]);
+
+        let startTime: number | null = null;
+        const duration = 2000;
+
+        const animate = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            setClapPositions(prev =>
+                prev.map(pos =>
+                    pos.id === id
+                        ? {
+                              ...pos,
+                              y: -(progress * 50),
+                              opacity: 1 - progress
+                          }
+                        : pos
+                )
+            );
+
+            if (elapsed < duration) {
+                requestAnimationFrame(animate);
+            } else {
+                setClapPositions(prev => prev.filter(pos => pos.id !== id));
+            }
+        };
+
+        requestAnimationFrame(animate);
+    };
+
+    return { clapPositions };
 };

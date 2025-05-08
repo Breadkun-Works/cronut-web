@@ -1,20 +1,9 @@
 'use client';
-import {
-    Badge,
-    Box,
-    Button,
-    CardActionArea,
-    Dialog,
-    DialogContent,
-    IconButton,
-    ToggleButtonGroup,
-    Typography
-} from '@mui/material';
+import { Badge, Box, IconButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
-import { useGetCafeMenuInfinite, useGetCartById } from '@/apis/cafe/cafe-api';
-import { DrinkCategory, DrinkTemperature } from '@/types/common';
-import { useCompanyContext } from '@/context/CompanyContext';
+import { getInitialCartItems, useGetCafeMenuInfinite, useGetCartById } from '@/apis/cafe/cafe-api';
+import { Company, DrinkCategory, DrinkTemperature } from '@/types/common';
 import {
     HeaderContent,
     MenuCardMedia,
@@ -22,11 +11,11 @@ import {
     ScrollableContent,
     StyledMenuTitle
 } from '@/styles/cart/cart.styles';
-import { Leaf, MapPin, Search, Sparkles, Wine, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
-import { useCafeMenuData, useCurrentBreakpoint, useResponsive } from '@/utils/hook';
+import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import {
     CategoryTab,
     CategoryTabs,
@@ -44,7 +33,10 @@ import {
 import { CompanySelect } from '@/components/CompanySelect';
 import { LocalCafeOutlined } from '@mui/icons-material';
 import { SearchBar } from '@/components/page/cafe/menu/searchbar';
-import { useQueryClient } from '@tanstack/react-query';
+import { CommonModal } from '@/components/page/cafe/modal/common-modal';
+import { useAtom } from 'jotai/index';
+import { companyAtom } from '@/atom/common-atom';
+import { cartItemsAtom, cartItemsCountAtom } from '@/atom/cart-atom';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -74,9 +66,25 @@ const CafeMenuTabPanel = ({ children, value, index }: any) => {
     );
 };
 
-const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; cartId?: string }) => {
+const CafeMenu = ({
+    entry,
+    cartId,
+    title,
+    cartBasic
+}: {
+    title: string;
+    entry?: string;
+    cartId?: string;
+    cartBasic?: any;
+}) => {
+    const searchParams = useSearchParams();
     const [tabValue, setTabValue] = useState(0);
-    const { company } = useCompanyContext();
+    const [company] = useAtom(companyAtom);
+    const [, setCartItems] = useAtom(cartItemsAtom);
+    const [cartItemsCount] = useAtom(cartItemsCountAtom);
+
+    useCartSync(cartId as string, false);
+
     const { isMobile, isDesktop, isSmall, isTabletOnly } = useResponsive();
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -101,18 +109,22 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         }));
     };
 
-    const [query, setQuery] = useState({
+    const [query, setQuery] = useState<{
+        size: number;
+        category: DrinkCategory | string;
+        name: string;
+        cafeLocation?: string;
+    }>({
         size: 12,
         category: 'COFFEE',
         name: '',
-        cafeLocation: company
+        cafeLocation: entry === 'personalCart' && cartBasic ? cartBasic.cafeLocation : company
     });
 
-    const queryClient = useQueryClient();
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
-    const { data: cartBasic } = useGetCartById(cartId as string);
 
-    const cafeMenuData = useCafeMenuData();
+    console.log(query);
+    const cafeMenuData = useCafeMenuData(entry, cartBasic?.cafeLocation);
     const { iconSizeSteps, fontSizeSteps } = responsiveConfig;
     const breakpoint = useCurrentBreakpoint();
     const iconSize = iconSizeSteps.menu[breakpoint];
@@ -136,6 +148,21 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
     };
 
     useEffect(() => {
+        if (cartId) {
+            const initializeCart = async () => {
+                try {
+                    const initialCartItems = await getInitialCartItems(cartId);
+                    setCartItems(initialCartItems);
+                } catch (error) {
+                    console.error('장바구니 초기화 오류:', error);
+                }
+            };
+
+            initializeCart();
+        }
+    }, [cartId]);
+
+    useEffect(() => {
         if (!loadMoreRef.current) return;
 
         const observer = new IntersectionObserver(
@@ -155,26 +182,45 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
         const handleResize = () => {
             if (containerRef.current) {
                 const containerWidth = containerRef.current.offsetWidth;
-                setDialogWidth(isMobile ? window.innerWidth : containerWidth * (3 / 4));
+                setDialogWidth(
+                    typeof window !== 'undefined' && isMobile ? window.innerWidth : containerWidth * (3 / 4)
+                );
             }
         };
 
-        if (openDialog) handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [openDialog, window?.innerWidth]);
+        if (typeof window !== 'undefined' && openDialog) {
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        }
+
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('resize', handleResize);
+            }
+        };
+    }, [openDialog]);
 
     // 회사 바뀌면 일부 필드 초기화
     useEffect(() => {
-        setQuery(prev => ({
-            ...prev,
-            cafeLocation: company,
-            category: DrinkCategory.COFFEE // 초기화
-        }));
-        setTabValue(0);
-        setShowSearch(false);
-        setSearchTerm('');
+        if (entry === 'menu') {
+            setQuery(prev => ({
+                ...prev,
+                cafeLocation: company,
+                category: DrinkCategory.COFFEE // 초기화
+            }));
+            setTabValue(0);
+            setShowSearch(false);
+            setSearchTerm('');
+        }
     }, [company]);
+
+    // useEffect(() => {
+    //     if (cartBasic && entry === 'personalCart') {
+    //         setQuery({ ...query, cafeLocation: cartBasic?.cafeLocation });
+    //     }
+    // }, [cartBasic]);
+
+    console.log(cartBasic);
 
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
         const selectedCategory = cafeMenuData[newTabValue].value;
@@ -309,14 +355,14 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
             </MenuItemContent>
         );
 
-        return entry === 'menu' ? content : <CardActionArea onClick={onClick}>{content}</CardActionArea>;
+        return entry === 'menu' ? content : <Box onClick={onClick}>{content}</Box>;
     };
 
     return (
         <PageContainer ref={containerRef} maxWidth={false} disableGutters>
             <Box>
                 <Box display={'flex'} justifyContent={'space-between'} mb={2}>
-                    {cartId && cartBasic ? (
+                    {entry === 'personalCart' ? (
                         <Box display={'flex'} alignItems="center" gap={1}>
                             <MapPin size={isMobile ? 18 : isTabletOnly ? 22 : 24} />
                             <Typography fontSize={fontSize}>
@@ -356,33 +402,62 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                                 alignItems: 'center',
                                 justifyContent: 'center'
                             }}
-                            onClick={() => router.push('/cafe/cart')}
+                            onClick={() =>
+                                router.push(
+                                    entry === 'personalCart' ? `/cafe/cart/${cartId}?${searchParams}` : '/cafe/cart'
+                                )
+                            }
                         >
                             <Badge
                                 overlap="circular"
                                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                                 badgeContent={
-                                    <Box
-                                        sx={{
-                                            width: 14,
-                                            height: 14,
-                                            borderRadius: '50%',
-                                            backgroundColor: COLORS_DARK.accent.main,
-                                            color: '#fff',
-                                            fontSize: '1rem',
-                                            fontWeight: 'bold',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }}
-                                    >
-                                        +
-                                    </Box>
+                                    entry === 'personalCart' ? (
+                                        cartItemsCount > 0 && (
+                                            <Box
+                                                sx={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    borderRadius: '50%',
+                                                    backgroundColor: COLORS_DARK.accent.main,
+                                                    color: '#fff',
+                                                    fontSize: '1rem',
+                                                    fontWeight: 'bold',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}
+                                            >
+                                                {cartItemsCount}
+                                            </Box>
+                                        )
+                                    ) : (
+                                        <Box
+                                            sx={{
+                                                width: 14,
+                                                height: 14,
+                                                borderRadius: '50%',
+                                                backgroundColor: COLORS_DARK.accent.main,
+                                                color: '#fff',
+                                                fontSize: '1rem',
+                                                fontWeight: 'bold',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                        >
+                                            +
+                                        </Box>
+                                    )
                                 }
                             >
-                                <GlowContainer>
-                                    <GlowingIcon size={iconSize} color="white" />
-                                </GlowContainer>
+                                {entry === 'personalCart' ? (
+                                    <ShoppingCart size={iconSize} />
+                                ) : (
+                                    <GlowContainer>
+                                        <GlowingIcon size={iconSize} color="white" />
+                                    </GlowContainer>
+                                )}
                             </Badge>
                         </IconButton>
                     </Box>
@@ -466,16 +541,29 @@ const CafeMenu = ({ entry, cartId, title }: { title: string; entry?: string; car
                             </MenuGrid>
 
                             {moveToConfirm && (
-                                <Dialog open={moveToConfirm}>
-                                    <DialogContent sx={{ color: COLORS_DARK.text.primary, padding: '24px' }}>
-                                        <Typography variant={'body1'}>
-                                            상품을 장바구니에 담았습니다.
-                                            <br /> 장바구니로 이동하시겠습니까?
-                                        </Typography>
-                                    </DialogContent>
-                                    <Button onClick={() => setMoveToConfirm(false)}>취소</Button>
-                                    <Button onClick={() => router.push(`/cafe/cart/${cartId}`)}>확인</Button>
-                                </Dialog>
+                                <CommonModal
+                                    width={isMobile ? '90%' : '70%'}
+                                    open={moveToConfirm}
+                                    content={
+                                        <Box padding={1.5}>
+                                            <Typography
+                                                sx={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '90%',
+                                                    lineHeight: 1.4,
+                                                    textAlign: 'center',
+                                                    margin: '0 8px 8px 8px'
+                                                }}
+                                            >
+                                                상품을 장바구니에 담았습니다.
+                                                <br /> 장바구니로 이동하시겠습니까?
+                                            </Typography>
+                                        </Box>
+                                    }
+                                    onClose={() => setMoveToConfirm(false)}
+                                    onConfirm={() => router.push(`/cafe/cart/${cartId}`)}
+                                />
                             )}
 
                             {!hasNextPage &&

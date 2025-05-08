@@ -43,7 +43,7 @@ import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
 import { expireCart, deleteCartItem, useGetCartById, getInitialCartItems } from '@/apis/cafe/cafe-api';
 import { IUserInfo, CafeCartItem, IDeleteCartItem } from '@/types/cart';
-import { getUserInitial, useBottomHeight, useResponsive, useResponsiveConfig } from '@/utils/hook';
+import { getUserInitial, useBottomHeight, useCartSync, useResponsive, useResponsiveConfig } from '@/utils/hook';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import PaymentModal from '@/app/cafe/cart/[id]/PaymentModal';
@@ -53,9 +53,11 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { EllipsisTooltip } from '@/components/page/cafe/cafe-title-tooltip';
 import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
 import ClapAnimation from '@/components/page/cafe/ClapAnimation';
-import { useSnackbar } from '@/context/SnackBarContext';
 import { handleRefresh } from '@/utils/util';
 import { CommonModal } from '@/components/page/cafe/modal/common-modal';
+import { useAtom } from 'jotai';
+import { cartItemsAtom } from '@/atom/cart-atom';
+import { snackBarAtom } from '@/atom/common-atom';
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
@@ -63,33 +65,16 @@ interface ConfirmClientPageProps {
     isCreator: boolean;
     user: IUserInfo;
 }
-interface CartItem {
-    id: string;
-    cafeCartId: string;
-    cafeMenuId: number;
-    isPersonalCup: boolean;
-    quantity: number;
-    imageUrl: string;
-    createdAt: string;
-    createdById: string;
-    createdByName: string;
-    drinkName: string;
-    drinkPrice: number;
-    drinkTotalPrice: number;
-    drinkCategory: string;
-    drinkTemperature: 'HOT' | 'ICED';
-    drinkImageFilename: string;
-    drinkImageUrl: string;
-}
 
 export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user }: ConfirmClientPageProps) => {
     const { isMobile } = useResponsive();
     const searchParams = useSearchParams();
     const { data: cartBasic } = useGetCartById(cartId);
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [cartItems, setCartItems] = useAtom(cartItemsAtom);
+
     const [unAccessibleCart, setUnAccessibleCart] = useState(false);
     const isCartReallyInactive = unAccessibleCart || cartBasic?.status === 'INACTIVE' || status === 'INACTIVE';
-    const { showSnackbar: showSnackBar2 } = useSnackbar();
+    const [, setSnackbarContent] = useAtom(snackBarAtom);
     // 샘플 공유 링크
     const shareLink = window.location.href;
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
@@ -108,9 +93,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isScrollable, setIsScrollable] = useState(false);
-    const [clapPositions, setClapPositions] = useState<{ id: string; x: number }[]>([]);
-    const lastProcessedIds = useRef<Set<string>>(new Set());
-    const cartItemsRef = useRef<CartItem[]>([]);
+    const cartItemsRef = useRef<CafeCartItem[]>([]);
 
     const bottomHeight = useBottomHeight(bottomRef, [open]);
 
@@ -125,13 +108,10 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     };
 
     const removeItem = async (cafeCartId: string) => {
-        if (user) {
-            const res = await deleteCartItem({ cafeCartId, user } as IDeleteCartItem);
-            if (res) {
-                cartItemsRef.current = cartItemsRef.current.filter(item => item.id !== cafeCartId);
-                setCartItems([...cartItemsRef.current]); // UI 업데이트
-            }
-        }
+        if (!user) return;
+        console.log('entered');
+        const res = await deleteCartItem({ cafeCartId, user } as IDeleteCartItem);
+        console.log(res, 'res');
     };
 
     const { data: initialCartItems = [], isLoading } = useQuery<CafeCartItem[]>({
@@ -155,78 +135,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
         setSnackbar({ open: true, message, variant, device: 'MOBILE' });
     };
 
-    useEffect(() => {
-        if (!cartId) return;
-
-        const eventSource = new EventSource(`https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`);
-        const eventName = `cafe-cart-item-${cartId}`;
-
-        const handleEvent = (e: MessageEvent) => {
-            const eventData = JSON.parse(e.data);
-            if (eventData.event === 'CREATED') {
-                handleNewItems(eventData.data.cafeCartItem);
-            } else if (eventData.event === 'DELETED') {
-                handleDeletedItems(eventData.data.id);
-            }
-        };
-
-        eventSource.addEventListener(eventName, handleEvent);
-
-        eventSource.onerror = err => {
-            if (isCartReallyInactive) {
-                setUnAccessibleCart(true);
-            } else {
-                setReloadDialogOpen(true);
-            }
-
-            eventSource.close();
-        };
-
-        return () => {
-            eventSource.removeEventListener(eventName, handleEvent);
-            eventSource.close();
-            lastProcessedIds.current.clear();
-        };
-    }, [cartId]);
-
-    const handleNewItems = (newItems: CafeCartItem[]) => {
-        const filteredItems = newItems.filter(item => {
-            if (lastProcessedIds.current.has(item.id)) return false;
-            lastProcessedIds.current.add(item.id);
-            return !cartItemsRef.current.some(existing => existing.id === item.id);
-        });
-
-        if (filteredItems.length > 0) {
-            cartItemsRef.current = [...cartItemsRef.current, ...filteredItems];
-            setCartItems([...cartItemsRef.current]);
-            filteredItems.forEach(item => addClapAnimation(item.id));
-        }
-    };
-
-    const handleDeletedItems = (deletedIds: string[]) => {
-        cartItemsRef.current = cartItemsRef.current.filter(item => !deletedIds.includes(item.id));
-        setCartItems([...cartItemsRef.current]);
-    };
-
-    const addClapAnimation = (id: string) => {
-        const randomX = Math.random() * (window.innerWidth - 200);
-        setClapPositions(prev => [...prev, { id, x: randomX }]);
-
-        let startTime: number | null = null;
-
-        const animate = (timestamp: number) => {
-            if (!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-
-            if (elapsed < 2000) {
-                requestAnimationFrame(animate);
-            } else {
-                setClapPositions(prev => prev.filter(pos => pos.id !== id));
-            }
-        };
-
-        requestAnimationFrame(animate);
-    };
+    const { clapPositions } = useCartSync(cartId, true);
 
     //최초 진입시 장바구니 아이템 set하기
     useEffect(() => {
@@ -255,13 +164,13 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
     const handleExpireCart = async () => {
         const res = await expireCart({ cafeCartId: cartId, user });
         if (res) {
-            showSnackBar2('주문이 마감되었습니다.');
+            setSnackbarContent({ open: true, message: '주문이 마감되었습니다.', severity: 'info' });
             queryClient.setQueryData(['cart', cartId], (oldData: any) => ({
                 ...oldData,
                 status: 'INACTIVE'
             }));
         } else {
-            showSnackBar2('마감중 오류가 발생했습니다.');
+            setSnackbarContent({ open: true, message: '마감중 오류가 발생했습니다.', severity: 'error' });
         }
         setOpenConfirmDialog(false);
     };
@@ -761,13 +670,13 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     <Box padding={1.5}>
                         <Typography
                             sx={{
-                                whiteSpace: 'pre-wrap', // 강제 줄바꿈 허용
-                                overflowWrap: 'break-word', // 단어가 너무 길면 자동 줄바꿈
-                                maxWidth: '90%', // 텍스트 너비를 제한하여 가운데 정렬 유지
-                                fontSize: fontSize, // 반응형 글자 크기
+                                whiteSpace: 'pre-wrap',
+                                overflowWrap: 'break-word',
+                                maxWidth: '90%',
+                                fontSize: fontSize,
                                 lineHeight: 1.4,
-                                textAlign: 'center', // 중앙 정렬
-                                mt: 1
+                                textAlign: 'center',
+                                margin: 1
                             }}
                         >
                             주문 마감 시, 이 장바구니에 접근한 모든 사용자가
@@ -782,28 +691,7 @@ export const ConfirmClientV3 = ({ decryptedData, cartId, status, isCreator, user
                     </Box>
                 }
             />
-            {/*<Dialog*/}
-            {/*    open={openConfirmDialog}*/}
-            {/*    onClose={() => setOpenConfirmDialog(false)}*/}
-            {/*    aria-labelledby="responsive-dialog-title"*/}
-            {/*>*/}
-            {/*    <DialogTitle id="responsive-dialog-title">주문 마감</DialogTitle>*/}
-            {/*    <DialogContent>*/}
-            {/*        <DialogContentText>*/}
-            {/*            주문을 마감하면 더 이상 사용자들이 장바구니에 상품을 추가하거나 수정할 수 없습니다.*/}
-            {/*            <br />*/}
-            {/*            마감하시겠습니까?*/}
-            {/*        </DialogContentText>*/}
-            {/*    </DialogContent>*/}
-            {/*    <DialogActions>*/}
-            {/*        <Button autoFocus onClick={() => setOpenConfirmDialog(false)}>*/}
-            {/*            취소*/}
-            {/*        </Button>*/}
-            {/*        <Button onClick={handleExpireCart} autoFocus>*/}
-            {/*            마감*/}
-            {/*        </Button>*/}
-            {/*    </DialogActions>*/}
-            {/*</Dialog>*/}
+
             {clapPositions.map(pos => (
                 <Box
                     key={pos.id}

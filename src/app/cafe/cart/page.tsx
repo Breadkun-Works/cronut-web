@@ -3,7 +3,6 @@ import { CartButton, PageWrapper, CartContainer } from '@/styles/cart/cart.style
 import React, { useState } from 'react';
 import { useConditionalTimeout } from '@/utils/util';
 import { useCreateCart } from '@/apis/cafe/cafe-api';
-import { useCompanyContext } from '@/context/CompanyContext';
 import NotificationBox from '@/components/NotificationBox';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
@@ -20,8 +19,9 @@ import {
     Typography
 } from '@mui/material';
 import { CompanySelect } from '@/components/CompanySelect';
-import { useSnackbar } from '@/context/SnackBarContext';
 import { useResponsive } from '@/utils/hook';
+import { useAtom } from 'jotai';
+import { companyAtom, snackBarAtom } from '@/atom/common-atom';
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -45,7 +45,6 @@ const CssTextField = styled(TextField)({
 });
 
 const CartPage = () => {
-    const { showSnackbar } = useSnackbar();
     const { isMobile } = useResponsive();
 
     const [newCart, setNewCart] = useState({ title: '', description: '' });
@@ -53,7 +52,8 @@ const CartPage = () => {
     const [bankName, setBankName] = useState('');
     const [accountNumber, setAccountNumber] = useState('');
 
-    const { company } = useCompanyContext(); // company와 setCompany를 가져옵니다.
+    const [company] = useAtom(companyAtom);
+    const [snackBar, setSnackBar] = useAtom(snackBarAtom);
     const router = useRouter();
 
     const { mutate, isPending, isSuccess } = useCreateCart({
@@ -80,11 +80,12 @@ const CartPage = () => {
     };
     const validateForm = () => {
         if (!newCart.title.trim()) {
-            showSnackbar('장바구니의 이름을 입력해주세요', 'warning');
+            setSnackBar({ open: true, message: '장바구니의 이름을 입력해주세요', severity: 'warning' });
             return false;
         }
         if (paymentType === 'dutch' && (!bankName || !accountNumber)) {
-            showSnackbar('계좌 정보를 입력해주세요', 'warning');
+            setSnackBar({ open: true, message: '계좌 정보를 입력해주세요', severity: 'warning' });
+
             return false;
         }
         return true;

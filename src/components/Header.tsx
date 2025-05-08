@@ -1,18 +1,27 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '../styles/Header.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
-import { useMenuContext } from '@/context/MenuContext';
 import { usePathname } from 'next/navigation';
 import MenuBox from './MenuBox';
+import { useAtom } from 'jotai';
+import { menuBoxAtom, windowResizeAtom } from '@/atom/common-atom';
 
 const hs = classNames.bind(styles);
 
 function Header() {
-    const { menuBox, setMenuBox } = useMenuContext();
+    const [menuBox, setMenuBox] = useAtom(menuBoxAtom);
+    const [, setResize] = useAtom(windowResizeAtom);
 
     const router = usePathname();
+
+    // 윈도우 리사이즈 감지 (Jotai로 처리)
+    useEffect(() => {
+        const handleResize = () => setResize(); // Atom에서 처리
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [setResize]);
 
     return (
         <>

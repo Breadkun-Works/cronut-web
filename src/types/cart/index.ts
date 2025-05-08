@@ -9,7 +9,7 @@ export interface PaginationType {
 }
 
 export interface INewCartType {
-    cafeLocation: Company;
+    cafeLocation: Company | string;
     title: string;
     description?: string;
 }

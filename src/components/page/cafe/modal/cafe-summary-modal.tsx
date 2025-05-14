@@ -15,7 +15,6 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CafeCartItem, GroupedCafeData } from '@/types/cart';
 import { MenuCount, MenuImageContainer } from '@/styles/cart/cart.styles';
-import { X } from 'lucide-react';
 import { useResponsive, useMaxWidthByViewport } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
 import { ICommonModalTypes } from '@/types/common';
@@ -28,13 +27,17 @@ interface CafeSummaryModalProps extends ICommonModalTypes {
 interface EllipsisSummaryTooltipProps {
     title: string;
     children: React.ReactElement;
+    forceTooltip: boolean;
 }
 
-const EllipsisSummaryTooltip = ({ title, children }: EllipsisSummaryTooltipProps) => {
+const EllipsisSummaryTooltip = ({ title, children, forceTooltip = false }: EllipsisSummaryTooltipProps) => {
     const textRef = useRef<HTMLElement>(null);
     const [isOverflowed, setIsOverflowed] = useState(false);
     const [open, setOpen] = useState(false);
     const { isMobile } = useResponsive();
+    const { fontSize } = useMaxWidthByViewport();
+    const theme = useTheme();
+    const isUnder350 = useMediaQuery(theme.breakpoints.down(350));
 
     useEffect(() => {
         const el = textRef.current;
@@ -43,50 +46,93 @@ const EllipsisSummaryTooltip = ({ title, children }: EllipsisSummaryTooltipProps
         }
     }, [children]);
 
-    if (!isOverflowed) {
-        // 그냥 자식만 렌더링
-        return <>{React.cloneElement(children, { ref: textRef })}</>;
-    }
+    const shouldShowTooltip = forceTooltip || isOverflowed;
 
-    if (isMobile) {
-        return (
-            <ClickAwayListener onClickAway={() => setOpen(false)}>
-                <Tooltip
-                    title={title}
-                    open={open}
-                    placement="top"
-                    arrow
-                    disableHoverListener
-                    disableFocusListener
-                    disableTouchListener
-                >
-                    <span
-                        ref={textRef}
-                        onClick={() => setOpen(true)}
-                        style={{ display: 'inline-block', cursor: 'pointer' }}
+    const textStyle = shouldShowTooltip
+        ? {
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: isUnder350 ? '65%' : '70%',
+              fontSize
+          }
+        : { fontSize };
+
+    if (shouldShowTooltip) {
+        if (isMobile) {
+            return (
+                <ClickAwayListener onClickAway={() => setOpen(false)}>
+                    <Tooltip
+                        title={title}
+                        open={open}
+                        placement="top"
+                        arrow
+                        disableHoverListener
+                        disableFocusListener
+                        disableTouchListener
                     >
-                        {children}
-                    </span>
-                </Tooltip>
-            </ClickAwayListener>
+                        <span
+                            ref={textRef}
+                            onClick={() => setOpen(true)}
+                            style={{ display: 'inline-block', cursor: 'pointer', ...textStyle }}
+                        >
+                            {children}
+                        </span>
+                    </Tooltip>
+                </ClickAwayListener>
+            );
+        }
+
+        return (
+            <Tooltip title={title} placement="top" arrow>
+                <span ref={textRef} style={{ display: 'inline-block', ...textStyle }}>
+                    {children}
+                </span>
+            </Tooltip>
         );
     }
 
+    // 툴팁이 비활성화된 경우 - 일반 텍스트
     return (
-        <Tooltip title={title} placement="top" arrow>
-            <span ref={textRef} style={{ display: 'inline-block' }}>
-                {children}
-            </span>
-        </Tooltip>
+        <span ref={textRef} style={{ display: 'inline-block', ...textStyle }}>
+            {children}
+        </span>
     );
 };
 
 export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalProps) {
     const { isMobile } = useResponsive();
-    const theme = useTheme();
-    const isSm = useMediaQuery(theme.breakpoints.between('xs', 'sm')); // <360
-    const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 360 ~ 479
-    const { maxWidth, fontSize } = useMaxWidthByViewport();
+    const { fontSize } = useMaxWidthByViewport();
+
+    const [forceTooltipList, setForceTooltipList] = useState<boolean[]>([]);
+    const textBoxRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const menuCountRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    useEffect(() => {
+        const updateForceTooltip = () => {
+            const newForceTooltipList = groupedMenuList.map((_, index) => {
+                const textBox = textBoxRefs.current[index];
+                const menuCount = menuCountRefs.current[index];
+                if (textBox && menuCount) {
+                    const textBoxRect = textBox.getBoundingClientRect();
+                    const menuCountRect = menuCount.getBoundingClientRect();
+                    const distance = menuCountRect.left - textBoxRect.right;
+                    // console.log(`Distance for index ${index}:`, distance);
+                    return distance <= 16;
+                }
+                return false;
+            });
+
+            setForceTooltipList(newForceTooltipList);
+        };
+
+        window.addEventListener('resize', updateForceTooltip);
+        updateForceTooltip();
+
+        return () => {
+            window.removeEventListener('resize', updateForceTooltip);
+        };
+    }, [cartItems]);
 
     const groupedMenuList = useMemo(() => {
         const grouped = cartItems.reduce((acc, item) => {
@@ -115,30 +161,10 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
         <CommonModal
             open={open}
             onClose={onClose}
-            title={'메뉴 요약보기'}
+            title={'주문 모아보기'}
             content={
-                <Box
-                    sx={{
-                        px: 2,
-                        pt: 2,
-                        pb: 1,
-                        overflowY: 'auto',
-                        flex: 1,
-                        '&::-webkit-scrollbar': {
-                            width: '4px' // 얇게
-                        },
-                        '&::-webkit-scrollbar-track': {
-                            backgroundColor: 'transparent'
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                            borderRadius: '4px'
-                        },
-                        scrollbarWidth: 'thin',
-                        scrollbarColor: 'rgba(255,255,255,0.15) transparent'
-                    }}
-                >
-                    {groupedMenuList.map(group => (
+                <>
+                    {groupedMenuList.map((group, index) => (
                         <Box
                             key={`${group.cafeMenuId}_${group.drinkTemperature}`}
                             sx={{
@@ -149,7 +175,7 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                                 borderRadius: 2,
                                 px: 1.5,
                                 py: 1.2,
-                                mb: 1.5
+                                mb: index !== groupedMenuList.length - 1 ? 1.5 : 0
                             }}
                         >
                             <Box display="flex" alignItems="center" sx={{ overflow: 'hidden' }}>
@@ -161,22 +187,25 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                                         sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
                                 </MenuImageContainer>
-                                <Box display="flex" alignItems="center" gap={0.5}>
-                                    <EllipsisSummaryTooltip title={group.drinkName}>
-                                        <Typography
-                                            maxWidth={maxWidth}
-                                            fontSize={fontSize}
-                                            sx={{
-                                                whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis'
-                                            }}
-                                        >
-                                            {/*돌체돌체돌체돌체돌체돌체*/}
-                                            {group.drinkName}
-                                        </Typography>
+                                <Box
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={0.5}
+                                    ref={(el: HTMLDivElement | null) => {
+                                        textBoxRefs.current[index] = el;
+                                    }}
+                                >
+                                    <EllipsisSummaryTooltip
+                                        title={group.drinkName}
+                                        forceTooltip={forceTooltipList[index] ?? false}
+                                    >
+                                        {/*돌체돌체돌체돌체돌체돌체*/}
+                                        <>{group.drinkName}</>
                                     </EllipsisSummaryTooltip>
-                                    <Box component="span" sx={{ display: 'inline-flex', marginLeft: 0.5 }}>
+                                    <Box
+                                        component="span"
+                                        sx={{ display: 'inline-flex', alignItems: 'center', marginLeft: 0.5 }}
+                                    >
                                         <Chip
                                             label={group.drinkTemperature}
                                             size="small"
@@ -193,12 +222,36 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                                 </Box>
                             </Box>
 
-                            <MenuCount sx={{ height: isMobile ? 25 : 30, width: isMobile ? 20 : 24 }}>
+                            <MenuCount
+                                sx={{ height: isMobile ? 22 : 30, width: isMobile ? 20 : 24 }}
+                                ref={(el: HTMLDivElement | null) => {
+                                    menuCountRefs.current[index] = el;
+                                }}
+                            >
                                 {group.totalQuantity}
                             </MenuCount>
                         </Box>
                     ))}
-                </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '12px 16px',
+                            backgroundColor: COLORS_DARK.theme.purple,
+                            borderRadius: '12px',
+                            marginTop: '12px',
+                            border: '1px solid rgba(255, 255, 255, 0.1)'
+                        }}
+                    >
+                        <Typography fontSize={16} fontWeight="bold" color="white">
+                            총 수량
+                        </Typography>
+                        <Typography fontSize={16} fontWeight="bold" color="white">
+                            {groupedMenuList.reduce((total, item) => total + item.totalQuantity, 0)} 잔
+                        </Typography>
+                    </Box>
+                </>
             }
         />
     );

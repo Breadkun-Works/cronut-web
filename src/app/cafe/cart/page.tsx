@@ -45,7 +45,7 @@ const CssTextField = styled(TextField)({
 });
 
 const CartPage = () => {
-    const { isMobile } = useResponsive();
+    const { isMobile, isDesktop } = useResponsive();
 
     const [newCart, setNewCart] = useState({ title: '', description: '' });
     const [paymentType, setPaymentType] = useState<PaymentType>('treat');
@@ -95,7 +95,7 @@ const CartPage = () => {
 
     return (
         <PageWrapper>
-            <Box margin={isMobile ? '10px 16px' : '20px 30px'} padding={!isMobile ? '4px 0 0 30px' : 0}>
+            <Box margin={isMobile ? '10px 16px' : '20px 30px'}>
                 <CompanySelect entry={'cafe'} />
             </Box>
             <div className={'cart-wrapper'}>

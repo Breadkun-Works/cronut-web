@@ -10,7 +10,9 @@ export interface ISnackbarTypes {
     duration?: number;
     open: boolean;
     handleOnClose?: () => void;
+    device?: string;
 }
+
 export const Snackbar = () => {
     const [snackBar] = useAtom(snackBarAtom);
     return (

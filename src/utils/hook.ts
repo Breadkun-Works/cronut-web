@@ -4,7 +4,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { BASE_MENU, CafeMenuTab, SEASON_MENU } from '@/types/common';
 import { useAtom } from 'jotai/index';
-import { companyAtom } from '@/atom/common-atom';
+import { companyAtom, useModal } from '@/atom/common-atom';
 import { cartItemsAtom } from '@/atom/cart-atom';
 import { CafeCartItem } from '@/types/cart';
 
@@ -37,7 +37,7 @@ export const getUserInitial = (name: string) => {
 const breakpointSteps = [
     { min: 0, max: 319, fontSize: 14, chipSize: 16, iconSize: 16, maxWidth: 90 },
     { min: 320, max: 329, fontSize: 14, chipSize: 15, iconSize: 17, maxWidth: 100 },
-    { min: 330, max: 339, fontSize: 15, chipSize: 14, iconSize: 17, maxWidth: 110 },
+    { min: 330, max: 339, fontSize: 14, chipSize: 14, iconSize: 17, maxWidth: 110 },
     { min: 340, max: 349, fontSize: 15, chipSize: 14, iconSize: 18, maxWidth: 120 },
     { min: 350, max: 359, fontSize: 15, chipSize: 14, iconSize: 19, maxWidth: 130 },
     { min: 360, max: 369, fontSize: 15, chipSize: 14, marginTop: -1, iconSize: 19, maxWidth: 140 },
@@ -167,19 +167,8 @@ export const useCafeMenuData = (entry?: string, cafeLocation?: string) => {
     const [menuData, setMenuData] = useState<CafeMenuTab[]>([]);
     const [company] = useAtom(companyAtom); // company를 가져온다
     const updateMenu = () => {
-        if (entry === 'personalCart') {
-            if (cafeLocation === 'EULJI') {
-                setMenuData([...BASE_MENU, SEASON_MENU]);
-            } else {
-                setMenuData(BASE_MENU);
-            }
-        } else {
-            if (company === 'EULJI') {
-                setMenuData([...BASE_MENU, SEASON_MENU]);
-            } else {
-                setMenuData(BASE_MENU);
-            }
-        }
+        const isEuljiLocation = (entry === 'personalCart' ? cafeLocation : company) === 'EULJI';
+        setMenuData(isEuljiLocation ? [...BASE_MENU, SEASON_MENU] : BASE_MENU);
     };
 
     useEffect(() => {
@@ -213,6 +202,8 @@ export const useCartSync = (cartId: string, withClapAnimation = false) => {
     const lastProcessedIds = useRef<Set<string>>(new Set());
     const [clapPositions, setClapPositions] = useState<{ id: string; x: number }[]>([]);
 
+    const [sessionExpired, setSessionExpired] = useState(false);
+
     useEffect(() => {
         if (!cartId) return;
 
@@ -224,7 +215,7 @@ export const useCartSync = (cartId: string, withClapAnimation = false) => {
         const eventName = `cafe-cart-item-${cartId}`;
         const handleEvent = (e: MessageEvent) => {
             const eventData = JSON.parse(e.data);
-            console.log('Parsed Event Data:', eventData);
+
             if (eventData.event === 'CREATED') {
                 handleNewItems(eventData.data.cafeCartItem);
             } else if (eventData.event === 'DELETED') {
@@ -236,6 +227,7 @@ export const useCartSync = (cartId: string, withClapAnimation = false) => {
 
         eventSource.onerror = () => {
             console.error('SSE Error');
+            setSessionExpired(true);
             eventSource?.close();
             eventSource = null;
         };
@@ -305,5 +297,5 @@ export const useCartSync = (cartId: string, withClapAnimation = false) => {
         requestAnimationFrame(animate);
     };
 
-    return { clapPositions };
+    return { clapPositions, sessionExpired };
 };

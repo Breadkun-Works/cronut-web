@@ -63,7 +63,6 @@ function InitializeCompany() {
             const storedCompany = localStorage.getItem('recentCompany');
             if (storedCompany) {
                 setCompany(storedCompany as Company);
-                console.log('회사 정보 로드:', storedCompany);
             }
         }
     }, [setCompany]);

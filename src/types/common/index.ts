@@ -89,3 +89,11 @@ export interface ICommonModalTypes {
     confirmText?: string;
     width?: string | number;
 }
+
+export interface ClapPosition {
+    id: string;
+    emoji: string;
+    x: number;
+    y: number;
+    opacity: number;
+}

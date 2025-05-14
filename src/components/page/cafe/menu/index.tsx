@@ -1,16 +1,10 @@
 'use client';
-import { Badge, Box, IconButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Badge, Box, IconButton, ToggleButtonGroup, Typography, useTheme } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
-import React, { useEffect, useRef, useState } from 'react';
-import { getInitialCartItems, useGetCafeMenuInfinite, useGetCartById } from '@/apis/cafe/cafe-api';
-import { Company, DrinkCategory, DrinkTemperature } from '@/types/common';
-import {
-    HeaderContent,
-    MenuCardMedia,
-    PageContainer,
-    ScrollableContent,
-    StyledMenuTitle
-} from '@/styles/cart/cart.styles';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { getInitialCartItems, useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
+import { DrinkCategory, DrinkTemperature } from '@/types/common';
+import { MenuCardMedia, PageContainer, ScrollableContent, StyledMenuTitle } from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ICafeMenuOption } from '@/types/cart';
@@ -37,6 +31,8 @@ import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 import { useAtom } from 'jotai/index';
 import { companyAtom } from '@/atom/common-atom';
 import { cartItemsAtom, cartItemsCountAtom } from '@/atom/cart-atom';
+import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
+import { getCookie } from '@/utils/cookie';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -72,20 +68,24 @@ const CafeMenu = ({
     title,
     cartBasic
 }: {
-    title: string;
+    title: ReactNode | string;
     entry?: string;
     cartId?: string;
     cartBasic?: any;
 }) => {
     const searchParams = useSearchParams();
+    const name = getCookie('BRK-UserName') || '사용자';
     const [tabValue, setTabValue] = useState(0);
     const [company] = useAtom(companyAtom);
     const [, setCartItems] = useAtom(cartItemsAtom);
     const [cartItemsCount] = useAtom(cartItemsCountAtom);
+    const theme = useTheme();
 
     useCartSync(cartId as string, false);
 
     const { isMobile, isDesktop, isSmall, isTabletOnly } = useResponsive();
+
+    const menuHeaderRef = useRef<HTMLDivElement>(null);
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -123,7 +123,6 @@ const CafeMenu = ({
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
 
-    console.log(query);
     const cafeMenuData = useCafeMenuData(entry, cartBasic?.cafeLocation);
     const { iconSizeSteps, fontSizeSteps } = responsiveConfig;
     const breakpoint = useCurrentBreakpoint();
@@ -213,14 +212,6 @@ const CafeMenu = ({
             setSearchTerm('');
         }
     }, [company]);
-
-    // useEffect(() => {
-    //     if (cartBasic && entry === 'personalCart') {
-    //         setQuery({ ...query, cafeLocation: cartBasic?.cafeLocation });
-    //     }
-    // }, [cartBasic]);
-
-    console.log(cartBasic);
 
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
         const selectedCategory = cafeMenuData[newTabValue].value;
@@ -463,9 +454,50 @@ const CafeMenu = ({
                     </Box>
                 </Box>
 
-                <HeaderContent>
-                    <StyledMenuTitle>{title}</StyledMenuTitle>
-                </HeaderContent>
+                <StyledMenuTitle>
+                    <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            maxWidth: !isDesktop ? '90%' : '60%' // PC에서 60%, 모바일에서 90%
+                        }}
+                        ref={menuHeaderRef}
+                    >
+                        <EllipsisTooltip title={name} parentRef={menuHeaderRef} tooltipMaxWidth={250}>
+                            {name}
+                        </EllipsisTooltip>
+                        <Typography
+                            component="span"
+                            sx={{
+                                marginLeft: '4px',
+                                fontSize: !isDesktop
+                                    ? '1.1rem'
+                                    : theme.breakpoints.between('lg', 762)
+                                      ? '1.2rem'
+                                      : '1.3rem'
+                            }}
+                        >
+                            님,
+                        </Typography>
+                    </Box>
+
+                    <Typography
+                        sx={{
+                            marginTop: isMobile ? '4px' : 0,
+                            fontSize: !isDesktop
+                                ? '1.1rem'
+                                : theme.breakpoints.between('lg', 762)
+                                  ? '1.2rem'
+                                  : '1.3rem',
+                            whiteSpace: 'nowrap',
+                            textAlign: 'center'
+                        }}
+                    >
+                        {' '}
+                        카페 메뉴를 선택해주세요.
+                    </Typography>
+                </StyledMenuTitle>
             </Box>
             <TabSearchWrapper>
                 {showSearch ? (

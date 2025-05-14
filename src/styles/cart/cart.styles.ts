@@ -72,16 +72,26 @@ export const CartButton = styled.button`
     cursor: pointer;
 `;
 
-export const StyledMenuTitle = styled(Typography)(({ theme }) => ({
+export const StyledMenuTitle = styled(Box)(({ theme }) => ({
     fontWeight: 'bold',
-    fontSize: '1.3rem', // 기본값 (sm 이하)
-
+    fontSize: '1.1rem',
     color: COLORS_DARK.text.primary,
     textAlign: 'center',
-    whiteSpace: 'pre-line',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
 
-    [theme.breakpoints.up('sm')]: {
-        fontSize: '1.5rem' // md(480px) 이상부터 1.5rem
+    [theme.breakpoints.up('lg')]: {
+        fontSize: '1.2rem'
+    },
+
+    [theme.breakpoints.up(762)]: {
+        flexDirection: 'row',
+        whiteSpace: 'nowrap',
+        textAlign: 'center',
+        fontSize: '1.3rem'
     }
 }));
 
@@ -129,26 +139,20 @@ export const PageContainer = styled(Container)(({ theme }) => ({
     }
 }));
 
-export const Header = styled(Box)({
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-    backgroundColor: COLORS_DARK.background.main
-});
-
 interface ConfirmHeaderProps {
     isMobile: boolean;
 }
 
 // styled 컴포넌트 정의
-export const ConfirmHeader = styled(Box, {
+export const StyledCartHeader = styled(Box, {
     shouldForwardProp: prop => prop !== 'isMobile'
 })<ConfirmHeaderProps>(({ isMobile, theme }) => ({
     position: 'sticky',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: '14px 0 14px 10px',
+    // padding: isMobile ? '14px 8px' : 16,
     marginBottom: isMobile ? 0 : 16,
     borderBottom: `1px solid ${COLORS_DARK.border.default}`,
     backgroundColor: COLORS_DARK.background.main,
@@ -167,14 +171,16 @@ export const ConfirmHeader = styled(Box, {
     }
 }));
 
-export const ConfirmHeaderTitle = styled(Typography, {
+export const StyledCartHeaderTitle = styled(Typography, {
     shouldForwardProp: prop => prop !== 'isMobile' && prop !== 'maxWidth'
 })<{
     isMobile: boolean;
     maxWidth?: number;
 }>(({ isMobile, maxWidth, theme }) => ({
-    maxWidth: maxWidth ? `${maxWidth - 10}px` : isMobile ? '160px' : '400px',
+    maxWidth: !isMobile ? (maxWidth ? `${maxWidth - 10}px` : '400px') : 'none',
+    // maxWidth: maxWidth ? `${maxWidth - 10}px` : isMobile ? '160px' : '400px',
     overflow: 'hidden',
+    marginRight: isMobile ? '12px' : 0,
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     cursor: isMobile ? 'pointer' : 'default',
@@ -190,14 +196,39 @@ export const ConfirmHeaderTitle = styled(Typography, {
     }
 }));
 
-export const HeaderContent = styled(Box)({
+// export const HeaderContent = styled(Box)({
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     position: 'relative',
+//     marginTop: '1.5rem',
+//     marginBottom: '1.2rem'
+// });
+
+export const HeaderContent = styled(Box)(({ theme }) => ({
     display: 'flex',
+    flexDirection: 'column', // 기본적으로 두 줄 (모바일)
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
     marginTop: '1.5rem',
-    marginBottom: '1.2rem'
-});
+    marginBottom: '1.2rem',
+    textAlign: 'center',
+    overflow: 'hidden',
+    fontWeight: 'bold',
+    fontSize: '1.3rem',
+
+    [theme.breakpoints.up('sm')]: {
+        fontWeight: 'bold',
+        fontSize: '1.3rem',
+        flexDirection: 'row', // PC에서는 한 줄
+        whiteSpace: 'nowrap',
+        alignItems: 'center',
+        textAlign: 'center',
+        justifyContent: 'center',
+        gap: '4px',
+        overflow: 'hidden'
+    }
+}));
 
 export const ScrollableContent = styled(Box)`
     flex: 1;
@@ -246,21 +277,6 @@ export const ActionButton = styled(Button)({
     gap: 8,
     color: COLORS_DARK.text.primary,
     backgroundColor: COLORS_DARK.accent.main
-});
-
-export const WhiteButton = styled(Button)({
-    height: 56,
-    fontSize: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: COLORS_DARK.text.primary,
-    border: `1px solid ${COLORS_DARK.accent.main}`,
-    color: COLORS_DARK.accent.main,
-    '&:hover': {
-        backgroundColor: '#e9ecef' // 약간 어두운 흰색
-    }
 });
 
 export const ButtonIcon = styled(Box)<{ disabled?: boolean }>(({ disabled }) => ({
@@ -423,7 +439,7 @@ export const ConfirmTemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ th
     }
 }));
 
-export const ScrollableCartList = styled(Box, {
+export const StyledScrollableCartList = styled(Box, {
     shouldForwardProp: prop =>
         prop !== 'bottomHeight' && prop !== 'isEmpty' && prop !== 'footerOpen' && prop !== 'isScrollable'
 })<{ bottomHeight: number; isEmpty?: boolean; footerOpen: boolean; isScrollable: boolean }>(
@@ -483,7 +499,7 @@ export const DrinkNameTypography = styled(Typography, {
     maxWidth: maxWidth ?? '100%'
 }));
 
-export const CartWarningWrapper = styled('div')(({ theme }) => ({
+export const CartWarningWrapper = styled(Box)(({ theme }) => ({
     width: '100%',
     maxWidth: 902,
     overflow: 'hidden',
@@ -507,15 +523,12 @@ export const CartWarningWrapper = styled('div')(({ theme }) => ({
     }
 }));
 
-export const CartWarningText = styled('div')(({ theme }) => ({
+export const CartWarningText = styled('div')<{ isOverflowed: boolean }>(({ theme, isOverflowed }) => ({
     display: 'inline-block',
     fontWeight: 700,
     color: '#ff6b6b',
     whiteSpace: 'nowrap',
-
-    [theme.breakpoints.down('lg')]: {
-        animation: `${slideMarquee} 14s linear infinite`
-    }
+    animation: isOverflowed ? `${slideMarquee} 25s linear infinite` : 'none'
 }));
 
 export const OrderLabelTypography = styled(Typography)(({ theme }) => ({
@@ -541,7 +554,7 @@ export const OrderPriceTypography = styled(Typography)(({ theme }) => ({
     fontSize: '1rem', // 기본값: xs
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '1rem'
+        fontSize: '1.15rem'
     },
     [theme.breakpoints.up('md')]: {
         fontSize: '1.3rem'
@@ -649,6 +662,11 @@ export const MenuImageContainer = styled(Box)(({ theme }) => ({
     flexShrink: 0,
     border: '1px solid rgba(255, 255, 255, 0.2)',
 
+    [theme.breakpoints.down(330)]: {
+        width: 35,
+        height: 35
+    },
+
     [theme.breakpoints.up('sm')]: {
         width: 45,
         height: 45,
@@ -662,12 +680,18 @@ export const MenuImageContainer = styled(Box)(({ theme }) => ({
     }
 }));
 
-export const MenuCount = styled(Box)({
+export const MenuCount = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#D97706',
     color: '#FFFFFF',
     borderRadius: '20%',
-    fontWeight: 'bold'
-});
+    fontWeight: 'bold',
+    width: 20,
+    height: 22,
+    [theme.breakpoints.up('sm')]: {
+        width: 24,
+        height: 28
+    }
+}));

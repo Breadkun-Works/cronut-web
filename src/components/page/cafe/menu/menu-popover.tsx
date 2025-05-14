@@ -96,16 +96,6 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
     };
 
     const handleAddToCart = () => {
-        console.log({
-            cafeCartId: cartId,
-            cartData: {
-                cafeMenuId: selectedTempMenu.id?.toString() ?? '',
-                isPersonalCup: selectedTempMenu.checked,
-                quantity: selectedTempMenu.quantity,
-                imageUrl: selectedTempMenu.imageUrl ?? ''
-            },
-            user: { uuid: uuid, userName }
-        });
         if (cartId && selectedTempMenu) {
             addMenuToCart.mutate({
                 cafeCartId: cartId,

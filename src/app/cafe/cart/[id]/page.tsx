@@ -1,10 +1,11 @@
 import crypto from 'crypto';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ConfirmClientV3 } from '@/app/cafe/cart/[id]/ConfirmClientV3';
+import { ConfirmClient } from '@/app/cafe/cart/[id]/ConfirmClient';
 import { cookies } from 'next/headers';
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     const cartData = await fetchCart(params.id);
+
     const cart = cartData.data.cafeCart;
 
     return {
@@ -24,12 +25,17 @@ const fetchCart = async (cafeCartId: string) => {
             Accept: 'application/vnd.breadkun.v1+json',
             Origin: 'https://breadkun-dev.vercel.app',
             'X-SSR-Token': secretKey
-        }
+        },
+        cache: 'no-store',
+        next: { revalidate: 0 }
     });
+
     if (res.status === 404) {
         notFound();
     }
-    return res.json();
+
+    const data = await res.json();
+    return data;
 };
 
 const decryptAES256 = (encryptedDataBase64Url: string, keyBuffer: Buffer) => {
@@ -66,19 +72,19 @@ export default async function ConfirmPage({
         const keyBuffer = Buffer.from(key, 'base64');
         const decryptedData = decryptAES256(encryptedData, keyBuffer);
         return (
-            <ConfirmClientV3
+            <ConfirmClient
                 decryptedData={decryptedData}
                 cartId={params.id}
-                status={status}
+                cartData={cartData.data.cafeCart}
                 isCreator={isCreator}
                 user={{ uuid, userName, userProfile }}
             />
         );
     } else {
         return (
-            <ConfirmClientV3
+            <ConfirmClient
                 cartId={params.id}
-                status={status}
+                cartData={cartData.data.cafeCart}
                 isCreator={isCreator}
                 user={{ uuid, userName, userProfile }}
             />

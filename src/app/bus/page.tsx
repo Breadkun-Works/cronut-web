@@ -325,13 +325,14 @@ function Bus({ params }: { params: { destination: string } }) {
                                             자세히 보기
                                         </div>
                                     </div>
-                                    <Image
-                                        className={bs('bus__block2--stop-arrow')}
-                                        src="/icon/bus-stops-arrow.webp"
-                                        alt="down arrow"
-                                        width={50}
-                                        height={50}
-                                    />
+                                    <div className={bs('bus__block2--stop-arrow')}>
+                                        <Image
+                                            src="/icon/bus-stops-arrow.webp"
+                                            alt="down arrow"
+                                            width={25}
+                                            height={25}
+                                        />
+                                    </div>
                                 </div>
                             ))}
                         </div>

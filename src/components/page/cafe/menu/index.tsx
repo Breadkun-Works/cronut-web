@@ -1,13 +1,21 @@
 'use client';
+
 import { Badge, Box, IconButton, ToggleButtonGroup, Typography, useTheme } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { getInitialCartItems, useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
 import { DrinkCategory, DrinkTemperature } from '@/types/common';
-import { MenuCardMedia, PageContainer, ScrollableContent, StyledMenuTitle } from '@/styles/cart/cart.styles';
+import {
+    HeaderContent,
+    MenuCardMedia,
+    PageContainer,
+    ScrollableContent,
+    StyledMenuTitle,
+    StyledMenuTitleWithName
+} from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ICafeMenuOption } from '@/types/cart';
+import { ICafeMenuBoardResponse, ICafeMenuOption } from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import {
@@ -213,6 +221,7 @@ const CafeMenu = ({
         }
     }, [company]);
 
+    console.log(theme.breakpoints.down(400));
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
         const selectedCategory = cafeMenuData[newTabValue].value;
         setTabValue(newTabValue);
@@ -236,7 +245,15 @@ const CafeMenu = ({
         return 'NONE';
     };
 
-    const CafeMenuTempUI = ({ temp, onToggle, options }: any) => {
+    const CafeMenuTempUI = ({
+        temp,
+        onToggle,
+        options
+    }: {
+        temp: DrinkTemperature;
+        onToggle(value: string): void;
+        options: Array<ICafeMenuOption>;
+    }) => {
         const tempType = getTempType(options);
 
         if (tempType === 'ICE_ONLY') return <TemperatureBadge temperature="ICED" label="ICE ONLY" size="small" />;
@@ -289,7 +306,17 @@ const CafeMenu = ({
         return null;
     };
 
-    const MenuItem = ({ record, onClick, entry }: any) => {
+    console.log(entry);
+
+    const MenuItem = ({
+        record,
+        onClick,
+        entry
+    }: {
+        record: ICafeMenuBoardResponse;
+        onClick: () => void;
+        entry?: string;
+    }) => {
         const [temp, setTemp] = useState<DrinkTemperature>(record.options[0].drinkTemperature);
 
         // 공통 컨텐츠
@@ -407,19 +434,24 @@ const CafeMenu = ({
                                         cartItemsCount > 0 && (
                                             <Box
                                                 sx={{
-                                                    width: 14,
+                                                    width:
+                                                        String(cartItemsCount).length >= 2
+                                                            ? cartItemsCount > 99
+                                                                ? 22
+                                                                : 20
+                                                            : 14,
                                                     height: 14,
                                                     borderRadius: '50%',
                                                     backgroundColor: COLORS_DARK.accent.main,
                                                     color: '#fff',
-                                                    fontSize: '1rem',
+                                                    fontSize: String(cartItemsCount).length >= 2 ? '0.8rem' : '1rem',
                                                     fontWeight: 'bold',
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'center'
                                                 }}
                                             >
-                                                {cartItemsCount}
+                                                {cartItemsCount > 99 ? '99+' : cartItemsCount}
                                             </Box>
                                         )
                                     ) : (
@@ -454,50 +486,54 @@ const CafeMenu = ({
                     </Box>
                 </Box>
 
-                <StyledMenuTitle>
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{
-                            maxWidth: !isDesktop ? '90%' : '60%' // PC에서 60%, 모바일에서 90%
-                        }}
-                        ref={menuHeaderRef}
-                    >
-                        <EllipsisTooltip title={name} parentRef={menuHeaderRef} tooltipMaxWidth={250}>
-                            {name}
-                        </EllipsisTooltip>
-                        <Typography
-                            component="span"
+                {entry === 'personalCart' ? (
+                    <StyledMenuTitleWithName>
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
                             sx={{
-                                marginLeft: '4px',
+                                maxWidth: !isDesktop ? '90%' : '60%'
+                            }}
+                            ref={menuHeaderRef}
+                        >
+                            <EllipsisTooltip title={name}>{name}</EllipsisTooltip>
+                            <Typography
+                                component="span"
+                                sx={{
+                                    marginLeft: '4px',
+                                    fontSize: !isDesktop
+                                        ? '1.1rem'
+                                        : theme.breakpoints.between('lg', 762)
+                                          ? '1.2rem'
+                                          : '1.3rem'
+                                }}
+                            >
+                                님,
+                            </Typography>
+                        </Box>
+
+                        <Typography
+                            sx={{
+                                marginTop: isMobile ? '4px' : 0,
                                 fontSize: !isDesktop
                                     ? '1.1rem'
                                     : theme.breakpoints.between('lg', 762)
                                       ? '1.2rem'
-                                      : '1.3rem'
+                                      : '1.3rem',
+                                whiteSpace: 'nowrap',
+                                textAlign: 'center'
                             }}
                         >
-                            님,
+                            {' '}
+                            카페 메뉴를 선택해주세요~☺️
                         </Typography>
-                    </Box>
-
-                    <Typography
-                        sx={{
-                            marginTop: isMobile ? '4px' : 0,
-                            fontSize: !isDesktop
-                                ? '1.1rem'
-                                : theme.breakpoints.between('lg', 762)
-                                  ? '1.2rem'
-                                  : '1.3rem',
-                            whiteSpace: 'nowrap',
-                            textAlign: 'center'
-                        }}
-                    >
-                        {' '}
-                        카페 메뉴를 선택해주세요.
-                    </Typography>
-                </StyledMenuTitle>
+                    </StyledMenuTitleWithName>
+                ) : (
+                    <HeaderContent>
+                        <StyledMenuTitle>{title}</StyledMenuTitle>
+                    </HeaderContent>
+                )}
             </Box>
             <TabSearchWrapper>
                 {showSearch ? (
@@ -508,25 +544,9 @@ const CafeMenu = ({
                         onSubmit={handleSearchSubmit}
                     />
                 ) : (
-                    <CategoryTabs
-                        value={tabValue}
-                        onChange={handleTabChange}
-                        centered
-                        variant={isSmall ? 'fullWidth' : undefined}
-                    >
+                    <CategoryTabs value={tabValue} onChange={handleTabChange} centered variant={'fullWidth'}>
                         {cafeMenuData.map(cafeMenu => (
-                            <CategoryTab
-                                key={cafeMenu.index}
-                                icon={returnIcon(cafeMenu.value)}
-                                label={cafeMenu.name}
-                                sx={{
-                                    ...(isSmall && {
-                                        minWidth: 0,
-                                        padding: '6px 4px',
-                                        fontSize: '0.85rem'
-                                    })
-                                }}
-                            />
+                            <CategoryTab key={cafeMenu.index} icon={returnIcon(cafeMenu.value)} label={cafeMenu.name} />
                         ))}
                     </CategoryTabs>
                 )}
@@ -543,7 +563,7 @@ const CafeMenu = ({
                         <Box ref={loadMoreRef} component="div">
                             <MenuGrid>
                                 {data?.pages?.map(page =>
-                                    page.records.map((record, idx) => (
+                                    page.records.map(record => (
                                         <React.Fragment key={`menu_${record.name}`}>
                                             <MenuItemCard isMenu={entry === 'menu'}>
                                                 <MenuItem

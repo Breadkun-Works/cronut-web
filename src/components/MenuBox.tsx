@@ -56,7 +56,7 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                     BUS
                 </Link>
                 <Link
-                    className={router === '/cafe/menu' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
+                    className={router.startsWith('/cafe') ? ms('menu-box__menu-active') : ms('menu-box__menu')}
                     href={'/cafe/menu'}
                     onClick={() => setMenuBox(false)}
                 >

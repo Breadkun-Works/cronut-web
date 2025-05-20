@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material';
+import { PageConfigs } from '@/types/common';
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
@@ -194,27 +195,6 @@ export const MuiTheme = createTheme({
     }
 });
 
-export const COLORS_LIGHT = {
-    background: {
-        main: '#ffffff', // 기본 배경색 (흰색)
-        light: '#f8f9fa', // 약간 어두운 배경 (매우 밝은 그레이)
-        lighter: '#e9ecef', // 더 어두운 배경 (밝은 그레이)
-        input: '#f1f3f5' // 입력 필드 배경
-    },
-    accent: {
-        main: '#f09000', // 메인 포인트 (오렌지)
-        light: '#ffb347', // 강조 포인트 (밝은 오렌지)
-        dark: '#cf7500', // 어두운 포인트 (진한 오렌지)
-        disabled: 'rgba(240, 144, 0, 0.5)' // 비활성화 (반투명 오렌지)
-    },
-    text: {
-        primary: '#212529', // 주요 텍스트 (거의 검정)
-        secondary: '#495057', // 부가 텍스트 (어두운 회색)
-        disabled: '#adb5bd' // 비활성화 텍스트 (중간 회색)
-    },
-    divider: 'rgba(0, 0, 0, 0.1)' // 구분선 색상
-};
-
 // 다크모드 색상 정의 - 기본 배경색 #212529 기준
 export const COLORS_DARK = {
     background: {
@@ -253,4 +233,243 @@ export const COLORS_DARK = {
         yellow: '#cf7500'
     },
     divider: 'rgba(248, 249, 250, 0.1)'
+};
+
+export const responsiveConfigByPixel: PageConfigs = {
+    cart: [
+        {
+            min: 0,
+            max: 319,
+            fontSize: 15,
+            chipSize: 13,
+            iconSize: 16,
+            maxWidth: 90,
+            ellipsisMaxWidth: '48vw'
+        },
+        {
+            min: 320,
+            max: 329,
+            fontSize: 15,
+            chipSize: 13,
+            iconSize: 17,
+            maxWidth: 100,
+            ellipsisMaxWidth: '50vw'
+        },
+        {
+            min: 330,
+            max: 339,
+            fontSize: 16,
+            chipSize: 14,
+            iconSize: 17,
+            maxWidth: 110,
+            ellipsisMaxWidth: '52vw'
+        },
+        {
+            min: 340,
+            max: 349,
+            fontSize: 16,
+            chipSize: 14,
+            iconSize: 18,
+            maxWidth: 120,
+            ellipsisMaxWidth: '52.5vw'
+        },
+        {
+            min: 350,
+            max: 359,
+            fontSize: 16,
+            chipSize: 14,
+            iconSize: 19,
+            maxWidth: 130,
+            ellipsisMaxWidth: '54vw',
+            cartImgWidthAndHeight: 65
+        },
+        {
+            min: 360,
+            max: 369,
+            fontSize: 16,
+            chipSize: 14,
+            iconSize: 19,
+            maxWidth: 140,
+            ellipsisMaxWidth: '48vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 370,
+            max: 379,
+            fontSize: 16,
+            chipSize: 14,
+            iconSize: 19.5,
+            maxWidth: 150,
+            ellipsisMaxWidth: '48vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 380,
+            max: 389,
+            fontSize: 16.5,
+            chipSize: 15,
+            iconSize: 20,
+            maxWidth: 160,
+            ellipsisMaxWidth: '48vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 390,
+            max: 399,
+            fontSize: 16.5,
+            chipSize: 15,
+            iconSize: 20,
+            maxWidth: 170,
+            ellipsisMaxWidth: '50vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 400,
+            max: 409,
+            fontSize: 16.5,
+            chipSize: 15,
+            iconSize: 21,
+            maxWidth: 180,
+            ellipsisMaxWidth: '50vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 410,
+            max: 419,
+            fontSize: 16.5,
+            chipSize: 15,
+            iconSize: 21,
+            maxWidth: 190,
+            ellipsisMaxWidth: '52vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 420,
+            max: 429,
+            fontSize: 16.5,
+            chipSize: 15,
+            iconSize: 21,
+            maxWidth: 200,
+            ellipsisMaxWidth: '52vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 430,
+            max: 439,
+            fontSize: 16.5,
+            chipSize: 15,
+            iconSize: 21,
+            maxWidth: 210,
+            ellipsisMaxWidth: '54vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 440,
+            max: 479,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 21.5,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '56vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 480,
+            max: 509,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '54vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 510,
+            max: 539,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '56vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 540,
+            max: 569,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '58vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 570,
+            max: 599,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '60vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 600,
+            max: 639,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '63vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 640,
+            max: 679,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '65vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 680,
+            max: Infinity,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '70vw',
+            cartImgWidthAndHeight: 80
+        }
+    ],
+    'cart-items': [
+        { min: 0, max: 324, maxWidth: '33vw' },
+        { min: 325, max: 339, maxWidth: '37vw' },
+        { min: 340, max: 349, maxWidth: '37vw' },
+        { min: 350, max: 359, maxWidth: '40vw' },
+        { min: 360, max: 369, maxWidth: '37vw' },
+        { min: 370, max: 379, maxWidth: '39vw' }
+    ],
+    'cart-summary': [
+        { min: 0, max: 329, maxWidth: '23vw' },
+        { min: 330, max: 339, maxWidth: '24vw' },
+        { min: 340, max: 349, maxWidth: '26vw' },
+        { min: 350, max: 359, maxWidth: '27vw' },
+        { min: 360, max: 364, maxWidth: '25vw' },
+        { min: 365, max: 369, maxWidth: '27vw' },
+        { min: 370, max: 379, maxWidth: '27vw' },
+        { min: 380, max: 389, maxWidth: '28vw' },
+        { min: 390, max: 399, maxWidth: '29vw' },
+        { min: 400, max: 409, maxWidth: '30vw' },
+        { min: 410, max: 419, maxWidth: '32vw' },
+        { min: 420, max: 429, maxWidth: '33vw' },
+        { min: 430, max: 439, maxWidth: '35vw' }
+    ],
+    'cart-register': [
+        { min: 0, max: 359, fontSize: 13, iconSize: 15, maxWidth: 100 },
+        { min: 360, max: 479, fontSize: 14, iconSize: 18, maxWidth: 180 },
+        { min: 480, max: Infinity, fontSize: 15, iconSize: 20, maxWidth: '100%' }
+    ]
 };

@@ -1,27 +1,45 @@
 import React, { useEffect, useState, useRef, ReactNode, cloneElement, isValidElement } from 'react';
-import { ClickAwayListener, Tooltip, Typography } from '@mui/material';
-import { useResponsive } from '@/utils/hook';
+import { ClickAwayListener, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useResponsiveConfig } from '@/utils/hook';
+import { isMobileDevice } from '@/utils/util';
 
 type EllipsisTooltipProps = {
     title: string;
-    parentRef?: React.RefObject<HTMLElement>;
     children: ReactNode;
-    maxWidth?: number;
-    tooltipMaxWidth?: number | string;
+    entry?: string;
 };
 
-export const EllipsisTooltip = ({ title, parentRef, children, tooltipMaxWidth = 250 }: EllipsisTooltipProps) => {
+export const EllipsisTooltip = ({ title, children, entry }: EllipsisTooltipProps) => {
     const localRef = useRef<HTMLElement>(null);
     const [isOverflowed, setIsOverflowed] = useState(false);
     const [open, setOpen] = useState(false);
-    const { isMobile } = useResponsive();
+
+    const theme = useTheme();
+    const isSm = useMediaQuery(theme.breakpoints.between('xs', 'sm')); // 360px ~ 480px
+    const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 480px ~ 768px
+    const isLg = useMediaQuery(theme.breakpoints.between('md', 'lg')); // 768px ~ 1024px
+    const { ellipsisMaxWidth } = useResponsiveConfig('cart');
+
+    const maxWidthMap = {
+        sm: { tooltip: '180px' },
+        md: { tooltip: '200px' },
+        lg: { tooltip: '350px' },
+        xl: { tooltip: '400px' }
+    };
+
+    const getMaxWidth = () => {
+        if (isSm) return maxWidthMap.sm;
+        if (isMd) return maxWidthMap.md;
+        if (isLg) return maxWidthMap.lg;
+        return maxWidthMap.xl;
+    };
+
+    const { tooltip: tooltipMaxWidth } = getMaxWidth();
 
     useEffect(() => {
         const update = () => {
             const el = localRef.current;
-            const parent = parentRef?.current || el?.offsetParent;
-            if (!el || !parent) return;
-
+            if (!el) return;
             setIsOverflowed(el.scrollWidth > el.clientWidth);
         };
 
@@ -35,39 +53,22 @@ export const EllipsisTooltip = ({ title, parentRef, children, tooltipMaxWidth = 
             observer.disconnect();
             window.removeEventListener('resize', update);
         };
-    }, [children, parentRef]);
+    }, [children]);
 
     const handleToggleTooltip = () => {
-        if (isMobile) setOpen(prev => !prev);
+        if (isMobileDevice()) setOpen(prev => !prev);
     };
-
-    // const wrappedChildren = isValidElement(children) ? (
-    //     cloneElement(children as React.ReactElement, {
-    //         ref: localRef,
-    //         onClick: isMobile ? handleToggleTooltip : undefined
-    //     })
-    // ) : (
-    //     <span
-    //         ref={localRef}
-    //         style={{
-    //             display: 'inline-block',
-    //             whiteSpace: 'nowrap',
-    //             overflow: 'hidden',
-    //             textOverflow: 'ellipsis',
-    //             maxWidth: '100%',
-    //             verticalAlign: 'middle'
-    //         }}
-    //         onClick={isMobile ? handleToggleTooltip : undefined}
-    //     >
-    //         {children}
-    //     </span>
-    // );
 
     const wrappedChildren = isValidElement(children) ? (
         cloneElement(children as React.ReactElement, {
             ref: localRef,
-            onClick: isMobile ? handleToggleTooltip : undefined,
-            style: { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+            onClick: isMobileDevice() ? handleToggleTooltip : undefined,
+            style: {
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: entry === 'cartHeader' ? '100%' : ellipsisMaxWidth
+            }
         })
     ) : (
         <span
@@ -77,10 +78,10 @@ export const EllipsisTooltip = ({ title, parentRef, children, tooltipMaxWidth = 
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: '100%',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                maxWidth: entry === 'cartHeader' ? '100%' : ellipsisMaxWidth
             }}
-            onClick={isMobile ? handleToggleTooltip : undefined}
+            onClick={isMobileDevice() ? handleToggleTooltip : undefined}
         >
             {children}
         </span>
@@ -88,11 +89,14 @@ export const EllipsisTooltip = ({ title, parentRef, children, tooltipMaxWidth = 
 
     if (!isOverflowed) return wrappedChildren;
 
-    return isMobile ? (
+    return isMobileDevice() ? (
         <ClickAwayListener onClickAway={() => setOpen(false)}>
             <Tooltip
                 title={
-                    <Typography sx={{ maxWidth: tooltipMaxWidth, whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <Typography
+                        fontSize={'small'}
+                        sx={{ maxWidth: tooltipMaxWidth, whiteSpace: 'normal', wordWrap: 'break-word' }}
+                    >
                         {title}
                     </Typography>
                 }
@@ -109,7 +113,10 @@ export const EllipsisTooltip = ({ title, parentRef, children, tooltipMaxWidth = 
     ) : (
         <Tooltip
             title={
-                <Typography sx={{ maxWidth: tooltipMaxWidth, whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                <Typography
+                    fontSize={'small'}
+                    sx={{ maxWidth: tooltipMaxWidth, whiteSpace: 'normal', wordWrap: 'break-word' }}
+                >
                     {title}
                 </Typography>
             }

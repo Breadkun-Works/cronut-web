@@ -1,14 +1,14 @@
 'use client';
 
 import { LinkShareCard, LinkShareContent, SnackbarDialogContent, SnackbarDialogText } from '@/styles/cart/cart.styles';
-import { CopyIcon, CupSoda, LockIcon, Share2 } from 'lucide-react';
+import { CopyIcon, Share2 } from 'lucide-react';
 import { Box, Dialog, IconButton, InputAdornment, Snackbar, TextField, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import React, { useEffect, useRef, useState } from 'react';
 import { getInitialCartItems } from '@/apis/cafe/cafe-api';
 import { IUserInfo, CafeCartItem, ICartInfo } from '@/types/cart';
-import { getUserInitial, useBottomHeight, useCartSync, useResponsive, useResponsiveConfig } from '@/utils/hook';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useBottomHeight, useCartSync, useResponsive } from '@/utils/hook';
+import { useQuery } from '@tanstack/react-query';
 import PaymentModal from '@/app/cafe/cart/[id]/PaymentModal';
 import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-modal';
 import ClapAnimation from '@/components/page/cafe/ClapAnimation';
@@ -34,8 +34,6 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
 
     const isCartInactive = cartData?.status === 'INACTIVE';
 
-    const [, setSnackbarContent] = useAtom(snackBarAtom);
-
     // 샘플 공유 링크
     const shareLink = window.location.href;
     const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
@@ -55,17 +53,19 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
 
     const bottomHeight = useBottomHeight(bottomRef, [open]);
 
-    const semiHeaderHeight = semiHeaderRef.current?.getBoundingClientRect().height || 0;
-    const linkShareCardHeight = linkShareCardRef.current?.getBoundingClientRect().height || 0;
+    const semiHeaderHeight = semiHeaderRef.current?.getBoundingClientRect().height ?? 0;
+    const linkShareCardHeight = linkShareCardRef.current?.getBoundingClientRect().height ?? 0;
     const calculatedBottomHeight = bottomHeight || 0;
 
-    const minHeightValue = `calc(100vh - 9vh - ${semiHeaderHeight ? `${semiHeaderHeight}px` : '0px'} - ${linkShareCardHeight ? `${linkShareCardHeight}px` : '0px'} - ${calculatedBottomHeight ? `${calculatedBottomHeight}px` : '0px'})`;
+    const minHeightValue = `calc(100vh - 10vh - ${semiHeaderHeight ? `${semiHeaderHeight}px` : '0px'} - ${linkShareCardHeight ? `${linkShareCardHeight}px` : '0px'} - ${calculatedBottomHeight ? `${calculatedBottomHeight}px` : '0px'})`;
 
     // 링크 복사 함수
     const copyLinkToClipboard = async () => {
         try {
-            await navigator.clipboard.writeText(shareLink);
-            setSnackbar({ open: true, message: '🔗 URL이 복사되었습니다!', variant: 'success', device: 'PC' });
+            if (typeof navigator.clipboard !== 'undefined') {
+                await navigator.clipboard.writeText(shareLink);
+                setSnackbar({ open: true, message: '🔗 URL이 복사되었습니다!', variant: 'success', device: 'PC' });
+            }
         } catch (err) {
             console.error('Failed to copy link: ', err);
         }
@@ -138,7 +138,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
             }}
         >
             <Box ref={semiHeaderRef}>
-                <CartWaring isCartInactive={isCartInactive} isMobile={isMobile} />
+                <CartWaring isCartInactive={isCartInactive} />
                 <CartHeader title={cartData?.title as string} snackbar={snackbar} setSnackbar={setSnackbar} />
             </Box>
 

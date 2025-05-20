@@ -1,4 +1,5 @@
 'use client';
+
 import { CartButton, PageWrapper, CartContainer } from '@/styles/cart/cart.styles';
 import React, { useState } from 'react';
 import { useConditionalTimeout } from '@/utils/util';
@@ -22,6 +23,7 @@ import { CompanySelect } from '@/components/CompanySelect';
 import { useResponsive } from '@/utils/hook';
 import { useAtom } from 'jotai';
 import { companyAtom, snackBarAtom } from '@/atom/common-atom';
+import { COLORS_DARK } from '@/data';
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -45,7 +47,7 @@ const CssTextField = styled(TextField)({
 });
 
 const CartPage = () => {
-    const { isMobile, isDesktop } = useResponsive();
+    const { isMobile } = useResponsive();
 
     const [newCart, setNewCart] = useState({ title: '', description: '' });
     const [paymentType, setPaymentType] = useState<PaymentType>('treat');
@@ -101,13 +103,15 @@ const CartPage = () => {
             <div className={'cart-wrapper'}>
                 <CartContainer>
                     <div style={{ fontSize: '20px', margin: '20px 0', textAlign: 'center' }}>
-                        음료 주문을 시작합니다.
+                        음료 주문을 시작합니다 🎉
                         <br />
-                        주문서는 생성 후 <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>3시간</span>
-                        동안 사용 가능합니다.
-                        <br />
-                        <br />
-                        장바구니 이름을 입력해주세요.
+                        <p style={{ fontSize: '1rem' }}>
+                            생성 후{' '}
+                            <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+                                <span style={{ fontSize: '1.2rem', color: COLORS_DARK.accent.light }}>3</span>시간
+                            </span>
+                            동안 사용 가능합니다
+                        </p>
                     </div>
                     <CssTextField
                         label="이름"

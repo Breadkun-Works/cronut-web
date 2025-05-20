@@ -7,13 +7,13 @@ import { usePathname } from 'next/navigation';
 import MenuBox from './MenuBox';
 import { useAtom } from 'jotai';
 import { menuBoxAtom, windowResizeAtom } from '@/atom/common-atom';
+import { MobileMenuButton, StyledEllipsis } from '@/styles/header.styles';
 
 const hs = classNames.bind(styles);
 
 function Header() {
     const [menuBox, setMenuBox] = useAtom(menuBoxAtom);
     const [, setResize] = useAtom(windowResizeAtom);
-
     const router = usePathname();
 
     // 윈도우 리사이즈 감지 (Jotai로 처리)
@@ -34,13 +34,16 @@ function Header() {
                     />
                 </Link>
                 <nav className={hs('header__nav')}>
-                    <button className={hs('header__nav--button')} onClick={() => setMenuBox(true)}>
-                        <img
-                            className={hs('header__nav--button--img')}
-                            src="/icon/header-menu-button.webp"
-                            alt="breadkun-header-menu"
-                        />
-                    </button>
+                    <MobileMenuButton onClick={() => setMenuBox(true)}>
+                        <StyledEllipsis />
+                    </MobileMenuButton>
+                    {/*<button className={hs('header__nav--button')} onClick={() => setMenuBox(true)}>*/}
+                    {/*    <img*/}
+                    {/*        className={hs('header__nav--button--img')}*/}
+                    {/*        src="/icon/header-menu-button.webp"*/}
+                    {/*        alt="breadkun-header-menu"*/}
+                    {/*    />*/}
+                    {/*</button>*/}
                     <div className={hs('header__nav--menus')}>
                         <Link
                             className={router === '/' ? hs('header__nav--menu', 'active') : hs('header__nav--menu')}

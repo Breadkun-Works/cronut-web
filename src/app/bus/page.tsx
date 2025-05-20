@@ -11,7 +11,7 @@ import useKakaoLoader from '../../components/UseKakaoLoader';
 import { Box, Typography } from '@mui/material';
 import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import { BusFront } from 'lucide-react';
-import { responsiveConfig } from '@/data';
+import { COLORS_DARK, responsiveConfig } from '@/data';
 
 interface BusStations {
     arrivalTimeH?: number;
@@ -30,11 +30,7 @@ const bs = classNames.bind(styles);
 
 function Bus({ params }: { params: { destination: string } }) {
     useKakaoLoader();
-    const { isMobile, isTabletOnly } = useResponsive();
-    const { fontSizeSteps } = responsiveConfig;
-    const breakpoint = useCurrentBreakpoint();
-    const fontSize = fontSizeSteps.companySelect[breakpoint];
-    const iconSize = isMobile ? 18 : isTabletOnly ? 22 : 24; // 모바일 18px, 태블릿 22px, 데스크탑 24px
+    const { isSmall } = useResponsive();
 
     const [loaded, setLoaded] = useState(false);
 
@@ -192,10 +188,28 @@ function Bus({ params }: { params: { destination: string } }) {
     return (
         <>
             <div className={bs('bus')}>
-                <Box margin={isMobile ? '10px 16px' : '20px 30px'} display={'flex'} alignItems="center" gap={1}>
-                    <BusFront size={iconSize} />
-                    <Typography fontSize={fontSize}>강촌 퇴근 버스</Typography>
-                    {/*<CompanySelect entry={'bus'} />*/}
+                <Box
+                    margin={isSmall ? '10px 16px 16px 16px' : '16px 20px'}
+                    display={'flex'}
+                    alignItems="center"
+                    gap={1.5}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: '#3D3C52', // 원형 배경 색상
+                            borderRadius: '30%',
+                            width: 32,
+                            height: 32,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                        }}
+                    >
+                        <BusFront fill={COLORS_DARK.theme.purple} size={isSmall ? '1.2rem' : '1.3rem'} />
+                    </Box>
+
+                    <Typography fontSize={isSmall ? '1.2rem' : '1.3rem'}>강촌 퇴근 버스</Typography>
                 </Box>
                 {/*<div className={bs('title')}>*/}
                 {/*    <div className={bs('title__icon')}>*/}

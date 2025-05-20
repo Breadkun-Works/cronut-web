@@ -1,3 +1,4 @@
+'use client';
 import { Box, IconButton, Slide, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';

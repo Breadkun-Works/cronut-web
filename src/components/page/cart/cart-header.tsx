@@ -9,6 +9,7 @@ import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
 import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-modal';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { COLORS_DARK } from '@/data';
+import { isMobileDevice } from '@/utils/util';
 
 interface ICartHeaderProps {
     title: string;
@@ -67,11 +68,7 @@ export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) =
                     }}
                     ref={confirmHeaderRef}
                 >
-                    <EllipsisTooltip
-                        title={title}
-                        parentRef={confirmHeaderRef}
-                        tooltipMaxWidth={isMobile ? '200px' : '500px'}
-                    >
+                    <EllipsisTooltip title={title} entry={'cartHeader'}>
                         <StyledCartHeaderTitle isMobile={isMobile} maxWidth={headerWidth}>
                             {title}
                         </StyledCartHeaderTitle>
@@ -86,16 +83,7 @@ export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) =
                         gap: 0.5
                     }}
                 >
-                    {/*<Box*/}
-                    {/*    sx={{*/}
-                    {/*        width: '20%',*/}
-                    {/*        display: 'flex',*/}
-                    {/*        justifyContent: 'flex-end',*/}
-                    {/*        gap: 0.5*/}
-                    {/*        // marginTop: isMobile ? 0.5 : 0*/}
-                    {/*    }}*/}
-                    {/*>*/}
-                    {!isMobile ? (
+                    {!isMobileDevice() ? (
                         <Tooltip title="요약 보기" placement="top" arrow>
                             <IconButton
                                 disabled={cartItems.length === 0}

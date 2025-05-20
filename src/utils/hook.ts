@@ -1,12 +1,13 @@
 'use client';
 
 import { useMediaQuery, useTheme } from '@mui/material';
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { BASE_MENU, CafeMenuTab, SEASON_MENU } from '@/types/common';
 import { useAtom } from 'jotai/index';
-import { companyAtom, useModal } from '@/atom/common-atom';
+import { companyAtom } from '@/atom/common-atom';
 import { cartItemsAtom } from '@/atom/cart-atom';
 import { CafeCartItem } from '@/types/cart';
+import { responsiveConfigByPixel } from '@/data';
 
 let eventSource: EventSource | null = null; // 전역 SSE 변수
 
@@ -75,59 +76,20 @@ export const useMaxWidthByViewport = () => {
     };
 };
 
-type BreakpointConfig = {
-    min: number;
-    max: number;
-    fontSize?: number;
-    chipSize?: number;
-    iconSize?: number;
-    maxWidth?: number | string;
-    marginTop?: number;
-};
-
-type PageConfigs = {
-    [page: string]: BreakpointConfig[];
-};
-
-export const responsiveConfig: PageConfigs = {
-    cart: [
-        { min: 0, max: 319, fontSize: 15, chipSize: 13, iconSize: 16, maxWidth: 90 },
-        { min: 320, max: 329, fontSize: 16, chipSize: 13, iconSize: 17, maxWidth: 100 },
-        { min: 330, max: 339, fontSize: 16, chipSize: 14, iconSize: 17, maxWidth: 110 },
-        { min: 340, max: 349, fontSize: 16, chipSize: 14, iconSize: 18, maxWidth: 120 },
-        { min: 350, max: 359, fontSize: 16, chipSize: 14, iconSize: 19, maxWidth: 130 },
-        { min: 360, max: 369, fontSize: 16, chipSize: 14, iconSize: 19, maxWidth: 140 },
-        { min: 370, max: 379, fontSize: 16, chipSize: 14, iconSize: 19.5, maxWidth: 150 },
-        { min: 380, max: 389, fontSize: 16.5, chipSize: 15, iconSize: 20, maxWidth: 160 },
-        { min: 390, max: 399, fontSize: 16.5, chipSize: 15, iconSize: 20, maxWidth: 170 },
-        { min: 400, max: 409, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 180 },
-        { min: 410, max: 419, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 190 },
-        { min: 420, max: 429, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 200 },
-        { min: 430, max: 439, fontSize: 16.5, chipSize: 15, iconSize: 21, maxWidth: 210 },
-        { min: 440, max: 479, fontSize: 17, chipSize: 16, iconSize: 21.5, maxWidth: '100%' },
-        { min: 480, max: Infinity, fontSize: 17, chipSize: 16, iconSize: 22, maxWidth: '100%' }
-    ],
-    'cart-register': [
-        { min: 0, max: 359, fontSize: 13, iconSize: 15, maxWidth: 100 },
-        { min: 360, max: 479, fontSize: 14, iconSize: 18, maxWidth: 180 },
-        { min: 480, max: Infinity, fontSize: 15, iconSize: 20, maxWidth: '100%' }
-    ]
-};
-
-export const useResponsiveConfig = (pageKey: keyof typeof responsiveConfig) => {
-    const [width, setWidth] = useState<number>(1024);
+export const useResponsiveConfig = (pageKey: keyof typeof responsiveConfigByPixel) => {
+    const [width, setWidth] = useState<number>(window.innerWidth);
 
     useEffect(() => {
-        const update = () => setWidth(window.innerWidth);
-        update();
-        window.addEventListener('resize', update);
-        return () => window.removeEventListener('resize', update);
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const configList = responsiveConfig[pageKey];
-    const config = configList.find(({ min, max }) => width >= min && width <= max) ?? configList[configList.length - 1];
+    const configList = responsiveConfigByPixel[pageKey];
 
-    return { ...config };
+    return useMemo(() => {
+        return configList.find(({ min, max }) => width >= min && width <= max) ?? configList[configList.length - 1];
+    }, [width, configList]);
 };
 
 export function useBottomHeight(ref: RefObject<HTMLElement>, deps: any[] = []): number {

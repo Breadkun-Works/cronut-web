@@ -11,7 +11,6 @@ import {
     Chip,
     Container,
     DialogContent,
-    SnackbarContent,
     Typography
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
@@ -22,14 +21,10 @@ import { keyframes } from '@emotion/react';
 interface ConfirmHeaderProps {
     isMobile: boolean;
 }
-interface DrinkNameTypographyProps {
-    fontSize?: number;
-    maxWidth?: number | string;
-}
 
 const slideMarquee = keyframes`
   0% {
-    transform: translateX(0%);
+    transform: translateX(0);
   }
   100% {
     transform: translateX(-50%);
@@ -72,7 +67,20 @@ export const CartButton = styled.button`
     cursor: pointer;
 `;
 
-export const StyledMenuTitle = styled(Box)(({ theme }) => ({
+export const StyledMenuTitle = styled(Typography)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '1.3rem',
+
+    color: COLORS_DARK.text.primary,
+    textAlign: 'center',
+    whiteSpace: 'pre-line',
+
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '1.5rem'
+    }
+}));
+
+export const StyledMenuTitleWithName = styled(Box)(({ theme }) => ({
     fontWeight: 'bold',
     fontSize: '1.1rem',
     color: COLORS_DARK.text.primary,
@@ -196,15 +204,6 @@ export const StyledCartHeaderTitle = styled(Typography, {
     }
 }));
 
-// export const HeaderContent = styled(Box)({
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     position: 'relative',
-//     marginTop: '1.5rem',
-//     marginBottom: '1.2rem'
-// });
-
 export const HeaderContent = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column', // 기본적으로 두 줄 (모바일)
@@ -267,17 +266,6 @@ export const ButtonsContainer = styled(Box, {
     gap: 16,
     marginTop: disabledAll ? 0 : 16
 }));
-
-export const ActionButton = styled(Button)({
-    height: 56,
-    fontSize: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    color: COLORS_DARK.text.primary,
-    backgroundColor: COLORS_DARK.accent.main
-});
 
 export const ButtonIcon = styled(Box)<{ disabled?: boolean }>(({ disabled }) => ({
     display: 'flex',
@@ -380,21 +368,18 @@ export const CartItemContent = styled(CardContent)(({ theme }) => ({
     }
 }));
 
-export const ItemImage = styled(Box)(({ theme }) => ({
+export const ItemImage = styled(Box, {
+    shouldForwardProp: prop => prop !== 'width' && prop !== 'height'
+})<{ width?: number | string; height?: number | string }>(({ theme, width, height }) => ({
     position: 'relative',
-    width: 60,
-    height: 60,
+    width: width ?? 60,
+    height: height ?? 60,
     borderRadius: 8,
     overflow: 'hidden',
     flexShrink: 0,
-    [theme.breakpoints.up('sm')]: {
-        width: 80,
-        height: 80,
-        borderRadius: 12
-    },
     [theme.breakpoints.up('md')]: {
-        width: 100,
-        height: 100
+        width: width ?? 100,
+        height: height ?? 100
     }
 }));
 
@@ -402,22 +387,31 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     fontWeight: 600,
     backgroundColor: 'white', //COLORS_DARK.accent.main,
     color: COLORS_DARK.text.primary,
+    '& img': {
+        height: 'auto !important', // height 제거
+        width: '100%',
+        objectFit: 'contain' // 비율 유지
+    },
     padding: 2,
     // xs (모바일)
     width: 24,
     height: 24,
     fontSize: '0.875rem',
     marginRight: 6,
+    marginTop: 4,
 
     [theme.breakpoints.up('sm')]: {
         width: 28,
         height: 28,
         fontSize: '1rem',
-        marginRight: 8
+        marginRight: 8,
+        marginTop: 6
     },
     [theme.breakpoints.up('md')]: {
         width: 32,
-        height: 32
+        height: 32,
+        marginRight: 8,
+        marginTop: 6
     }
 }));
 
@@ -428,7 +422,6 @@ export const ConfirmTemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ th
     fontSize: '0.65rem',
     backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
     color: '#fff',
-    marginLeft: 8,
     marginTop: -1,
     boxShadow: 'none',
     [theme.breakpoints.down('sm')]: {
@@ -487,19 +480,7 @@ export const ShoppingCartIcon = styled(ShoppingCart)(({ theme }) => ({
     }
 }));
 
-export const DrinkNameTypography = styled(Typography, {
-    shouldForwardProp: prop => prop !== 'fontSize' && prop !== 'maxWidth'
-})<DrinkNameTypographyProps>(({ theme, fontSize, maxWidth }) => ({
-    fontWeight: 500,
-    color: theme.palette.text.primary,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    fontSize: fontSize ? `${fontSize}px` : '0.9rem',
-    maxWidth: maxWidth ?? '100%'
-}));
-
-export const CartWarningWrapper = styled(Box)(({ theme }) => ({
+export const CartWarningWrapper = styled(Box)<{ isOverflowed: boolean }>(({ theme }) => ({
     width: '100%',
     maxWidth: 902,
     overflow: 'hidden',
@@ -509,26 +490,42 @@ export const CartWarningWrapper = styled(Box)(({ theme }) => ({
     backgroundColor: 'rgba(255, 107, 107, 0.1)',
     textAlign: 'center',
     position: 'relative',
-    fontSize: '1.07rem',
     marginTop: '12px',
-
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '0.9rem'
-    },
-    [theme.breakpoints.down('xs')]: {
-        fontSize: '0.8rem'
-    },
     [theme.breakpoints.down('md')]: {
-        fontSize: '0.95rem'
+        marginTop: '8px',
+        padding: '8px'
     }
 }));
 
 export const CartWarningText = styled('div')<{ isOverflowed: boolean }>(({ theme, isOverflowed }) => ({
-    display: 'inline-block',
+    display: 'flex',
+    whiteSpace: 'nowrap',
     fontWeight: 700,
     color: '#ff6b6b',
-    whiteSpace: 'nowrap',
-    animation: isOverflowed ? `${slideMarquee} 25s linear infinite` : 'none'
+    fontSize: '0.8rem',
+    alignItems: 'center',
+    justifyContent: isOverflowed ? 'unset' : 'center',
+    [theme.breakpoints.up('sm')]: {
+        fontSize: '0.95rem'
+    },
+    [theme.breakpoints.up('xs')]: {
+        fontSize: '0.9rem'
+    },
+    [theme.breakpoints.up('md')]: {
+        fontSize: '1rem'
+    },
+    overflow: 'hidden',
+    position: 'relative',
+    '.marquee': {
+        display: 'flex',
+        whiteSpace: 'nowrap',
+        flexWrap: 'nowrap',
+        animation: isOverflowed ? `${slideMarquee} 25s linear infinite` : 'none'
+    },
+    '.marquee-content': {
+        display: 'inline-block',
+        whiteSpace: 'nowrap'
+    }
 }));
 
 export const OrderLabelTypography = styled(Typography)(({ theme }) => ({
@@ -593,29 +590,6 @@ export const PriceTypography = styled(Typography)(({ theme }) => ({
     },
     [theme.breakpoints.up('md')]: {
         fontSize: '1.2rem'
-    }
-}));
-
-export const CustomSnackbarContent = styled(SnackbarContent)(({ theme }) => ({
-    backgroundColor: COLORS_DARK.theme.purple,
-    color: COLORS_DARK.text.primary,
-    fontWeight: 600,
-    justifyContent: 'center',
-    textAlign: 'center',
-    borderRadius: 12,
-    border: `1px solid ${COLORS_DARK.accent.main}`,
-    padding: '8px 16px',
-    boxShadow: `0 0 8px ${COLORS_DARK.accent.main}`,
-    fontSize: '0.875rem',
-
-    [theme.breakpoints.up('md')]: {
-        fontSize: '0.9375rem'
-    },
-    [theme.breakpoints.up('lg')]: {
-        fontSize: '1rem'
-    },
-    [theme.breakpoints.up('xl')]: {
-        fontSize: '1.0625rem'
     }
 }));
 

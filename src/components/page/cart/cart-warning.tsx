@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 
 interface ICartWarningProps {
     isCartInactive: boolean;
-    isMobile: boolean;
 }
-export const CartWaring = ({ isCartInactive, isMobile }: ICartWarningProps) => {
+
+export const CartWaring = ({ isCartInactive }: ICartWarningProps) => {
     const textRef = useRef<HTMLDivElement>(null);
     const [isOverflowed, setIsOverflowed] = useState(false);
 
@@ -22,18 +22,26 @@ export const CartWaring = ({ isCartInactive, isMobile }: ICartWarningProps) => {
     if (!isCartInactive) return;
 
     return (
-        <CartWarningWrapper ref={textRef}>
+        <CartWarningWrapper ref={textRef} isOverflowed={isOverflowed}>
             <CartWarningText isOverflowed={isOverflowed}>
-                ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이 불가합니다. ⚠️
-                {isOverflowed && (
-                    <>
-                        {Array.from({ length: 5 }).map((_, index) => (
-                            <>
-                                &nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이
-                                불가합니다. ⚠️
-                            </>
-                        ))}
-                    </>
+                {isOverflowed ? (
+                    <div className="marquee">
+                        <div className="marquee-content">
+                            ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이 불가합니다.
+                            ⚠️&nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이
+                            불가합니다. ⚠️&nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및
+                            송금이 불가합니다. ⚠️&nbsp;&nbsp;&nbsp;
+                        </div>
+                        {/* 슬라이드 자연스럽게 연결 */}
+                        <div className="marquee-content">
+                            ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이 불가합니다.
+                            ⚠️&nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이
+                            불가합니다. ⚠️&nbsp;&nbsp;&nbsp; ⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및
+                            송금이 불가합니다. ⚠️&nbsp;&nbsp;&nbsp;
+                        </div>
+                    </div>
+                ) : (
+                    <>⚠️ 장바구니의 주문 가능 시간이 만료되었습니다. 메뉴 담기 및 송금이 불가합니다. ⚠️</>
                 )}
             </CartWarningText>
         </CartWarningWrapper>

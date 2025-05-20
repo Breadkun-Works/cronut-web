@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 
 export const useConditionalTimeout = (condition: boolean, delay: number) => {
@@ -30,4 +31,9 @@ export const handleRefresh = () => {
     if (typeof window !== 'undefined') {
         window.location.reload();
     }
+};
+
+export const isMobileDevice = (): boolean => {
+    if (typeof navigator === 'undefined') return false; // SSR-safe
+    return /Mobi|Android|iPhone|iPad|iPod|Windows Phone|BlackBerry/i.test(navigator.userAgent);
 };

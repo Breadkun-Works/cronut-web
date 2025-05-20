@@ -5,7 +5,6 @@ import {
     CartItemCard,
     CartItemContent,
     ConfirmTemperatureBadge,
-    DrinkNameTypography,
     ItemImage,
     PriceTypography,
     QuantityTypography,
@@ -13,12 +12,14 @@ import {
     StyledScrollableCartList,
     UserAvatar
 } from '@/styles/cart/cart.styles';
-import { Box, CardMedia, IconButton, Typography } from '@mui/material';
+import { Box, CardMedia, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { Trash2 } from 'lucide-react';
 import { getUserInitial, useResponsiveConfig } from '@/utils/hook';
 import { deleteCartItem } from '@/apis/cafe/cafe-api';
 import { IDeleteCartItem, IUserInfo } from '@/types/cart';
+import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
+import { EllipsisTooltipWithChip } from '@/components/common/EllipsisTooltipWithChip';
 
 export const ScrollableCartList = ({
     footerOpen,
@@ -36,7 +37,11 @@ export const ScrollableCartList = ({
     const [cartItems] = useAtom(cartItemsAtom);
     const [isScrollable, setIsScrollable] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
-    const { fontSize, iconSize, chipSize } = useResponsiveConfig('cart');
+    const { fontSize, iconSize, chipSize, cartImgWidthAndHeight } = useResponsiveConfig('cart');
+
+    const [forceTooltipList, setForceTooltipList] = useState<boolean[]>([]);
+    const textBoxRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const trashIconRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     const removeItem = async (cafeCartId: string) => {
         if (!user) return;
@@ -49,6 +54,41 @@ export const ScrollableCartList = ({
             setIsScrollable(el.scrollHeight > window.innerHeight);
         }
     }, [cartItems.length, footerOpen]);
+
+    useEffect(() => {
+        const updateForceTooltip = () => {
+            const newForceTooltipList = cartItems.map((_, index) => {
+                const textBox = textBoxRefs.current[index];
+                const trashIconBox = trashIconRefs.current[index];
+                if (textBox && trashIconBox) {
+                    const textBoxRect = textBox.getBoundingClientRect();
+                    const trashIconBoxRect = trashIconBox.getBoundingClientRect();
+
+                    const distance = trashIconBoxRect.left - textBoxRect.right;
+                    const isOverflowed = textBox.scrollWidth > textBox.clientWidth;
+                    console.log(`Index ${index} | Distance: ${distance}, Overflow: ${isOverflowed}`);
+
+                    return distance <= 8 || isOverflowed;
+                }
+                return false;
+            });
+
+            setForceTooltipList(newForceTooltipList);
+        };
+
+        const handleResize = () => {
+            requestAnimationFrame(updateForceTooltip);
+        };
+
+        window.addEventListener('resize', handleResize);
+        updateForceTooltip();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [cartItems]);
+
+    console.log(forceTooltipList);
 
     return (
         <StyledScrollableCartList
@@ -97,12 +137,12 @@ export const ScrollableCartList = ({
                     </Typography>
                 </Box>
             ) : (
-                cartItems.map(item => (
+                cartItems.map((item, index) => (
                     <CartItemCard key={item.id}>
                         <CartItemContent>
                             <Box display="flex" alignItems="stretch" justifyContent={'space-between'}>
                                 {/* 이미지 */}
-                                <ItemImage>
+                                <ItemImage width={cartImgWidthAndHeight} height={cartImgWidthAndHeight}>
                                     <CardMedia
                                         component="img"
                                         image={item.drinkImageUrl}
@@ -128,10 +168,29 @@ export const ScrollableCartList = ({
                                         justifyContent="space-between"
                                         alignItems="flex-start"
                                     >
-                                        <Box display="flex" alignItems="center">
-                                            <DrinkNameTypography fontSize={fontSize}>
-                                                {item.drinkName}
-                                            </DrinkNameTypography>
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            gap={1}
+                                            ref={(el: HTMLDivElement | null) => {
+                                                textBoxRefs.current[index] = el;
+                                            }}
+                                        >
+                                            <EllipsisTooltipWithChip
+                                                title={item.drinkName}
+                                                forceTooltip={forceTooltipList[index] ?? false}
+                                                style={{
+                                                    fontSize,
+                                                    fontWeight: 500
+                                                }}
+                                                withIcon={
+                                                    item.createdById === user.uuid && cartInfo?.status !== 'INACTIVE'
+                                                }
+                                                customMaxWidthKey={'cart-items'}
+                                            >
+                                                <>{item.drinkName}</>
+                                            </EllipsisTooltipWithChip>
+
                                             {item.drinkTemperature && (
                                                 <ConfirmTemperatureBadge
                                                     temperature={item.drinkTemperature}
@@ -141,28 +200,31 @@ export const ScrollableCartList = ({
                                             )}
                                         </Box>
                                         {item.createdById === user.uuid && cartInfo?.status !== 'INACTIVE' && (
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => removeItem(item.id)}
-                                                sx={{
-                                                    position: 'absolute',
-                                                    right: 0,
-                                                    bottom: 1.5,
-                                                    color: COLORS_DARK.text.secondary,
-                                                    p: 0
+                                            <Box
+                                                ref={(el: HTMLDivElement | null) => {
+                                                    trashIconRefs.current[index] = el;
                                                 }}
+                                                sx={{
+                                                    position: 'relative',
+                                                    right: 0,
+                                                    marginTop: '3px',
+                                                    color: COLORS_DARK.text.secondary
+                                                }}
+                                                onClick={() => removeItem(item.id)}
                                             >
                                                 <Trash2 size={iconSize} />
-                                            </IconButton>
+                                            </Box>
                                         )}
                                     </Box>
 
                                     {/* 작성자 */}
-                                    <Box display="flex" alignItems="center" mt={1}>
+                                    <Box display="flex" alignItems="center">
                                         <UserAvatar src={item.imageUrl} alt={item.createdByName}>
                                             {getUserInitial(item.createdByName)}
                                         </UserAvatar>
-                                        <Typography fontSize={'0.9rem'}>{item.createdByName}</Typography>
+                                        <EllipsisTooltip title={item.createdByName}>
+                                            <Typography fontSize={'0.875rem'}>{item.createdByName}</Typography>
+                                        </EllipsisTooltip>
                                     </Box>
 
                                     <Box
@@ -170,7 +232,8 @@ export const ScrollableCartList = ({
                                         justifyContent="space-between"
                                         alignItems="flex-end"
                                         width="100%"
-                                        mt={{ xs: 1.5, md: 'auto' }}
+                                        // mt={{ xs: 1.5, md: 'auto' }}
+                                        mt={{ xs: '10px', sm: '12px', md: '12px', lg: '14px', xl: '16px' }}
                                         flexDirection={{ xs: 'row', md: 'row' }}
                                     >
                                         <QuantityTypography>수량: {item.quantity}잔</QuantityTypography>

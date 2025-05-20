@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 export const mealMenu = (company: string) => {
     const commonMenu = [
@@ -73,13 +73,6 @@ export const SEASON_MENU: CafeMenuTab = {
     value: DrinkCategory.SEASON
 };
 
-export const CafeMenuData = [
-    { name: 'COFFEE', index: 0, value: DrinkCategory.COFFEE },
-    { name: 'TEA', index: 1, value: DrinkCategory.TEA },
-    { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK },
-    { name: 'SEASON', index: 3, value: DrinkCategory.SEASON }
-];
-
 export interface ICommonModalTypes {
     open: boolean;
     onClose?(): void;
@@ -88,7 +81,24 @@ export interface ICommonModalTypes {
     onConfirm?(): void;
     confirmText?: string;
     width?: string | number;
+    fixedContent?: string | ReactNode;
 }
+
+type BreakpointConfig = {
+    min: number;
+    max: number;
+    fontSize?: number;
+    chipSize?: number;
+    iconSize?: number;
+    maxWidth?: number | string;
+    marginTop?: number;
+    ellipsisMaxWidth?: number | string;
+    cartImgWidthAndHeight?: number;
+};
+
+export type PageConfigs = {
+    [page: string]: BreakpointConfig[];
+};
 
 export interface ClapPosition {
     id: string;
@@ -96,4 +106,13 @@ export interface ClapPosition {
     x: number;
     y: number;
     opacity: number;
+}
+
+export interface EllipsisTooltipWithChipProps {
+    title: string;
+    children: React.ReactElement;
+    forceTooltip: boolean;
+    style?: any;
+    customMaxWidthKey: string | number;
+    withIcon?: boolean;
 }

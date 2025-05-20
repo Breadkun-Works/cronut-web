@@ -29,16 +29,21 @@ export const CategoryTabs = styled(Tabs)({
 
 export const CategoryTab = styled(Tab)(({ theme }) => ({
     minHeight: 40,
+    minWidth: 40,
+    maxWidth: 70,
     '&.Mui-selected': {
         color: COLORS_DARK.accent.main,
         fontWeight: 'bold',
         fontSize: '0.9rem', // 기본값
         [theme.breakpoints.up('sm')]: {
-            fontSize: '1rem'
+            fontSize: '0.95rem'
         }
     },
     '&:hover': {
         color: COLORS_DARK.accent.dark
+    },
+    [theme.breakpoints.up('sm')]: {
+        maxWidth: 90
     }
 }));
 

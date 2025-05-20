@@ -11,18 +11,12 @@ import { companyAtom } from '@/atom/common-atom';
 
 export const CompanySelect = ({ entry }: { entry?: string }) => {
     const [company, setCompany] = useAtom(companyAtom);
-    const { isMobile, isTabletOnly } = useResponsive();
-
+    const { isSmall } = useResponsive();
     const handleChange = (event: SelectChangeEvent<string>) => {
         const selectedCompany = event.target.value as Company;
         setCompany(selectedCompany);
         localStorage.setItem('recentCompany', selectedCompany);
     };
-
-    const { fontSizeSteps } = responsiveConfig;
-    const breakpoint = useCurrentBreakpoint();
-    const fontSize = fontSizeSteps.companySelect[breakpoint];
-    const iconSize = isMobile ? 18 : isTabletOnly ? 22 : 24; // 모바일 18px, 태블릿 22px, 데스크탑 24px
 
     return (
         <Box>
@@ -46,8 +40,31 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
                         '&:hover:not(.Mui-disabled):before': { borderBottom: 'none' }
                     }}
                     renderValue={(selected: string) => (
-                        <Box display="flex" alignItems="center" gap={1} sx={{ fontSize }}>
-                            {entry === 'meal' ? <Utensils size={iconSize} /> : <MapPin size={iconSize} />}
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            gap={1.5}
+                            sx={{ fontSize: isSmall ? '1.2rem' : '1.3rem' }}
+                        >
+                            <Box
+                                sx={{
+                                    backgroundColor: '#3D3C52', // 원형 배경 색상
+                                    borderRadius: '30%',
+                                    width: 32,
+                                    height: 32,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
+                                }}
+                            >
+                                {entry === 'meal' ? (
+                                    <Utensils size={isSmall ? '1.2rem' : '1.3rem'} />
+                                ) : (
+                                    <MapPin size={isSmall ? '1.2rem' : '1.3rem'} />
+                                )}
+                            </Box>
+
                             {entry === 'meal'
                                 ? companyMealDropdownItem.find(c => c.value === selected)?.label
                                 : entry === 'cafe'
@@ -76,7 +93,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
                                     companyDropdown.value === company
                                         ? `${COLORS_DARK.accent.dark} !important`
                                         : 'transparent',
-                                fontSize: fontSize // 메뉴에도 반영
+                                fontSize: '1.2rem' // 메뉴에도 반영
                             }}
                         >
                             {companyDropdown.label}

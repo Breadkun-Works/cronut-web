@@ -404,8 +404,7 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
         width: 28,
         height: 28,
         fontSize: '1rem',
-        marginRight: 8,
-        marginTop: 6
+        marginRight: 8
     },
     [theme.breakpoints.up('md')]: {
         width: 32,

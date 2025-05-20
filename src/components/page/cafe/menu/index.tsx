@@ -597,19 +597,18 @@ const CafeMenu = ({
                                     width={isMobile ? '90%' : '70%'}
                                     open={moveToConfirm}
                                     content={
-                                        <Box padding={1.5}>
+                                        <Box>
                                             <Typography
                                                 sx={{
-                                                    whiteSpace: 'pre-wrap',
-                                                    overflowWrap: 'break-word',
-                                                    maxWidth: '90%',
-                                                    lineHeight: 1.4,
+                                                    whiteSpace: 'pre-line',
                                                     textAlign: 'center',
-                                                    margin: '0 8px 8px 8px'
+                                                    fontSize: '1rem',
+                                                    lineHeight: 1.5,
+                                                    maxWidth: '280px',
+                                                    wordBreak: 'keep-all'
                                                 }}
                                             >
-                                                상품을 장바구니에 담았습니다.
-                                                <br /> 장바구니로 이동하시겠습니까?
+                                                {'상품을 장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?'}
                                             </Typography>
                                         </Box>
                                     }

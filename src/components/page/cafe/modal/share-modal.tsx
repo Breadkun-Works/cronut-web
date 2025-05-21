@@ -40,18 +40,20 @@ export function ShareCartDialog({
 
             try {
                 await navigator.clipboard.writeText(url).then(() => {
-                    onClose();
                     showToast('🔗 링크가 복사되었습니다!', 'success');
                 });
             } catch (err) {
                 showToast('❌ 복사에 실패했어요 😢', 'error');
+            } finally {
+                onClose();
             }
         } else if (navigator.canShare(shareCartData)) {
             try {
                 await navigator.share(shareCartData);
-                onClose();
             } catch (err) {
                 showToast('❌ 복사에 실패했어요 😢', 'error');
+            } finally {
+                onClose();
             }
         }
     };

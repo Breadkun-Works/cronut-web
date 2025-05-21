@@ -140,7 +140,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                             <ButtonsContainer disabledAll={isCartInactive}>
                                 <FooterButton
                                     sx={{ fontSize }}
-                                    variant={!decryptedData ? 'contained' : undefined}
+                                    variant={!decryptedData || !isCreator ? 'contained' : undefined}
                                     onClick={() => {
                                         if (user.userName && user.userProfile) {
                                             router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);

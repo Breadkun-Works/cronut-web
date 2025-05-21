@@ -35,7 +35,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
     ({ isCollapsed, setIsCollapsed, footerOpen, setFooterOpen, cartInfo, decryptedData }, ref) => {
         const { isCartInactive, cartId, user, totalPrice, isCreator } = cartInfo;
         const queryClient = useQueryClient();
-        const { fontSize } = useResponsiveConfig('cart');
+        const { fontSize, iconSize } = useResponsiveConfig('cart');
         const [, setSnackbarContent] = useAtom(snackBarAtom);
 
         const router = useRouter();
@@ -140,6 +140,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                             <ButtonsContainer disabledAll={isCartInactive}>
                                 <FooterButton
                                     sx={{ fontSize }}
+                                    variant={!decryptedData ? 'contained' : undefined}
                                     onClick={() => {
                                         if (user.userName && user.userProfile) {
                                             router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
@@ -149,36 +150,51 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                     }}
                                     disabled={isCartInactive}
                                 >
-                                    <ButtonIcon disabled={isCartInactive}>
+                                    <ButtonIcon
+                                        disabled={isCartInactive}
+                                        iconColor={!decryptedData ? COLORS_DARK.text.primary : COLORS_DARK.accent.main}
+                                        iconSize={(iconSize as number) + 2}
+                                    >
                                         <CupSoda />
                                     </ButtonIcon>
                                     메뉴 담기
                                 </FooterButton>
 
-                                {isCreator ? (
+                                {!isCreator ? (
                                     <FooterButton
                                         sx={{ fontSize }}
                                         disabled={isCartInactive}
                                         variant="contained"
                                         onClick={() => confirmModal.openModal()}
                                     >
-                                        <ButtonIcon disabled={isCartInactive}>
+                                        <ButtonIcon
+                                            disabled={isCartInactive}
+                                            iconColor={COLORS_DARK.text.primary}
+                                            iconSize={(iconSize as number) + 2}
+                                        >
                                             <LockIcon />
                                         </ButtonIcon>
                                         주문 마감하기
                                     </FooterButton>
                                 ) : (
-                                    <FooterButton
-                                        sx={{ fontSize }}
-                                        variant="contained"
-                                        disabled={isCartInactive || !decryptedData}
-                                        onClick={() => paymentModal.openModal()}
-                                    >
-                                        <ButtonIcon disabled={isCartInactive}>
-                                            <CircleDollarSign />
-                                        </ButtonIcon>
-                                        송금하기
-                                    </FooterButton>
+                                    <>
+                                        {decryptedData && (
+                                            <FooterButton
+                                                sx={{ fontSize }}
+                                                variant="contained"
+                                                disabled={isCartInactive || !decryptedData}
+                                                onClick={() => paymentModal.openModal()}
+                                            >
+                                                <ButtonIcon
+                                                    iconSize={(iconSize as number) + 2}
+                                                    iconColor={COLORS_DARK.text.primary}
+                                                >
+                                                    <CircleDollarSign />
+                                                </ButtonIcon>
+                                                송금하기
+                                            </FooterButton>
+                                        )}
+                                    </>
                                 )}
                             </ButtonsContainer>
                         </Box>

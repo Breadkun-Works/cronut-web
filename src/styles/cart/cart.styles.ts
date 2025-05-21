@@ -253,18 +253,24 @@ export const LinkShareContent = styled(CardContent)({
 export const ButtonsContainer = styled(Box, {
     shouldForwardProp: prop => prop !== 'disabledAll'
 })<{ disabledAll?: boolean }>(({ disabledAll }) => ({
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    display: 'flex',
+    // gridTemplateColumns: '1fr 1fr',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: 16,
     marginTop: disabledAll ? 0 : 16
 }));
 
-export const ButtonIcon = styled(Box)<{ disabled?: boolean }>(({ disabled }) => ({
+export const ButtonIcon = styled(Box, {
+    shouldForwardProp: prop => prop !== 'iconSize' && prop !== 'iconColor' && prop !== 'disabled'
+})<{ iconSize?: number | string; iconColor?: string; disabled?: boolean }>(({ iconSize, iconColor, disabled }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     svg: {
-        color: disabled ? COLORS_DARK.text.disabled : COLORS_DARK.accent.main
+        width: iconSize ?? '24px',
+        height: iconSize ?? '24px',
+        color: disabled ? COLORS_DARK.text.disabled : iconColor
     }
 }));
 
@@ -287,7 +293,7 @@ export const OrderAmountCard = styled.div`
     background-color: ${COLORS_DARK.theme.purple};
     border-radius: 12px;
     padding: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     border: 1px solid rgba(255, 171, 0, 0.2);
 
     @media (max-height: 700px) {

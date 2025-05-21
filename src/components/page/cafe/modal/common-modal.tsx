@@ -71,7 +71,7 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         padding: props.fixedContent ? '16px 16px 0 16px' : 2,
                         maxHeight: '60vh', // 전체 높이에서 조정 가능,
                         textAlign: 'center',
-                        alignItems: 'center'
+                        alignItems: props.fixedContent ? '' : 'center'
                     }}
                 >
                     {/* 스크롤 영역 */}

@@ -160,7 +160,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                     메뉴 담기
                                 </FooterButton>
 
-                                {!isCreator ? (
+                                {isCreator ? (
                                     <FooterButton
                                         sx={{ fontSize }}
                                         disabled={isCartInactive}

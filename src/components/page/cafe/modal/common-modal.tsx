@@ -70,7 +70,8 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         overflow: 'hidden',
                         padding: props.fixedContent ? '16px 16px 0 16px' : 2,
                         maxHeight: '60vh', // 전체 높이에서 조정 가능,
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        alignItems: 'center'
                     }}
                 >
                     {/* 스크롤 영역 */}
@@ -102,7 +103,7 @@ export const CommonModal = (props: ICommonModalTypes) => {
                     gap: 2,
                     width: width ?? '90%',
                     maxWidth: 500,
-                    mt: 1.5
+                    mt: 2
                 }}
             >
                 <Button

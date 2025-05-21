@@ -12,10 +12,10 @@ import { useQuery } from '@tanstack/react-query';
 import PaymentModal from '@/app/cafe/cart/[id]/PaymentModal';
 import { CartConfirmModal } from '@/components/page/cafe/modal/cart-confirm-modal';
 import ClapAnimation from '@/components/page/cafe/ClapAnimation';
-import { handleRefresh } from '@/utils/util';
+import { handleRefresh, isMobileDevice } from '@/utils/util';
 import { useAtom } from 'jotai';
 import { cartItemsAtom } from '@/atom/cart-atom';
-import { snackBarAtom, useModal } from '@/atom/common-atom';
+import { useModal } from '@/atom/common-atom';
 import { ScrollableCartList } from '@/components/page/cart/scrollable-cart-list';
 import { CartWaring } from '@/components/page/cart/cart-warning';
 import { CartHeader } from '@/components/page/cart/cart-header';
@@ -57,7 +57,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
     const linkShareCardHeight = linkShareCardRef.current?.getBoundingClientRect().height ?? 0;
     const calculatedBottomHeight = bottomHeight || 0;
 
-    const minHeightValue = `calc(100vh - 10vh - ${semiHeaderHeight ? `${semiHeaderHeight}px` : '0px'} - ${linkShareCardHeight ? `${linkShareCardHeight}px` : '0px'} - ${calculatedBottomHeight ? `${calculatedBottomHeight}px` : '0px'})`;
+    const minHeightValue = `calc(100vh - ${window.innerWidth < 768 ? 64 : 80}px - ${semiHeaderHeight ? `${semiHeaderHeight}px` : '0px'} - ${linkShareCardHeight ? `${linkShareCardHeight}px` : '0px'} - ${calculatedBottomHeight ? `${calculatedBottomHeight}px` : '0px'})`;
 
     // 링크 복사 함수
     const copyLinkToClipboard = async () => {
@@ -133,7 +133,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                px: { xs: 2, sm: 2, md: 3 },
+                px: { xs: 2, sm: 2.5, md: 3 },
                 position: 'relative'
             }}
         >
@@ -142,7 +142,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
                 <CartHeader title={cartData?.title as string} snackbar={snackbar} setSnackbar={setSnackbar} />
             </Box>
 
-            {!isMobile && (
+            {!isMobileDevice() && !isMobile && (
                 <LinkShareCard ref={linkShareCardRef}>
                     <LinkShareContent>
                         <Box display="flex" alignItems="center" mb={'8px'}>
@@ -187,6 +187,15 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
                                     )
                                 }}
                                 sx={{
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                        border: 'none !important'
+                                    },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                                        border: 'none !important'
+                                    },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                        border: 'none !important'
+                                    },
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: 12,
                                         backgroundColor: COLORS_DARK.background.main

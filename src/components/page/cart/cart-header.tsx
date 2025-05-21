@@ -25,7 +25,7 @@ interface ICartHeaderProps {
 }
 export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) => {
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
-    const { isMobile } = useResponsive();
+    const { isMobile, isDesktop } = useResponsive();
     const [cartItems] = useAtom(cartItemsAtom);
 
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
@@ -83,7 +83,7 @@ export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) =
                         gap: 0.5
                     }}
                 >
-                    {!isMobileDevice() ? (
+                    {!isMobileDevice() && !isMobile ? (
                         <Tooltip title="요약 보기" placement="top" arrow>
                             <IconButton
                                 disabled={cartItems.length === 0}

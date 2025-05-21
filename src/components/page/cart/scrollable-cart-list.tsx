@@ -15,7 +15,7 @@ import {
 import { Box, CardMedia, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { Trash2 } from 'lucide-react';
-import { getUserInitial, useResponsiveConfig } from '@/utils/hook';
+import { getUserInitial, useResponsive, useResponsiveConfig } from '@/utils/hook';
 import { deleteCartItem } from '@/apis/cafe/cafe-api';
 import { IDeleteCartItem, IUserInfo } from '@/types/cart';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
@@ -37,7 +37,8 @@ export const ScrollableCartList = ({
     const [cartItems] = useAtom(cartItemsAtom);
     const [isScrollable, setIsScrollable] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
-    const { fontSize, iconSize, chipSize, cartImgWidthAndHeight } = useResponsiveConfig('cart');
+    const { isLg, isSmall } = useResponsive();
+    const { iconSize, chipSize, cartImgWidthAndHeight } = useResponsiveConfig('cart');
 
     const [forceTooltipList, setForceTooltipList] = useState<boolean[]>([]);
     const textBoxRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -87,8 +88,6 @@ export const ScrollableCartList = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [cartItems]);
-
-    console.log(forceTooltipList);
 
     return (
         <StyledScrollableCartList
@@ -171,7 +170,7 @@ export const ScrollableCartList = ({
                                         <Box
                                             display="flex"
                                             alignItems="center"
-                                            gap={1}
+                                            gap={!isSmall ? '10px' : 1}
                                             ref={(el: HTMLDivElement | null) => {
                                                 textBoxRefs.current[index] = el;
                                             }}
@@ -180,7 +179,7 @@ export const ScrollableCartList = ({
                                                 title={item.drinkName}
                                                 forceTooltip={forceTooltipList[index] ?? false}
                                                 style={{
-                                                    fontSize,
+                                                    fontSize: '1rem',
                                                     fontWeight: 500
                                                 }}
                                                 withIcon={
@@ -195,7 +194,8 @@ export const ScrollableCartList = ({
                                                 <ConfirmTemperatureBadge
                                                     temperature={item.drinkTemperature}
                                                     label={item.drinkTemperature}
-                                                    height={chipSize as number}
+                                                    height={chipSize}
+                                                    // height={chipSize as number}
                                                 />
                                             )}
                                         </Box>
@@ -218,12 +218,17 @@ export const ScrollableCartList = ({
                                     </Box>
 
                                     {/* 작성자 */}
-                                    <Box display="flex" alignItems="center">
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        mt={isLg ? '6px' : '4px'}
+                                        maxWidth={`calc(100% - ${(iconSize as number) / 2}px)`}
+                                    >
                                         <UserAvatar src={item.imageUrl} alt={item.createdByName}>
                                             {getUserInitial(item.createdByName)}
                                         </UserAvatar>
                                         <EllipsisTooltip title={item.createdByName}>
-                                            <Typography fontSize={'0.875rem'}>{item.createdByName}</Typography>
+                                            <Typography fontSize={'0.95rem'}>{item.createdByName}</Typography>
                                         </EllipsisTooltip>
                                     </Box>
 

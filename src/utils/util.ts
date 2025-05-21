@@ -34,6 +34,8 @@ export const handleRefresh = () => {
 };
 
 export const isMobileDevice = (): boolean => {
-    if (typeof navigator === 'undefined') return false; // SSR-safe
-    return /Mobi|Android|iPhone|iPad|iPod|Windows Phone|BlackBerry/i.test(navigator.userAgent);
+    if (typeof navigator === 'undefined' || typeof window === 'undefined') return false; // SSR-safe
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod|Windows Phone|BlackBerry/i.test(navigator.userAgent);
+    const hasTouch = navigator.maxTouchPoints > 1;
+    return isMobile && hasTouch;
 };

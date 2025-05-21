@@ -24,6 +24,7 @@ import { useResponsive } from '@/utils/hook';
 import { useAtom } from 'jotai';
 import { companyAtom, snackBarAtom } from '@/atom/common-atom';
 import { COLORS_DARK } from '@/data';
+
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -102,10 +103,18 @@ const CartPage = () => {
             </Box>
             <div className={'cart-wrapper'}>
                 <CartContainer>
-                    <div style={{ fontSize: '20px', margin: '20px 0', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.3rem', margin: '20px 0', textAlign: 'center' }}>
                         음료 주문을 시작합니다 🎉
                         <br />
-                        <p style={{ fontSize: '1rem' }}>
+                        <p
+                            style={{
+                                fontSize: '1.1rem',
+                                whiteSpace: 'pre-line',
+                                textAlign: 'center',
+                                lineHeight: 1.5,
+                                wordBreak: 'keep-all'
+                            }}
+                        >
                             생성 후{' '}
                             <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
                                 <span style={{ fontSize: '1.2rem', color: COLORS_DARK.accent.light }}>3</span>시간

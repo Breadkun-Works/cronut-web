@@ -139,6 +139,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
 
                             <ButtonsContainer disabledAll={isCartInactive}>
                                 <FooterButton
+                                    sx={{ fontSize }}
                                     onClick={() => {
                                         if (user.userName && user.userProfile) {
                                             router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
@@ -156,6 +157,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
 
                                 {isCreator ? (
                                     <FooterButton
+                                        sx={{ fontSize }}
                                         disabled={isCartInactive}
                                         variant="contained"
                                         onClick={() => confirmModal.openModal()}
@@ -167,6 +169,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                     </FooterButton>
                                 ) : (
                                     <FooterButton
+                                        sx={{ fontSize }}
                                         variant="contained"
                                         disabled={isCartInactive || !decryptedData}
                                         onClick={() => paymentModal.openModal()}

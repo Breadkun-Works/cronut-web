@@ -119,7 +119,7 @@ export interface ICafeMenuPopoverProps {
 
 export interface TemperatureBadgeProps {
     temperature: 'ICED' | 'HOT';
-    height?: number;
+    height?: number | string;
     marginTop?: number;
 }
 

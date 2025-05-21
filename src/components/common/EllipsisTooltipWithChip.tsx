@@ -1,7 +1,7 @@
 'use client';
 import { EllipsisTooltipWithChipProps } from '@/types/common';
 import React, { useEffect, useRef, useState } from 'react';
-import { useMaxWidthByViewport, useResponsive, useResponsiveConfig } from '@/utils/hook';
+import { useResponsive, useResponsiveConfig } from '@/utils/hook';
 import { ClickAwayListener, Tooltip, Typography } from '@mui/material';
 import { isMobileDevice } from '@/utils/util';
 
@@ -19,7 +19,7 @@ export const EllipsisTooltipWithChip = ({
     const { isSm, isMd, isLg } = useResponsive();
 
     const { maxWidth } = useResponsiveConfig(customMaxWidthKey);
-    const { fontSize } = useMaxWidthByViewport();
+    const { fontSize } = useResponsiveConfig('cart');
 
     useEffect(() => {
         const checkOverflow = () => {
@@ -74,7 +74,8 @@ export const EllipsisTooltipWithChip = ({
                     <Tooltip
                         title={
                             <Typography
-                                fontSize={'small'}
+                                // fontSize={'small'}
+                                fontSize={fontSize}
                                 sx={{ maxWidth: tooltipMaxWidth, whiteSpace: 'normal', wordWrap: 'break-word' }}
                             >
                                 {title}

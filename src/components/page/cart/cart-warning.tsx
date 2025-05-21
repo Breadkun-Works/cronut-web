@@ -1,5 +1,6 @@
 import { CartWarningText, CartWarningWrapper } from '@/styles/cart/cart.styles';
 import { useEffect, useRef, useState } from 'react';
+import { useResponsiveConfig } from '@/utils/hook';
 
 interface ICartWarningProps {
     isCartInactive: boolean;
@@ -8,6 +9,7 @@ interface ICartWarningProps {
 export const CartWaring = ({ isCartInactive }: ICartWarningProps) => {
     const textRef = useRef<HTMLDivElement>(null);
     const [isOverflowed, setIsOverflowed] = useState(false);
+    const { fontSize } = useResponsiveConfig('cart');
 
     const checkOverflow = () => {
         setIsOverflowed(window.innerWidth < 769); // 769px 이하일 때 슬라이딩 활성화
@@ -23,7 +25,7 @@ export const CartWaring = ({ isCartInactive }: ICartWarningProps) => {
 
     return (
         <CartWarningWrapper ref={textRef} isOverflowed={isOverflowed}>
-            <CartWarningText isOverflowed={isOverflowed}>
+            <CartWarningText isOverflowed={isOverflowed} style={{ fontSize }}>
                 {isOverflowed ? (
                     <div className="marquee">
                         <div className="marquee-content">

@@ -125,7 +125,7 @@ export const MuiTheme = createTheme({
         values: {
             xs: 0, // 기존대로 유지 (사실상 xxs 역할)
             sm: 360, // 일반적인 소형 스마트폰
-            md: 480, // 일반 스마트폰
+            md: 481, // 일반 스마트폰
             lg: 600, // 태블릿
             xl: 1024, // 노트북
             xxl: 1280, // 데스크탑
@@ -240,35 +240,35 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 0,
             max: 319,
-            fontSize: 15,
-            chipSize: 13,
-            iconSize: 16,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
             maxWidth: 90,
             ellipsisMaxWidth: '48vw'
         },
         {
             min: 320,
             max: 329,
-            fontSize: 15,
-            chipSize: 13,
-            iconSize: 17,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
             maxWidth: 100,
             ellipsisMaxWidth: '50vw'
         },
         {
             min: 330,
             max: 339,
-            fontSize: 16,
-            chipSize: 14,
-            iconSize: 17,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
             maxWidth: 110,
             ellipsisMaxWidth: '52vw'
         },
         {
             min: 340,
             max: 349,
-            fontSize: 16,
-            chipSize: 14,
+            fontSize: '0.95rem',
+            chipSize: 15,
             iconSize: 18,
             maxWidth: 120,
             ellipsisMaxWidth: '52.5vw'
@@ -276,58 +276,58 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 350,
             max: 359,
-            fontSize: 16,
-            chipSize: 14,
-            iconSize: 19,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
             maxWidth: 130,
-            ellipsisMaxWidth: '54vw',
-            cartImgWidthAndHeight: 65
+            ellipsisMaxWidth: '53vw'
+            // cartImgWidthAndHeight: 65
         },
         {
             min: 360,
             max: 369,
-            fontSize: 16,
-            chipSize: 14,
-            iconSize: 19,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 20,
             maxWidth: 140,
             ellipsisMaxWidth: '48vw',
-            cartImgWidthAndHeight: 70
+            cartImgWidthAndHeight: 65
         },
         {
             min: 370,
             max: 379,
-            fontSize: 16,
-            chipSize: 14,
-            iconSize: 19.5,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 20,
             maxWidth: 150,
-            ellipsisMaxWidth: '48vw',
-            cartImgWidthAndHeight: 70
+            ellipsisMaxWidth: '50vw',
+            cartImgWidthAndHeight: 65
         },
         {
             min: 380,
             max: 389,
-            fontSize: 16.5,
-            chipSize: 15,
+            fontSize: '1rem',
+            chipSize: 16,
             iconSize: 20,
             maxWidth: 160,
             ellipsisMaxWidth: '48vw',
-            cartImgWidthAndHeight: 70
+            cartImgWidthAndHeight: 65
         },
         {
             min: 390,
             max: 399,
-            fontSize: 16.5,
-            chipSize: 15,
+            fontSize: '1rem',
+            chipSize: 16,
             iconSize: 20,
             maxWidth: 170,
             ellipsisMaxWidth: '50vw',
-            cartImgWidthAndHeight: 70
+            cartImgWidthAndHeight: 65
         },
         {
             min: 400,
             max: 409,
-            fontSize: 16.5,
-            chipSize: 15,
+            fontSize: '1rem',
+            chipSize: 16,
             iconSize: 21,
             maxWidth: 180,
             ellipsisMaxWidth: '50vw',
@@ -336,8 +336,8 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 410,
             max: 419,
-            fontSize: 16.5,
-            chipSize: 15,
+            fontSize: '1rem',
+            chipSize: 16,
             iconSize: 21,
             maxWidth: 190,
             ellipsisMaxWidth: '52vw',
@@ -346,8 +346,8 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 420,
             max: 429,
-            fontSize: 16.5,
-            chipSize: 15,
+            fontSize: '1rem',
+            chipSize: 16,
             iconSize: 21,
             maxWidth: 200,
             ellipsisMaxWidth: '52vw',
@@ -356,8 +356,8 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 430,
             max: 439,
-            fontSize: 16.5,
-            chipSize: 15,
+            fontSize: '1rem',
+            chipSize: 16,
             iconSize: 21,
             maxWidth: 210,
             ellipsisMaxWidth: '54vw',
@@ -366,9 +366,9 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 440,
             max: 479,
-            fontSize: 17,
+            fontSize: '1rem',
             chipSize: 16,
-            iconSize: 21.5,
+            iconSize: 21,
             maxWidth: '100%',
             ellipsisMaxWidth: '56vw',
             cartImgWidthAndHeight: 70
@@ -378,10 +378,10 @@ export const responsiveConfigByPixel: PageConfigs = {
             max: 509,
             fontSize: 17,
             chipSize: 16,
-            iconSize: 22,
+            iconSize: 21,
             maxWidth: '100%',
             ellipsisMaxWidth: '54vw',
-            cartImgWidthAndHeight: 80
+            cartImgWidthAndHeight: 75
         },
         {
             min: 510,
@@ -436,8 +436,8 @@ export const responsiveConfigByPixel: PageConfigs = {
         {
             min: 680,
             max: Infinity,
-            fontSize: 17,
-            chipSize: 16,
+            fontSize: 18,
+            chipSize: 17,
             iconSize: 22,
             maxWidth: '100%',
             ellipsisMaxWidth: '70vw',

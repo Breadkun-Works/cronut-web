@@ -87,9 +87,9 @@ export interface ICommonModalTypes {
 type BreakpointConfig = {
     min: number;
     max: number;
-    fontSize?: number;
-    chipSize?: number;
-    iconSize?: number;
+    fontSize?: number | string;
+    chipSize?: number | string;
+    iconSize?: number | string;
     maxWidth?: number | string;
     marginTop?: number;
     ellipsisMaxWidth?: number | string;

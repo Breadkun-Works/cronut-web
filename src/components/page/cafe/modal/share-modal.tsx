@@ -1,10 +1,12 @@
 'use client';
 
-import { Backdrop, Box, Divider, Snackbar, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Backdrop, Box, Divider, Snackbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { COLORS_DARK } from '@/data';
 import { Link } from 'lucide-react';
 import Image from 'next/image';
+import { useResponsive } from '@/utils/hook';
+import { isMobileDevice } from '@/utils/util';
 
 export function ShareCartDialog({
     open,
@@ -17,14 +19,12 @@ export function ShareCartDialog({
     cartTitle: string;
     showToast(message: string, variant: 'success' | 'error'): void;
 }>) {
-    const theme = useTheme();
-    const isSm = useMediaQuery(theme.breakpoints.between('xs', 'sm')); // <360
-    const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 360 ~ 479
+    const { isSmall } = useResponsive();
 
-    const iconSize = isSm ? 24 : 28;
-    const fontSize = isSm ? 12 : 14;
-    const paddingY = isSm ? 1.5 : 2;
-    const gap = isSm ? 1.5 : 2;
+    const iconSize = isSmall ? 24 : 28;
+    const fontSize = isSmall ? 12 : 14;
+    const paddingY = isSmall ? 1.5 : 2;
+    const gap = isSmall ? 1.5 : 2;
 
     const [snackbar, setSnackbar] = useState({ open: false, message: '' });
 
@@ -80,12 +80,15 @@ export function ShareCartDialog({
     };
 
     useEffect(() => {
-        if (!isSm && !isMd && open) {
+        if (typeof window === 'undefined') return;
+        if (window.innerWidth >= 480 && open) {
             onClose();
         }
-    }, [isSm, isMd, open]);
+    }, [window.innerWidth, open]);
 
     if (!open) return null;
+
+    console.log(open);
 
     return (
         <>
@@ -140,36 +143,43 @@ export function ShareCartDialog({
                         <Typography sx={{ mt: 1, fontSize }}>링크 공유</Typography>
                     </Box>
 
-                    <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)', mx: 0.5 }} />
-
                     {/* 아마란스 쪽지 공유 */}
-                    <Box
-                        onClick={handleAmaranthShare}
-                        sx={{
-                            flex: 1,
-                            py: paddingY,
-                            borderRadius: 2,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#333'
-                            }
-                        }}
-                    >
-                        <Image
-                            src="/icon/post-thick.svg"
-                            alt="아마란스 쪽지 공유 아이콘"
-                            width={iconSize}
-                            height={iconSize}
-                            objectFit={'contain'}
-                        />
-                        <Typography sx={{ mt: 1, fontSize, textAlign: 'center' }}>
-                            아마란스
-                            <br /> 쪽지 공유
-                        </Typography>
-                    </Box>
+                    {isMobileDevice() && (
+                        <>
+                            <Divider
+                                orientation="vertical"
+                                flexItem
+                                sx={{ borderColor: 'rgba(255,255,255,0.1)', mx: 0.5 }}
+                            />
+                            <Box
+                                onClick={handleAmaranthShare}
+                                sx={{
+                                    flex: 1,
+                                    py: paddingY,
+                                    borderRadius: 2,
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    '&:hover': {
+                                        backgroundColor: '#333'
+                                    }
+                                }}
+                            >
+                                <Image
+                                    src="/icon/post-thick.svg"
+                                    alt="아마란스 쪽지 공유 아이콘"
+                                    width={iconSize}
+                                    height={iconSize}
+                                    objectFit={'contain'}
+                                />
+                                <Typography sx={{ mt: 1, fontSize, textAlign: 'center' }}>
+                                    아마란스
+                                    <br /> 쪽지 공유
+                                </Typography>
+                            </Box>
+                        </>
+                    )}
                 </Box>
 
                 {/* 닫기 버튼 */}

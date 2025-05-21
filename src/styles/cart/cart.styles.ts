@@ -238,20 +238,12 @@ export const ScrollableContent = styled(Box)`
     }
 `;
 
-export const CartBadge = styled(Badge)({
-    '& .MuiBadge-badge': {
-        backgroundColor: COLORS_DARK.badge.hot,
-        color: '#fff',
-        fontWeight: 'bold',
-        boxShadow: '0 0 0 2px #212529'
-    }
-});
-
 export const LinkShareCard = styled(Card)({
     overflow: 'hidden',
     backgroundColor: COLORS_DARK.theme.blue,
     border: `1px solid ${COLORS_DARK.background.lighter}`,
-    borderRadius: '20px'
+    borderRadius: '20px',
+    marginBottom: '16px'
 });
 
 export const LinkShareContent = styled(CardContent)({
@@ -309,15 +301,8 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
     justifyContent: 'center',
     gap: 8,
 
-    [theme.breakpoints.up('sm')]: {
-        fontSize: '1rem',
+    [theme.breakpoints.down('sm')]: {
         padding: '8px 0'
-    },
-    [theme.breakpoints.up('sm')]: {
-        fontSize: '1.1rem'
-    },
-    [theme.breakpoints.up('lg')]: {
-        fontSize: '1.2rem'
     },
 
     '@media (max-height: 700px)': {
@@ -362,9 +347,12 @@ export const CartItemCard = styled(Card)({
 });
 
 export const CartItemContent = styled(CardContent)(({ theme }) => ({
-    padding: '16px !important',
+    padding: '16px',
     [theme.breakpoints.down('sm')]: {
         padding: '12px !important'
+    },
+    [theme.breakpoints.up(680)]: {
+        padding: '20px'
     }
 }));
 
@@ -398,7 +386,6 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     height: 24,
     fontSize: '0.875rem',
     marginRight: 6,
-    marginTop: 4,
 
     [theme.breakpoints.up('sm')]: {
         width: 28,
@@ -409,8 +396,7 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     [theme.breakpoints.up('md')]: {
         width: 32,
         height: 32,
-        marginRight: 8,
-        marginTop: 6
+        marginRight: 8
     }
 }));
 
@@ -437,7 +423,6 @@ export const StyledScrollableCartList = styled(Box, {
 })<{ bottomHeight: number; isEmpty?: boolean; footerOpen: boolean; isScrollable: boolean }>(
     ({ theme, footerOpen, bottomHeight }) => ({
         flex: 1,
-        paddingTop: 16,
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -451,6 +436,10 @@ export const StyledScrollableCartList = styled(Box, {
             backgroundColor: 'transparent'
         },
 
+        [theme.breakpoints.down('md')]: {
+            paddingTop: '16px'
+        },
+
         [theme.breakpoints.up('sm')]: {
             '&::-webkit-scrollbar': {
                 width: '6px'
@@ -460,6 +449,9 @@ export const StyledScrollableCartList = styled(Box, {
             },
             scrollbarWidth: 'thin',
             scrollbarColor: 'auto #212529'
+        },
+        [theme.breakpoints.up('lg')]: {
+            paddingTop: 6
         }
     })
 );
@@ -501,18 +493,21 @@ export const CartWarningText = styled('div')<{ isOverflowed: boolean }>(({ theme
     whiteSpace: 'nowrap',
     fontWeight: 700,
     color: '#ff6b6b',
-    fontSize: '0.8rem',
+    // fontSize: '0.8rem',
     alignItems: 'center',
     justifyContent: isOverflowed ? 'unset' : 'center',
-    [theme.breakpoints.up('sm')]: {
-        fontSize: '0.95rem'
-    },
-    [theme.breakpoints.up('xs')]: {
-        fontSize: '0.9rem'
-    },
-    [theme.breakpoints.up('md')]: {
-        fontSize: '1rem'
-    },
+    // [theme.breakpoints.up('sm')]: {
+    //     fontSize: '0.95rem'
+    // },
+    // [theme.breakpoints.up('xs')]: {
+    //     fontSize: '0.9rem'
+    // },
+    // [theme.breakpoints.up('md')]: {
+    //     fontSize: '1rem'
+    // },
+    // [theme.breakpoints.up('lg')]: {
+    //     fontSize: '18px'
+    // },
     overflow: 'hidden',
     position: 'relative',
     '.marquee': {
@@ -566,27 +561,27 @@ export const OrderPriceTypography = styled(Typography)(({ theme }) => ({
 export const QuantityTypography = styled(Typography)(({ theme }) => ({
     color: COLORS_DARK.text.primary,
     fontWeight: 500,
-    fontSize: '0.875rem',
+    fontSize: '0.9rem',
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '0.9rem'
-    },
-    [theme.breakpoints.up('md')]: {
         fontSize: '0.95rem'
     },
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
         fontSize: '1rem'
     }
+    // [theme.breakpoints.up('lg')]: {
+    //     fontSize: '1rem'
+    // }
 }));
 
 export const PriceTypography = styled(Typography)(({ theme }) => ({
     color: COLORS_DARK.accent.main,
     fontWeight: 700,
-    fontSize: '1rem', // 기본값(xs 기준)
+    fontSize: '1.1rem', // 기본값(xs 기준)
 
-    [theme.breakpoints.up('sm')]: {
-        fontSize: '1.1rem'
-    },
+    // [theme.breakpoints.up('sm')]: {
+    //     fontSize: '1.2rem'
+    // },
     [theme.breakpoints.up('md')]: {
         fontSize: '1.2rem'
     }

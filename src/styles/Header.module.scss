@@ -11,8 +11,7 @@
   align-items: center;
   z-index: 80;
   opacity: 0.97;
-  margin: 1.5vw 1.5vw 3vw 1.5vw;
-  height: 9vh;
+  margin: 1.5vw ;
   max-height: 70px; // 갤럭시 폴드 대응
   @include u.desktop {
     border-bottom-left-radius: 35px;

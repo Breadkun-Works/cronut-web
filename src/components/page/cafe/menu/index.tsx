@@ -221,7 +221,6 @@ const CafeMenu = ({
         }
     }, [company]);
 
-    console.log(theme.breakpoints.down(400));
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
         const selectedCategory = cafeMenuData[newTabValue].value;
         setTabValue(newTabValue);

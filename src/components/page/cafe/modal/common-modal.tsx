@@ -3,13 +3,14 @@
 import { COLORS_DARK } from '@/data';
 import { Backdrop, Box, Button, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { ICommonModalTypes } from '@/types/common';
-import { useMaxWidthByViewport } from '@/utils/hook';
+import { useHasVerticalScroll, useMaxWidthByViewport } from '@/utils/hook';
 
 export const CommonModal = (props: ICommonModalTypes) => {
     const { open, onClose, content, title, onConfirm, confirmText, width } = props;
     const theme = useTheme();
     const isSm = useMediaQuery(theme.breakpoints.down('sm'));
     const { fontSize } = useMaxWidthByViewport();
+    const { ref, hasScroll } = useHasVerticalScroll();
 
     return (
         <Backdrop
@@ -69,16 +70,17 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         flexDirection: 'column',
                         overflow: 'hidden',
                         padding: props.fixedContent ? '16px 16px 0 16px' : 2,
-                        maxHeight: '60vh', // 전체 높이에서 조정 가능,
+                        maxHeight: '60vh',
                         textAlign: 'center',
                         alignItems: props.fixedContent ? '' : 'center'
                     }}
                 >
                     {/* 스크롤 영역 */}
                     <Box
+                        ref={ref}
                         sx={{
                             overflowY: 'auto',
-                            paddingRight: '8px', // 스크롤바 여백
+                            paddingRight: hasScroll ? '8px' : 0, // 스크롤바 여백
                             '&::-webkit-scrollbar': {
                                 width: '6px'
                             },

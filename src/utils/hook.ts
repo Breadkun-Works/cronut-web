@@ -261,3 +261,26 @@ export const useCartSync = (cartId: string, withClapAnimation = false) => {
 
     return { clapPositions, sessionExpired };
 };
+
+export const useHasVerticalScroll = () => {
+    const ref = useRef<HTMLDivElement>(null);
+    const [hasScroll, setHasScroll] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const check = () => {
+            setHasScroll(el.scrollHeight > el.clientHeight);
+        };
+
+        check();
+
+        const observer = new ResizeObserver(check);
+        observer.observe(el);
+
+        return () => observer.disconnect();
+    }, []);
+
+    return { ref, hasScroll };
+};

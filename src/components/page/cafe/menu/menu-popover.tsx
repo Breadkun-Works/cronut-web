@@ -492,7 +492,13 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
                 onClose={() => userNameWarning.closeModal()}
                 content={
                     <Box>
-                        <Typography>
+                        <Typography
+                            sx={{
+                                whiteSpace: 'pre-line',
+                                textAlign: 'center',
+                                wordBreak: 'keep-all'
+                            }}
+                        >
                             이름이 30자를 초과하여 30자까지만 저장됩니다. <br />
                         </Typography>
                     </Box>

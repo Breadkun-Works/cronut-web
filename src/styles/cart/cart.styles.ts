@@ -311,9 +311,6 @@ export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disab
         padding: '8px 0'
     },
 
-    '@media (max-height: 700px)': {
-        fontSize: '0.875rem'
-    },
     padding: '12px 0',
     width: '100%',
     borderRadius: 12,

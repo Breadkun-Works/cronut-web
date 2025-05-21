@@ -140,7 +140,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                             <ButtonsContainer disabledAll={isCartInactive}>
                                 <FooterButton
                                     sx={{ fontSize }}
-                                    variant={!decryptedData || !isCreator ? 'contained' : undefined}
+                                    variant={!decryptedData && !isCreator ? 'contained' : undefined}
                                     onClick={() => {
                                         if (user.userName && user.userProfile) {
                                             router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
@@ -152,7 +152,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                 >
                                     <ButtonIcon
                                         disabled={isCartInactive}
-                                        iconColor={!decryptedData ? COLORS_DARK.text.primary : COLORS_DARK.accent.main}
+                                        iconColor={!decryptedData ? COLORS_DARK.accent.main : COLORS_DARK.text.primary}
                                         iconSize={(iconSize as number) + 2}
                                     >
                                         <CupSoda />
@@ -208,23 +208,21 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                     onConfirm={handleExpireCart}
                     confirmText={'마감'}
                     content={
-                        <Box padding={1.5}>
+                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                             <Typography
                                 sx={{
-                                    whiteSpace: 'pre-wrap',
+                                    whiteSpace: 'pre-line',
+                                    textAlign: 'center',
+                                    wordBreak: 'keep-all',
                                     overflowWrap: 'break-word',
                                     maxWidth: '90%',
                                     fontSize: fontSize,
-                                    lineHeight: 1.4,
-                                    textAlign: 'center',
-                                    margin: 1
+                                    lineHeight: 1.4
                                 }}
                             >
-                                주문 마감 시, 이 장바구니에 접근한 모든 사용자가
-                                <br />더 이상 상품을 <strong style={{ textDecoration: 'underline' }}>
-                                    추가
-                                </strong>하거나 <strong style={{ textDecoration: 'underline' }}>수정</strong>할 수
-                                없습니다😭
+                                주문 마감 시, 이 장바구니에 접근한 모든 사용자가 더 이상 상품을{' '}
+                                <strong style={{ textDecoration: 'underline' }}>추가</strong>하거나{' '}
+                                <strong style={{ textDecoration: 'underline' }}>수정</strong>할 수 없습니다😭
                                 <br />
                                 <br />
                                 마감하시겠습니까?

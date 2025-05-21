@@ -252,13 +252,17 @@ export const LinkShareContent = styled(CardContent)({
 
 export const ButtonsContainer = styled(Box, {
     shouldForwardProp: prop => prop !== 'disabledAll'
-})<{ disabledAll?: boolean }>(({ disabledAll }) => ({
+})<{ disabledAll?: boolean }>(({ theme, disabledAll }) => ({
     display: 'flex',
-    // gridTemplateColumns: '1fr 1fr',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 16,
-    marginTop: disabledAll ? 0 : 16
+
+    marginTop: disabledAll ? 0 : 12,
+
+    [theme.breakpoints.up('md')]: {
+        marginTop: disabledAll ? 0 : 16
+    }
 }));
 
 export const ButtonIcon = styled(Box, {
@@ -289,17 +293,21 @@ export const OrderFooter = styled.div`
     min-height: 50px;
 `;
 
-export const OrderAmountCard = styled.div`
-    background-color: ${COLORS_DARK.theme.purple};
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255, 171, 0, 0.2);
+export const OrderAmountCard = styled('div')(({ theme }) => ({
+    backgroundColor: COLORS_DARK.theme.purple,
+    borderRadius: 12,
+    border: '1px solid rgba(255, 171, 0, 0.2)',
 
-    @media (max-height: 700px) {
-        padding: 12px;
+    [theme.breakpoints.up('lg')]: {
+        padding: '16px 24px',
+        marginBottom: 12
+    },
+
+    [theme.breakpoints.down('lg')]: {
+        padding: '12px 16px',
+        marginBottom: 8
     }
-`;
+}));
 
 export const FooterButton = styled(Button)<ButtonProps>(({ theme, variant, disabled }) => ({
     display: 'flex',
@@ -528,27 +536,23 @@ export const CartWarningText = styled('div')<{ isOverflowed: boolean }>(({ theme
 export const OrderLabelTypography = styled(Typography)(({ theme }) => ({
     fontWeight: 700,
     color: COLORS_DARK.text.primary,
-    fontSize: '0.875rem', // 기본값: xs
+    fontSize: '0.95rem', // 기본값: xs
 
     [theme.breakpoints.up('sm')]: {
         fontSize: '1rem'
     },
     [theme.breakpoints.up('md')]: {
         fontSize: '1.15rem'
-    },
-
-    '@media (max-height: 700px)': {
-        fontSize: '0.875rem'
     }
 }));
 
 export const OrderPriceTypography = styled(Typography)(({ theme }) => ({
     fontWeight: 700,
     color: COLORS_DARK.text.primary,
-    fontSize: '1rem', // 기본값: xs
+    fontSize: '1.1rem', // 기본값: xs
 
     [theme.breakpoints.up('sm')]: {
-        fontSize: '1.15rem'
+        fontSize: '1.2rem'
     },
     [theme.breakpoints.up('md')]: {
         fontSize: '1.3rem'

@@ -131,7 +131,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                             {!isCartInactive && (
                                 <OrderAmountCard>
                                     <Box display="flex" justifyContent="space-between" alignItems="center">
-                                        <OrderLabelTypography variant="subtitle1">내 주문 금액</OrderLabelTypography>
+                                        <OrderLabelTypography>내 주문 금액</OrderLabelTypography>
                                         <OrderPriceTypography>{totalPrice.toLocaleString()}원</OrderPriceTypography>
                                     </Box>
                                 </OrderAmountCard>

@@ -195,7 +195,6 @@ export const ScrollableCartList = ({
                                                     temperature={item.drinkTemperature}
                                                     label={item.drinkTemperature}
                                                     height={chipSize}
-                                                    // height={chipSize as number}
                                                 />
                                             )}
                                         </Box>
@@ -237,7 +236,6 @@ export const ScrollableCartList = ({
                                         justifyContent="space-between"
                                         alignItems="flex-end"
                                         width="100%"
-                                        // mt={{ xs: 1.5, md: 'auto' }}
                                         mt={{ xs: '10px', sm: '12px', md: '12px', lg: '14px', xl: '16px' }}
                                         flexDirection={{ xs: 'row', md: 'row' }}
                                     >

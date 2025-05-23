@@ -359,11 +359,20 @@ export const CartItemCard = styled(Card)({
 
 export const CartItemContent = styled(CardContent)(({ theme }) => ({
     padding: '16px',
+    '&:last-child': {
+        paddingBottom: '16px'
+    },
     [theme.breakpoints.down('sm')]: {
-        padding: '12px !important'
+        padding: '12px !important',
+        '&:last-child': {
+            paddingBottom: '12px !important'
+        }
     },
     [theme.breakpoints.up(680)]: {
-        padding: '20px'
+        padding: '20px',
+        '&:last-child': {
+            paddingBottom: '20px'
+        }
     }
 }));
 

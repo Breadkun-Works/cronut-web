@@ -204,9 +204,9 @@ const BRKButton = styled.button`
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
-    border: 1px solid ${COLORS_DARK.accent.dark};
+    border: 1px solid ${COLORS_DARK.accent.main};
     box-sizing: border-box;
-    background-color: ${COLORS_DARK.accent.dark};
+    background-color: ${COLORS_DARK.accent.main};
     color: #fff;
     padding: 0 10px;
     text-align: center;

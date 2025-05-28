@@ -182,7 +182,7 @@ const BKRInput = ({
     );
 };
 const StyledButton = styled.button`
-    background-color: ${COLORS_DARK.accent.dark};
+    background-color: ${COLORS_DARK.accent.main};
     border: none;
     cursor: pointer;
     border-radius: 50%;

@@ -69,7 +69,7 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         flex: '1 1 auto',
                         flexDirection: 'column',
                         overflow: 'hidden',
-                        padding: props.fixedContent ? '16px 16px 0 16px' : 2,
+                        padding: props.fixedContent ? '16px 16px 0 16px' : '30px',
                         maxHeight: '60vh',
                         textAlign: 'center',
                         alignItems: props.fixedContent ? '' : 'center'

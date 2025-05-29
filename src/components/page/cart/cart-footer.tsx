@@ -34,7 +34,6 @@ interface ICartFooterProps {
 export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
     ({ isCollapsed, setIsCollapsed, footerOpen, setFooterOpen, cartInfo, decryptedData }, ref) => {
         const { isCartInactive, cartId, user, totalPrice, isCreator } = cartInfo;
-        const queryClient = useQueryClient();
         const { fontSize, iconSize } = useResponsiveConfig('cart');
         const [, setSnackbarContent] = useAtom(snackBarAtom);
 
@@ -48,14 +47,10 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
             const res = await expireCart({ cafeCartId: cartId, user });
             if (res) {
                 setSnackbarContent({ open: true, message: '주문이 마감되었습니다.', severity: 'info' });
-                queryClient.setQueryData(['cart', cartId], (oldData: any) => ({
-                    ...oldData,
-                    status: 'INACTIVE'
-                }));
+                window.location.reload();
             } else {
                 setSnackbarContent({ open: true, message: '마감중 오류가 발생했습니다.', severity: 'error' });
             }
-            confirmModal.closeModal();
         };
 
         return (
@@ -152,7 +147,11 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                 >
                                     <ButtonIcon
                                         disabled={isCartInactive}
-                                        iconColor={!decryptedData ? COLORS_DARK.accent.main : COLORS_DARK.text.primary}
+                                        iconColor={
+                                            !decryptedData && !isCreator
+                                                ? COLORS_DARK.text.primary
+                                                : COLORS_DARK.accent.dark
+                                        }
                                         iconSize={(iconSize as number) + 2}
                                     >
                                         <CupSoda />

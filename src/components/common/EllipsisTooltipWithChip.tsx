@@ -45,7 +45,7 @@ export const EllipsisTooltipWithChip = ({
         textOverflow: 'ellipsis',
         fontSize,
         display: 'inline-block',
-        maxWidth: !isLg ? (!withIcon ? `calc(${maxWidth} + 8vw)` : maxWidth) : !withIcon ? 'auto' : '70%'
+        maxWidth: isLg ? 'auto' : withIcon ? maxWidth : `calc(${maxWidth} + 8vw)`
     };
 
     const maxWidthMap = {

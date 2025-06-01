@@ -612,7 +612,7 @@ const CafeMenu = ({
                                         </Box>
                                     }
                                     onClose={() => setMoveToConfirm(false)}
-                                    onConfirm={() => router.push(`/cafe/cart/${cartId}`)}
+                                    onConfirm={() => router.push(`/cafe/cart/${cartId}?${searchParams}`)}
                                 />
                             )}
 

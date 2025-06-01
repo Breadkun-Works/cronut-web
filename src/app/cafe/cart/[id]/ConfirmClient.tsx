@@ -31,12 +31,12 @@ interface ConfirmClientPageProps {
 export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData }: ConfirmClientPageProps) => {
     const { isMobile } = useResponsive();
     const [cartItems, setCartItems] = useAtom(cartItemsAtom);
+    const paymentModal = useModal('paymentModal');
 
     const isCartInactive = cartData?.status === 'INACTIVE';
 
     // 샘플 공유 링크
     const shareLink = window.location.href;
-    const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
     const [open, setOpen] = useState(true);
     const [isCollapsed, setIsCollapsed] = useState(false); // Slide가 완전히 닫히고 나서 버튼 나게 나게 하기 위해
     const [snackbar, setSnackbar] = useState<{
@@ -241,11 +241,10 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
 
             {decryptedData && (
                 <PaymentModal
-                    open={paymentModalOpen}
-                    setOpen={setPaymentModalOpen}
+                    open={paymentModal.modal.isOpen}
+                    handleClose={paymentModal.closeModal}
                     cafeAccount={decryptedData}
                     totalPrice={totalPrice}
-                    handlePayment={setPaymentModalOpen}
                 />
             )}
 

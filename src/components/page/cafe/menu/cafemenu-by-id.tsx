@@ -34,6 +34,10 @@ const CartMenuById = ({ cartBasic, cartId, entry }: CartMenuByIdProps) => {
 
     const handleClose = () => {
         expiredModal.closeModal();
+        router.push(`/cafe/cart/${cartId}`);
+    };
+
+    const handleConfirm = () => {
         router.push('/cafe/cart');
     };
 
@@ -46,12 +50,14 @@ const CartMenuById = ({ cartBasic, cartId, entry }: CartMenuByIdProps) => {
                     content={
                         <Box>
                             <Typography variant="body1" fontWeight={'bold'}>
-                                {cartBasic.title} 장바구니의
+                                {cartBasic.title}
                             </Typography>
-                            이용 가능 시간이 만료되었습니다.
+                            장바구니의 이용 가능 시간이 만료되었습니다.
                         </Box>
                     }
                     onClose={handleClose}
+                    onConfirm={handleConfirm}
+                    confirmText={'새 장바구니 만들기'}
                 />
             )}
 

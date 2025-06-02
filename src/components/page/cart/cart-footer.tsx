@@ -42,6 +42,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
 
         const paymentModal = useModal('paymentModal');
         const confirmModal = useModal('confirmModal');
+        const expiredModal = useModal('expiredModal');
 
         const handleExpireCart = async () => {
             const res = await expireCart({ cafeCartId: cartId, user });
@@ -137,10 +138,14 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                     sx={{ fontSize }}
                                     variant={!decryptedData && !isCreator ? 'contained' : undefined}
                                     onClick={() => {
-                                        if (user.userName && user.userProfile) {
-                                            router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
+                                        if (cartInfo.isCartInactive) {
+                                            expiredModal.openModal();
                                         } else {
-                                            router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
+                                            if (user.userName && user.userProfile) {
+                                                router.push(`/cafe/cart/menu/${cartId}?${searchParams}`);
+                                            } else {
+                                                router.push(`/cafe/cart/register/${cartId}?${searchParams}`);
+                                            }
                                         }
                                     }}
                                     disabled={isCartInactive}

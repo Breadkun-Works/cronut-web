@@ -178,7 +178,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                         >
                                             <LockIcon />
                                         </ButtonIcon>
-                                        주문 마감하기
+                                        마감하기
                                     </FooterButton>
                                 ) : (
                                     <>
@@ -208,7 +208,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                 <CommonModal
                     open={confirmModal.modal.isOpen}
                     onClose={() => confirmModal.closeModal()}
-                    title={'주문 마감'}
+                    title={'장바구니 마감'}
                     onConfirm={handleExpireCart}
                     confirmText={'마감'}
                     content={
@@ -224,12 +224,20 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                     lineHeight: 1.4
                                 }}
                             >
-                                주문 마감 시, 이 장바구니에 접근한 모든 사용자가 더 이상 상품을{' '}
-                                <strong style={{ textDecoration: 'underline' }}>추가</strong>하거나{' '}
-                                <strong style={{ textDecoration: 'underline' }}>수정</strong>할 수 없습니다😭
+                                공유받은 사용자는 장바구니 메뉴{' '}
+                                {/*마감 시, 이 장바구니에 접근한 모든 사용자는 더 이상{' '}*/}
+                                <strong style={{ textDecoration: 'underline' }}>추가/수정</strong> 및{' '}
+                                <strong style={{ textDecoration: 'underline' }}>송금</strong>이 제한됩니다😭
+                                {/*<strong style={{ textDecoration: 'underline' }}>메뉴 담기</strong>를 할 수 없습니다.😭*/}
                                 <br />
                                 <br />
-                                마감하시겠습니까?
+                                정말 마감하시겠습니까?
+                                {/*주문 마감 시, 이 장바구니에 접근한 모든 사용자가 더 이상 상품을{' '}*/}
+                                {/*<strong style={{ textDecoration: 'underline' }}>추가</strong>하거나{' '}*/}
+                                {/*<strong style={{ textDecoration: 'underline' }}>수정</strong>할 수 없습니다😭*/}
+                                {/*<br />*/}
+                                {/*<br />*/}
+                                {/*마감하시겠습니까?*/}
                             </Typography>
                         </Box>
                     }

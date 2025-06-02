@@ -119,7 +119,6 @@ export const CommonModal = (props: ICommonModalTypes) => {
                             px: isSm ? 2 : 4,
                             py: isSm ? 0.5 : 1,
                             borderRadius: 2,
-                            width: '100px',
                             whiteSpace: 'nowrap'
                         }}
                     >

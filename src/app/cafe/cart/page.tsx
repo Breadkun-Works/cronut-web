@@ -1,7 +1,7 @@
 'use client';
 
 import { CartButton, PageWrapper, CartContainer } from '@/styles/cart/cart.styles';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useConditionalTimeout } from '@/utils/util';
 import { useCreateCart } from '@/apis/cafe/cafe-api';
 import NotificationBox from '@/components/NotificationBox';
@@ -54,6 +54,7 @@ const CartPage = () => {
     const [paymentType, setPaymentType] = useState<PaymentType>('treat');
     const [bankName, setBankName] = useState('');
     const [accountNumber, setAccountNumber] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [company] = useAtom(companyAtom);
     const [snackBar, setSnackBar] = useAtom(snackBarAtom);
@@ -69,7 +70,16 @@ const CartPage = () => {
         }
     });
 
-    const showLoading = useConditionalTimeout(isPending && !isSuccess, 1000);
+    useEffect(() => {
+        if (isPending) {
+            setIsLoading(true);
+        } else if (isSuccess) {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [isPending, isSuccess]);
 
     const handleCreateCart = () => {
         if (!validateForm()) {
@@ -215,7 +225,7 @@ const CartPage = () => {
                     </CartButton>
                 </CartContainer>
             </div>
-            {showLoading && <NotificationBox firstText={'장바구니 생성 중...'} secText={'잠시만 기다려 주세요.'} />}
+            {isLoading && <NotificationBox firstText={'장바구니 생성 중...'} secText={'잠시만 기다려 주세요.'} />}
         </PageWrapper>
     );
 };

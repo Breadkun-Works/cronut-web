@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect, useLayoutEffect, ChangeEvent, useCallback } from 'react';
 import Image from 'next/image';
 import { RefreshCw, Copy } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
 import { COLORS_DARK } from '@/data';
@@ -214,8 +214,9 @@ const BRKButton = styled.button`
 `;
 
 const OrderPage = ({ params }: { params: { id: string } }) => {
+    const searchParams = useSearchParams();
     const baseUrl = window.location.origin;
-    const currentUrl = baseUrl + usePathname();
+    const currentUrl = baseUrl + usePathname() + `?${searchParams}`;
     const images = [
         `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m1.webp`,
         `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m2.webp`,
@@ -248,7 +249,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
         if (nameToUse !== PLACEHOLDER) {
             setCookie('BRK-UserName', nameToUse);
             setCookie('BRK-UserProfile', randomImage);
-            router.push(`/cafe/cart/menu/${params.id}`);
+            router.push(`/cafe/cart/menu/${params.id}?${searchParams}`);
         }
     }, [params.id, router, userName, userNamePlaceholder, randomImage]);
 

@@ -20,19 +20,32 @@ import { ScrollableCartList } from '@/components/page/cart/scrollable-cart-list'
 import { CartWaring } from '@/components/page/cart/cart-warning';
 import { CartHeader } from '@/components/page/cart/cart-header';
 import { CartFooter } from '@/components/page/cart/cart-footer';
+import { getCookie } from '@/utils/cookie';
+
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
     cartId: string;
-    isCreator: boolean;
-    user: IUserInfo;
     cartData?: ICartInfo;
 }
 
-export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData }: ConfirmClientPageProps) => {
+export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClientPageProps) => {
     const { isMobile } = useResponsive();
     const [cartItems, setCartItems] = useAtom(cartItemsAtom);
     const paymentModal = useModal('paymentModal');
+    const [userInfo, setUserInfo] = useState<IUserInfo>({
+        uuid: '',
+        userName: '',
+        userProfile: ''
+    });
 
+    useEffect(() => {
+        const uuid = getCookie('BRK-UUID')?.key || '';
+        const userName = getCookie('BRK-UserName')?.key || '';
+        const userProfile = getCookie('BRK-UserProfile')?.key || '';
+        setUserInfo({ uuid, userName, userProfile });
+    }, []);
+
+    const isCreator = userInfo.uuid === cartData?.createdById;
     const isCartInactive = cartData?.status === 'INACTIVE';
 
     // 샘플 공유 링크
@@ -81,7 +94,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
     });
 
     const totalPrice = cartItems
-        .filter(item => item.createdById === user.uuid)
+        .filter(item => item.createdById === userInfo.uuid)
         .reduce((sum, item) => sum + item.drinkTotalPrice, 0);
 
     const handleCloseSnackbar = () => {
@@ -212,7 +225,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
                 footerOpen={open}
                 bottomHeight={bottomHeight}
                 minHeight={minHeightValue}
-                user={user}
+                user={userInfo}
                 cartInfo={cartData}
             />
 
@@ -222,7 +235,7 @@ export const ConfirmClient = ({ decryptedData, cartId, isCreator, user, cartData
                 setIsCollapsed={setIsCollapsed}
                 footerOpen={open}
                 setFooterOpen={setOpen}
-                cartInfo={{ isCartInactive, cartId, user, totalPrice, isCreator }}
+                cartInfo={{ isCartInactive, cartId, user: userInfo, totalPrice, isCreator }}
                 decryptedData={decryptedData}
             />
 

@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ConfirmClient } from '@/app/cafe/cart/[id]/ConfirmClient';
-import { cookies } from 'next/headers';
+
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     const cartData = await fetchCart(params.id);
 
@@ -61,33 +61,12 @@ export default async function ConfirmPage({
     const cartData = await fetchCart(params.id);
     const status = cartData.data.cafeCart.status;
 
-    const cookieStore = cookies();
-    const uuid = cookieStore.get('BRK-UUID')?.value || '';
-    const userName = cookieStore.get('BRK-UserName')?.value || '';
-    const userProfile = cookieStore.get('BRK-UserProfile')?.value || '';
-    const isCreator = uuid === cartData.data.cafeCart.createdById;
-
     if (encryptedData && status === 'ACTIVE') {
         const key = cartData.data.cafeCart.secureShareKey;
         const keyBuffer = Buffer.from(key, 'base64');
         const decryptedData = decryptAES256(encryptedData, keyBuffer);
-        return (
-            <ConfirmClient
-                decryptedData={decryptedData}
-                cartId={params.id}
-                cartData={cartData.data.cafeCart}
-                isCreator={isCreator}
-                user={{ uuid, userName, userProfile }}
-            />
-        );
+        return <ConfirmClient decryptedData={decryptedData} cartId={params.id} cartData={cartData.data.cafeCart} />;
     } else {
-        return (
-            <ConfirmClient
-                cartId={params.id}
-                cartData={cartData.data.cafeCart}
-                isCreator={isCreator}
-                user={{ uuid, userName, userProfile }}
-            />
-        );
+        return <ConfirmClient cartId={params.id} cartData={cartData.data.cafeCart} />;
     }
 }

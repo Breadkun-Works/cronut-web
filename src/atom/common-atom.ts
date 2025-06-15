@@ -30,12 +30,10 @@ export const useModal = (modalId: string) => {
 
     const openModal = () => {
         setModal({ id: modalId, isOpen: true });
-        document.body.style.overflow = 'hidden'; //모달을 연 상태에서는 스크롤 안 되게
     };
 
     const closeModal = () => {
         setModal({ id: modalId, isOpen: false });
-        document.body.style.overflow = 'unset';
     };
 
     // ✅ 새로고침 또는 페이지 이동 시 모달 닫기

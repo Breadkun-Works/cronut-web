@@ -39,9 +39,9 @@ export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClient
     });
 
     useEffect(() => {
-        const uuid = getCookie('BRK-UUID')?.key || '';
-        const userName = getCookie('BRK-UserName')?.key || '';
-        const userProfile = getCookie('BRK-UserProfile')?.key || '';
+        const uuid = getCookie('BRK-UUID');
+        const userName = getCookie('BRK-UserName');
+        const userProfile = getCookie('BRK-UserProfile');
         setUserInfo({ uuid, userName, userProfile });
     }, []);
 

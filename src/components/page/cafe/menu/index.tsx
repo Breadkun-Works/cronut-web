@@ -40,7 +40,7 @@ import { useAtom } from 'jotai/index';
 import { companyAtom } from '@/atom/common-atom';
 import { cartItemsAtom, cartItemsCountAtom } from '@/atom/cart-atom';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
-import { getCookie } from '@/utils/cookie';
+import { getCookie, setCookie } from '@/utils/cookie';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -153,6 +153,13 @@ const CafeMenu = ({
             setTabValue(0);
         }
     };
+
+    useEffect(() => {
+        const cookieUserInfo = getCookie('BRK-UUID');
+        if (!cookieUserInfo) {
+            setCookie('BRK-UUID', crypto.randomUUID());
+        }
+    }, []);
 
     useEffect(() => {
         if (cartId) {

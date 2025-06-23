@@ -135,7 +135,7 @@ export const MuiTheme = createTheme({
 
     typography: {
         fontFamily:
-            "'DungGeunMo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+            "var(--font-nanum),'SCoreDream7', MangoByeolbyeol, GumiRomanceTTF, KCC-Ganpan, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
         body1: {
             color: 'white'
         },

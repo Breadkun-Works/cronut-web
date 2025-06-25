@@ -11,7 +11,7 @@ import { companyAtom } from '@/atom/common-atom';
 
 export const CompanySelect = ({ entry }: { entry?: string }) => {
     const [company, setCompany] = useAtom(companyAtom);
-    const { isSmall } = useResponsive();
+    const { isSmall, isMobile } = useResponsive();
     const handleChange = (event: SelectChangeEvent<string>) => {
         const selectedCompany = event.target.value as Company;
         setCompany(selectedCompany);
@@ -44,7 +44,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
                             display="flex"
                             alignItems="center"
                             gap={1.5}
-                            sx={{ fontSize: isSmall ? '1.2rem' : '1.3rem' }}
+                            sx={{ fontSize: isMobile ? '1.2rem' : '1.3rem' }}
                         >
                             <Box
                                 sx={{
@@ -93,7 +93,7 @@ export const CompanySelect = ({ entry }: { entry?: string }) => {
                                     companyDropdown.value === company
                                         ? `${COLORS_DARK.accent.dark} !important`
                                         : 'transparent',
-                                fontSize: '1.2rem' // 메뉴에도 반영
+                                fontSize: isSmall ? '1.1rem' : '1.2rem' // 메뉴에도 반영
                             }}
                         >
                             {companyDropdown.label}

@@ -90,6 +90,8 @@ export const StyledMenuTitleWithName = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    marginTop: '1.5rem',
+    marginBottom: '1rem',
 
     [theme.breakpoints.up('lg')]: {
         fontSize: '1.2rem'
@@ -99,7 +101,8 @@ export const StyledMenuTitleWithName = styled(Box)(({ theme }) => ({
         flexDirection: 'row',
         whiteSpace: 'nowrap',
         textAlign: 'center',
-        fontSize: '1.3rem'
+        fontSize: '1.3rem',
+        marginTop: '2rem'
     }
 }));
 
@@ -138,13 +141,13 @@ export const PageContainer = styled(Container)(({ theme }) => ({
     width: '100%',
 
     backgroundColor: theme.palette.background.default,
-    padding: 16,
+    padding: '0 16px 16px 16px'
 
-    [theme.breakpoints.up('lg')]: {
-        padding: '24px 16px 16px 16px',
-        width: '90%',
-        margin: '0 auto'
-    }
+    // [theme.breakpoints.up('lg')]: {
+    //     padding: '24px 16px 16px 16px',
+    //     width: '90%',
+    //     margin: '0 auto'
+    // }
 }));
 
 interface ConfirmHeaderProps {
@@ -209,8 +212,8 @@ export const HeaderContent = styled(Box)(({ theme }) => ({
     flexDirection: 'column', // 기본적으로 두 줄 (모바일)
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: '1.5rem',
-    marginBottom: '1.2rem',
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
     textAlign: 'center',
     overflow: 'hidden',
     fontWeight: 'bold',

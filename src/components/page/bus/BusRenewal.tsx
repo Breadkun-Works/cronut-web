@@ -21,8 +21,8 @@ export const BusRenewal = () => {
             >
                 <img
                     src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/logo/pullman.webp`}
-                    width={'40%'}
-                    height={'40%'}
+                    width={'25%'}
+                    height={'25%'}
                 ></img>
                 {/*<img src={'/logo/breadkunSpinLogo.webp'} width={80} height={80}></img>*/}
                 <Typography variant="h3" component="h1" fontWeight="bold">

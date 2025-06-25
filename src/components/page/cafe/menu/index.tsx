@@ -56,7 +56,7 @@ const returnIcon = (cafeMenu: DrinkCategory) => {
 };
 
 const CafeMenuTabPanel = ({ children, value, index }: any) => {
-    const { isSmall } = useResponsive();
+    const { isSmall, isMobile } = useResponsive();
 
     return (
         <div
@@ -312,8 +312,6 @@ const CafeMenu = ({
         return null;
     };
 
-    console.log(entry);
-
     const MenuItem = ({
         record,
         onClick,
@@ -383,15 +381,37 @@ const CafeMenu = ({
     };
 
     return (
-        <PageContainer ref={containerRef} maxWidth={false} disableGutters>
-            <Box>
-                <Box display={'flex'} justifyContent={'space-between'} mb={2}>
+        <>
+            <PageContainer ref={containerRef} maxWidth={false} disableGutters>
+                <Box
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    margin={!isMobile ? '20px 14px 0 14px' : '10px 4px'}
+                >
                     {entry === 'personalCart' ? (
-                        <Box display={'flex'} alignItems="center" gap={1}>
-                            <MapPin size={isMobile ? 18 : isTabletOnly ? 22 : 24} />
-                            <Typography fontSize={fontSize}>
-                                {cartBasic?.cafeLocation === 'EULJI' ? '을지 카페' : '강촌 카페'}
-                            </Typography>
+                        <Box
+                            display={'flex'}
+                            alignItems="center"
+                            gap={1.5}
+                            mt={0.5}
+                            sx={{ fontSize: isMobile ? '1.2rem' : '1.3rem' }}
+                        >
+                            <Box
+                                sx={{
+                                    backgroundColor: '#3D3C52', // 원형 배경 색상
+                                    borderRadius: '30%',
+                                    width: 32,
+                                    height: 32,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
+                                }}
+                            >
+                                <MapPin size={isSmall ? '1.2rem' : '1.3rem'} />
+                            </Box>
+
+                            {cartBasic?.cafeLocation === 'EULJI' ? '을지 카페' : '강촌 카페'}
                         </Box>
                     ) : (
                         <CompanySelect entry={'cafe'} />
@@ -445,8 +465,8 @@ const CafeMenu = ({
                                                             ? cartItemsCount > 99
                                                                 ? 22
                                                                 : 20
-                                                            : 14,
-                                                    height: 14,
+                                                            : 16,
+                                                    height: 16,
                                                     borderRadius: '50%',
                                                     backgroundColor: COLORS_DARK.accent.main,
                                                     color: '#fff',
@@ -491,170 +511,175 @@ const CafeMenu = ({
                         </IconButton>
                     </Box>
                 </Box>
-
-                {entry === 'personalCart' ? (
-                    <StyledMenuTitleWithName>
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{
-                                maxWidth: !isDesktop ? '90%' : '60%'
-                            }}
-                            ref={menuHeaderRef}
-                        >
-                            <EllipsisTooltip title={name}>{name}</EllipsisTooltip>
-                            <Typography
-                                component="span"
+                <Box>
+                    {entry === 'personalCart' ? (
+                        <StyledMenuTitleWithName>
+                            <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
                                 sx={{
-                                    marginLeft: '4px',
+                                    maxWidth: !isDesktop ? '90%' : '60%'
+                                }}
+                                ref={menuHeaderRef}
+                            >
+                                <EllipsisTooltip title={name}>{name}</EllipsisTooltip>
+                                <Typography
+                                    component="span"
+                                    sx={{
+                                        marginLeft: '4px',
+                                        fontSize: !isDesktop
+                                            ? '1.1rem'
+                                            : theme.breakpoints.between('lg', 762)
+                                              ? '1.2rem'
+                                              : '1.3rem'
+                                    }}
+                                >
+                                    님,
+                                </Typography>
+                            </Box>
+
+                            <Typography
+                                sx={{
+                                    marginTop: isMobile ? '4px' : 0,
                                     fontSize: !isDesktop
                                         ? '1.1rem'
                                         : theme.breakpoints.between('lg', 762)
                                           ? '1.2rem'
-                                          : '1.3rem'
+                                          : '1.3rem',
+                                    whiteSpace: 'nowrap',
+                                    textAlign: 'center'
                                 }}
                             >
-                                님,
+                                {' '}
+                                카페 메뉴를 선택해주세요~☺️
                             </Typography>
-                        </Box>
-
-                        <Typography
-                            sx={{
-                                marginTop: isMobile ? '4px' : 0,
-                                fontSize: !isDesktop
-                                    ? '1.1rem'
-                                    : theme.breakpoints.between('lg', 762)
-                                      ? '1.2rem'
-                                      : '1.3rem',
-                                whiteSpace: 'nowrap',
-                                textAlign: 'center'
-                            }}
-                        >
-                            {' '}
-                            카페 메뉴를 선택해주세요~☺️
-                        </Typography>
-                    </StyledMenuTitleWithName>
-                ) : (
-                    <HeaderContent>
-                        <StyledMenuTitle>{title}</StyledMenuTitle>
-                    </HeaderContent>
-                )}
-            </Box>
-            <TabSearchWrapper>
-                {showSearch ? (
-                    <SearchBar
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        show={showSearch}
-                        onSubmit={handleSearchSubmit}
-                    />
-                ) : (
-                    <CategoryTabs value={tabValue} onChange={handleTabChange} centered variant={'fullWidth'}>
-                        {cafeMenuData.map(cafeMenu => (
-                            <CategoryTab key={cafeMenu.index} icon={returnIcon(cafeMenu.value)} label={cafeMenu.name} />
-                        ))}
-                    </CategoryTabs>
-                )}
-            </TabSearchWrapper>
-
-            <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
-                {cafeMenuData.map(cafeMenu => (
-                    <CafeMenuTabPanel
-                        key={cafeMenu.index}
-                        value={tabValue}
-                        index={cafeMenu.index}
-                        isMobile={!isDesktop}
-                    >
-                        <Box ref={loadMoreRef} component="div">
-                            <MenuGrid>
-                                {data?.pages?.map(page =>
-                                    page.records.map(record => (
-                                        <React.Fragment key={`menu_${record.name}`}>
-                                            <MenuItemCard isMenu={entry === 'menu'}>
-                                                <MenuItem
-                                                    record={record}
-                                                    onClick={() => handleCardClick(record.name)}
-                                                    entry={entry}
-                                                />
-                                            </MenuItemCard>
-                                            {entry !== 'menu' && openDialog && selectedMenu === record.name && (
-                                                <MenuPopover
-                                                    width={dialogWidth}
-                                                    open={openDialog}
-                                                    onClose={handleCloseDialog}
-                                                    popoverProps={{
-                                                        menuName: record.name,
-                                                        options: record.options
-                                                    }}
-                                                    cartId={cartId}
-                                                    onSuccess={() => {
-                                                        setMoveToConfirm(true);
-                                                    }}
-                                                />
-                                            )}
-                                        </React.Fragment>
-                                    ))
-                                )}
-                            </MenuGrid>
-
-                            {moveToConfirm && (
-                                <CommonModal
-                                    width={isMobile ? '90%' : '70%'}
-                                    open={moveToConfirm}
-                                    content={
-                                        <Box>
-                                            <Typography
-                                                sx={{
-                                                    whiteSpace: 'pre-line',
-                                                    textAlign: 'center',
-                                                    fontSize: '1rem',
-                                                    lineHeight: 1.5,
-                                                    maxWidth: '280px',
-                                                    wordBreak: 'keep-all'
-                                                }}
-                                            >
-                                                {'상품을 장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?'}
-                                            </Typography>
-                                        </Box>
-                                    }
-                                    onClose={() => setMoveToConfirm(false)}
-                                    onConfirm={() => router.push(`/cafe/cart/${cartId}?${searchParams}`)}
+                        </StyledMenuTitleWithName>
+                    ) : (
+                        <HeaderContent>
+                            <StyledMenuTitle>{title}</StyledMenuTitle>
+                        </HeaderContent>
+                    )}
+                </Box>
+                <TabSearchWrapper>
+                    {showSearch ? (
+                        <SearchBar
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            show={showSearch}
+                            onSubmit={handleSearchSubmit}
+                        />
+                    ) : (
+                        <CategoryTabs value={tabValue} onChange={handleTabChange} centered variant={'fullWidth'}>
+                            {cafeMenuData.map(cafeMenu => (
+                                <CategoryTab
+                                    key={cafeMenu.index}
+                                    icon={returnIcon(cafeMenu.value)}
+                                    label={cafeMenu.name}
                                 />
-                            )}
+                            ))}
+                        </CategoryTabs>
+                    )}
+                </TabSearchWrapper>
 
-                            {!hasNextPage &&
-                                isFetched &&
-                                ((data?.pages?.[0]?.records?.length ?? 0) === 0 ? (
-                                    query.name !== '' ? (
-                                        <Box display="flex" justifyContent="center" mt={30}>
-                                            <Typography variant="body2" fontSize="large" textAlign="center">
-                                                이런! 🫢
-                                                <br />
-                                                <strong style={{ color: '#ff6b6b' }}>{query.name}</strong> 메뉴는 아직
-                                                없어요.
-                                                <br />
-                                                다른 키워드로 다시 한번 검색해볼까요? 🔍
-                                            </Typography>
-                                        </Box>
+                <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
+                    {cafeMenuData.map(cafeMenu => (
+                        <CafeMenuTabPanel
+                            key={cafeMenu.index}
+                            value={tabValue}
+                            index={cafeMenu.index}
+                            isMobile={!isDesktop}
+                        >
+                            <Box ref={loadMoreRef} component="div">
+                                <MenuGrid>
+                                    {data?.pages?.map(page =>
+                                        page.records.map(record => (
+                                            <React.Fragment key={`menu_${record.name}`}>
+                                                <MenuItemCard isMenu={entry === 'menu'}>
+                                                    <MenuItem
+                                                        record={record}
+                                                        onClick={() => handleCardClick(record.name)}
+                                                        entry={entry}
+                                                    />
+                                                </MenuItemCard>
+                                                {entry !== 'menu' && openDialog && selectedMenu === record.name && (
+                                                    <MenuPopover
+                                                        width={dialogWidth}
+                                                        open={openDialog}
+                                                        onClose={handleCloseDialog}
+                                                        popoverProps={{
+                                                            menuName: record.name,
+                                                            options: record.options
+                                                        }}
+                                                        cartId={cartId}
+                                                        onSuccess={() => {
+                                                            setMoveToConfirm(true);
+                                                        }}
+                                                    />
+                                                )}
+                                            </React.Fragment>
+                                        ))
+                                    )}
+                                </MenuGrid>
+
+                                {moveToConfirm && (
+                                    <CommonModal
+                                        width={isMobile ? '90%' : '70%'}
+                                        open={moveToConfirm}
+                                        content={
+                                            <Box>
+                                                <Typography
+                                                    sx={{
+                                                        whiteSpace: 'pre-line',
+                                                        textAlign: 'center',
+                                                        fontSize: '1rem',
+                                                        lineHeight: 1.5,
+                                                        maxWidth: '280px',
+                                                        wordBreak: 'keep-all'
+                                                    }}
+                                                >
+                                                    {'상품을 장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?'}
+                                                </Typography>
+                                            </Box>
+                                        }
+                                        onClose={() => setMoveToConfirm(false)}
+                                        onConfirm={() => router.push(`/cafe/cart/${cartId}?${searchParams}`)}
+                                    />
+                                )}
+
+                                {!hasNextPage &&
+                                    isFetched &&
+                                    ((data?.pages?.[0]?.records?.length ?? 0) === 0 ? (
+                                        query.name !== '' ? (
+                                            <Box display="flex" justifyContent="center" mt={30}>
+                                                <Typography variant="body2" fontSize="large" textAlign="center">
+                                                    이런! 🫢
+                                                    <br />
+                                                    <strong style={{ color: '#ff6b6b' }}>{query.name}</strong> 메뉴는
+                                                    아직 없어요.
+                                                    <br />
+                                                    다른 키워드로 다시 한번 검색해볼까요? 🔍
+                                                </Typography>
+                                            </Box>
+                                        ) : (
+                                            <Box display="flex" justifyContent="center" mt={30}>
+                                                <Typography variant="body2" fontSize="large" textAlign="center">
+                                                    아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올
+                                                    예정이에요 ☕️🍰
+                                                </Typography>
+                                            </Box>
+                                        )
                                     ) : (
-                                        <Box display="flex" justifyContent="center" mt={30}>
-                                            <Typography variant="body2" fontSize="large" textAlign="center">
-                                                아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올 예정이에요
-                                                ☕️🍰
-                                            </Typography>
+                                        <Box display="flex" justifyContent="center" mt={3}>
+                                            <Typography variant="body2">끝~</Typography>
                                         </Box>
-                                    )
-                                ) : (
-                                    <Box display="flex" justifyContent="center" mt={3}>
-                                        <Typography variant="body2">끝~</Typography>
-                                    </Box>
-                                ))}
-                        </Box>
-                    </CafeMenuTabPanel>
-                ))}
-            </ScrollableContent>
-        </PageContainer>
+                                    ))}
+                            </Box>
+                        </CafeMenuTabPanel>
+                    ))}
+                </ScrollableContent>
+            </PageContainer>
+        </>
     );
 };
 

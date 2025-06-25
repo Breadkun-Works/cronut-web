@@ -76,9 +76,9 @@ export const responsiveConfig = {
         },
         menu: {
             xs: 22,
-            sm: 24,
-            md: 24,
-            lg: 24,
+            sm: 26,
+            md: 26,
+            lg: 26,
             xl: 28,
             xxl: 28,
             xxxl: 30

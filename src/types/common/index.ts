@@ -81,7 +81,11 @@ export interface ICommonModalTypes {
     onConfirm?(): void;
     confirmText?: string;
     width?: string | number;
+    maxWidth?: string | number;
+    height?: string | number;
+    maxHeight?: string | number;
     fixedContent?: string | ReactNode;
+    hasCloseButton?: boolean;
 }
 
 type BreakpointConfig = {

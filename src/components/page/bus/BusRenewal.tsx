@@ -1,8 +1,12 @@
 'use client';
 
 import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { useModal } from '@/atom/common-atom';
+import { ContactModal } from '@/components/page/contact/ContactModal';
 
 export const BusRenewal = () => {
+    const { modal, openModal, closeModal } = useModal('contact');
+
     return (
         <Box
             display={'flex'}
@@ -52,10 +56,7 @@ export const BusRenewal = () => {
                                 backgroundColor: 'rgba(217, 119, 6, 0.1)'
                             }
                         }}
-                        onClick={() => {
-                            // 웹훅 연결된 문의하기 기능 (추후 구현)
-                            alert('문의하기 기능을 준비 중입니다. 곧 연결될 예정입니다!');
-                        }}
+                        onClick={openModal}
                     >
                         문의하기
                     </Button>
@@ -65,6 +66,8 @@ export const BusRenewal = () => {
                     </Typography>
                 </Stack>
             </Box>
+
+            <ContactModal isOpen={modal.isOpen} onClose={closeModal} contactType="other" />
         </Box>
     );
 };

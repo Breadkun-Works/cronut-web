@@ -15,15 +15,18 @@ const ModalBase: React.FC<ModalBaseProps> = ({ open, onClose, children, maxWidth
         <Modal open={open} onClose={onClose}>
             <Box
                 sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
                     width: '90%',
                     maxWidth: 600,
                     bgcolor: '#212529',
                     color: 'white',
-                    mx: 'auto',
-                    mt: '10vh',
                     p: 4,
                     pt: 2,
-                    borderRadius: 2
+                    borderRadius: 2,
+                    outline: 'none'
                 }}
             >
                 <Box display="flex" alignItems="center" gap={1} mb={1} justifyContent="space-between">

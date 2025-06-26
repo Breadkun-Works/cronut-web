@@ -35,7 +35,7 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
             <nav className={ms('menu-box__menus')}>
                 <Link
                     className={router === '/' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    href={'/public'}
+                    href={'/'}
                     onClick={() => setMenuBox(false)}
                 >
                     HOME

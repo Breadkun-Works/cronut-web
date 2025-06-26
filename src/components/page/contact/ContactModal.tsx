@@ -98,17 +98,17 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                         fields: [
                             {
                                 name: '📞 연락처',
-                                value: formData.contact,
+                                value: formData.contact || '-',
                                 inline: true
                             },
                             {
                                 name: '✉️ 이메일',
-                                value: formData.email,
+                                value: formData.email || '-',
                                 inline: true
                             },
                             {
                                 name: '📝 내용',
-                                value: formData.content,
+                                value: formData.content || '-',
                                 inline: false
                             }
                         ],
@@ -175,14 +175,14 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
 
     return (
         <ModalBase open={isOpen} onClose={onClose} title={'빵돌이 문의'}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
                 {getTitle()}
             </Typography>
             <Typography variant="body2" color="#cbd5e1" mb={3}>
                 {getDescription()}
             </Typography>
 
-            <FormControl fullWidth sx={{ mb: 3 }}>
+            <FormControl fullWidth sx={{ mb: 1 }}>
                 <InputLabel id="contact-type-label" sx={{ color: 'white' }}>
                     문의 유형
                 </InputLabel>
@@ -213,7 +213,7 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                             label="연락처"
                             placeholder="010-0000-0000"
                             value={formData.contact}
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 1 }}
                             onChange={e => {
                                 const numericValue = e.target.value.replace(/[^0-9-]/g, '');
                                 setFormData(prev => ({ ...prev, contact: numericValue }));
@@ -239,7 +239,7 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                             value={formData.email}
                             onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                             required={selectedContactType === 'join-request'}
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 1 }}
                             slotProps={{
                                 input: {
                                     inputProps: { inputMode: 'email' },
@@ -266,7 +266,7 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                         onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
                         required
                         multiline
-                        rows={4}
+                        rows={3}
                         sx={{ mb: 3 }}
                         slotProps={{
                             input: {

@@ -6,16 +6,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import MenuBox from './MenuBox';
 import { useAtom } from 'jotai';
-import { menuBoxAtom, windowResizeAtom } from '@/atom/common-atom';
-import { MobileMenuButton, StyledEllipsis } from '@/styles/header.styles';
-
+import { menuBoxAtom, windowResizeAtom, useModal } from '@/atom/common-atom';
+import { MobileMenuButton, StyledEllipsis, StyledHeadset } from '@/styles/header.styles';
+import { InquiryModal } from '@/components/InquiryModal';
 const hs = classNames.bind(styles);
 
 function Header() {
     const [menuBox, setMenuBox] = useAtom(menuBoxAtom);
     const [, setResize] = useAtom(windowResizeAtom);
     const router = usePathname();
-
+    const { openModal, closeModal, modal } = useModal('inquiryModal');
     // 윈도우 리사이즈 감지 (Jotai로 처리)
     useEffect(() => {
         const handleResize = () => setResize(); // Atom에서 처리
@@ -34,6 +34,9 @@ function Header() {
                     />
                 </Link>
                 <nav className={hs('header__nav')}>
+                    <MobileMenuButton onClick={openModal}>
+                        <StyledHeadset />
+                    </MobileMenuButton>
                     <MobileMenuButton onClick={() => setMenuBox(true)}>
                         <StyledEllipsis />
                     </MobileMenuButton>
@@ -88,6 +91,7 @@ function Header() {
                 </nav>
             </header>
             {menuBox && <MenuBox setMenuBox={setMenuBox} />}
+            <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
         </>
     );
 }

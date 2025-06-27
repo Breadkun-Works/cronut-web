@@ -64,15 +64,6 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                 >
                     CAFE
                 </Link>
-                <button
-                    className={ms('menu-box__menu')}
-                    onClick={() => {
-                        setMenuBox(false);
-                        openModal();
-                    }}
-                >
-                    문의하기
-                </button>
                 <button className={ms('menu-box__exit')} onClick={() => setMenuBox(false)}>
                     닫기
                 </button>

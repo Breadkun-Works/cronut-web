@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-import { ContactSendForm, ContactType } from '@/types/contact';
+import { InquirySendForm, InquiryType } from '@/types/contact';
 
-const contactUrlMap = new Map([
+const inquiryUrlMap = new Map([
     [
         'bug-report',
         'https://discord.com/api/webhooks/1368900763555987508/pba6soAPjnrfY1gzJFWRrndxZhXTKoaNSORtgWPod_EhPjSEXo5lZCVqYMaZ2aIqfC-b'
@@ -17,8 +17,8 @@ const contactUrlMap = new Map([
     ]
 ]);
 
-export const submit = async (type: ContactType, formData: ContactSendForm) => {
-    const response = await axios.post(contactUrlMap.get(type) ?? '', formData, {
+export const submit = async (type: InquiryType, formData: InquirySendForm) => {
+    const response = await axios.post(inquiryUrlMap.get(type) ?? '', formData, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -26,14 +26,14 @@ export const submit = async (type: ContactType, formData: ContactSendForm) => {
     return response;
 };
 
-export const useContactMutation = (
+export const useInquiryMutation = (
     options?: Omit<
-        UseMutationOptions<AxiosResponse, Error, { type: ContactType; formData: ContactSendForm }>,
+        UseMutationOptions<AxiosResponse, Error, { type: InquiryType; formData: InquirySendForm }>,
         'mutationFn'
     >
 ) => {
     return useMutation({
-        mutationFn: ({ type, formData }: { type: ContactType; formData: ContactSendForm }) => submit(type, formData),
+        mutationFn: ({ type, formData }: { type: InquiryType; formData: InquirySendForm }) => submit(type, formData),
         ...options
     });
 };

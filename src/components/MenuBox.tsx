@@ -3,13 +3,15 @@ import React, { useEffect } from 'react';
 import styles from '../styles/MenuBox.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
+import { InquiryModal } from '@/components/InquiryModal';
 import { usePathname } from 'next/navigation';
+import { useModal } from '@/atom/common-atom';
 
 const ms = classNames.bind(styles);
 
 function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateAction<boolean>> }) {
     const router = usePathname();
-
+    const { openModal, closeModal, modal } = useModal('inquiryModal');
     useEffect(() => {
         const handleTouchMove = (e: TouchEvent) => e.preventDefault();
         const handleKeyUp = (e: KeyboardEvent) => {
@@ -62,9 +64,19 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                 >
                     CAFE
                 </Link>
+                <button
+                    className={ms('menu-box__menu')}
+                    onClick={() => {
+                        setMenuBox(false);
+                        openModal();
+                    }}
+                >
+                    문의하기
+                </button>
                 <button className={ms('menu-box__exit')} onClick={() => setMenuBox(false)}>
                     닫기
                 </button>
+                <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
             </nav>
         </div>
     );

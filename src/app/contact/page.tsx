@@ -1,7 +1,12 @@
-import React from 'react';
+'use client';
+import React, { useEffect } from 'react';
 import { Box, Typography, Container, Grid2 } from '@mui/material';
+import { useModal } from '@/atom/common-atom';
+import { InquiryModal } from '@/components/InquiryModal';
 
 export default function Contact() {
+    const { modal, openModal, closeModal } = useModal('inquiryModal');
+
     return (
         <Container component={'main'} maxWidth={'md'}>
             <Typography variant="h2">Contact Us</Typography>
@@ -21,6 +26,7 @@ export default function Contact() {
                     <Typography variant="h3">Contact Us</Typography>
                 </Grid2>
             </Grid2>
+            <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
         </Container>
     );
 }

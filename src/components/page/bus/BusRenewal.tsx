@@ -2,7 +2,7 @@
 
 import { Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { useModal } from '@/atom/common-atom';
-import { ContactModal } from '@/components/page/contact/ContactModal';
+import { InquiryModal } from '@/components/InquiryModal';
 
 export const BusRenewal = () => {
     const { modal, openModal, closeModal } = useModal('contact');
@@ -67,7 +67,7 @@ export const BusRenewal = () => {
                 </Stack>
             </Box>
 
-            <ContactModal isOpen={modal.isOpen} onClose={closeModal} contactType="other" />
+            <InquiryModal isOpen={modal.isOpen} onClose={closeModal} inquiryType="other" />
         </Box>
     );
 };

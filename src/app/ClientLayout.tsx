@@ -13,7 +13,7 @@ import { CookiesProvider } from 'react-cookie';
 import { Snackbar } from '@/components/common/snackbar';
 import { companyAtom } from '@/atom/common-atom';
 import { Company } from '@/types/common';
-
+import InquiryDial from './InquiryDial';
 export default function ClientLayout({
     children,
     dehydratedState
@@ -46,6 +46,7 @@ export default function ClientLayout({
                                     {children}
                                     <Snackbar />
                                 </main>
+                                <InquiryDial />
                             </CookiesProvider>
                         </JotaiProvider>
                     </HydrationBoundary>

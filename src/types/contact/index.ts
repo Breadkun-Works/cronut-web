@@ -1,18 +1,18 @@
-export type ContactType = 'bug-report' | 'join-request' | 'other' | '';
+export type InquiryType = 'bug-report' | 'join-request' | 'other' | '';
 
-export interface ContactModalProps {
+export interface InquiryModalProps {
     isOpen: boolean;
     onClose: () => void;
-    contactType?: ContactType;
+    inquiryType?: InquiryType;
 }
 
-export interface ContactFormData {
+export interface InquiryFormData {
     contact: string;
     email: string;
     content: string;
 }
 
-export interface ContactSendForm {
+export interface InquirySendForm {
     username: string;
     avatar_url: string;
     embeds: {
@@ -23,4 +23,4 @@ export interface ContactSendForm {
     }[];
 }
 
-export type ContactFormMap = Map<ContactType, ContactSendForm>;
+export type InquiryFormMap = Map<InquiryType, InquirySendForm>;

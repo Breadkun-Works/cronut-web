@@ -16,17 +16,17 @@ import {
 import { Send } from '@mui/icons-material';
 import ModalBase from '@/components/common/ModalBase';
 import { COLORS_DARK } from '@/data';
-import { useContactMutation } from '@/apis/contact/contact-api';
-import { ContactType, ContactModalProps, ContactFormData, ContactSendForm } from '@/types/contact';
+import { useInquiryMutation } from '@/apis/contact/contact-api';
+import { InquiryModalProps, InquiryType, InquiryFormData, InquirySendForm } from '@/types/contact';
 import { snackBarAtom } from '@/atom/common-atom';
 import { useAtom } from 'jotai';
 
-export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps) {
-    const [selectedContactType, setSelectedContactType] = useState<ContactType>(contactType || 'bug-report');
-    const [formData, setFormData] = useState<ContactFormData>({ contact: '', email: '', content: '' });
+export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps) {
+    const [selectedInquiryType, setSelectedInquiryType] = useState<InquiryType>(inquiryType || 'bug-report');
+    const [formData, setFormData] = useState<InquiryFormData>({ contact: '', email: '', content: '' });
     const [, setSnackBar] = useAtom(snackBarAtom);
 
-    const formMap = new Map<ContactType, ContactSendForm>([
+    const formMap = new Map<InquiryType, InquirySendForm>([
         [
             'bug-report',
             {
@@ -121,7 +121,7 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
         ]
     ]);
 
-    const submitMutation = useContactMutation({
+    const submitMutation = useInquiryMutation({
         onSuccess: () => {
             setSnackBar({
                 message: '문의가 성공적으로 전송되었습니다!',
@@ -142,13 +142,13 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         submitMutation.mutate({
-            type: selectedContactType,
-            formData: formMap.get(selectedContactType) as ContactSendForm
+            type: selectedInquiryType,
+            formData: formMap.get(selectedInquiryType) as InquirySendForm
         });
     };
 
     const getTitle = () => {
-        switch (selectedContactType) {
+        switch (selectedInquiryType) {
             case 'bug-report':
                 return '장애 신고';
             case 'join-request':
@@ -161,7 +161,7 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
     };
 
     const getDescription = () => {
-        switch (selectedContactType) {
+        switch (selectedInquiryType) {
             case 'bug-report':
                 return '발견하신 문제점을 자세히 알려주세요.';
             case 'join-request':
@@ -188,8 +188,8 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                 </InputLabel>
                 <Select
                     labelId="contact-type-label"
-                    value={selectedContactType}
-                    onChange={e => setSelectedContactType(e.target.value as ContactType)}
+                    value={selectedInquiryType}
+                    onChange={e => setSelectedInquiryType(e.target.value as InquiryType)}
                     label="문의 유형"
                     sx={{
                         bgcolor: '#334155',
@@ -197,7 +197,7 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                         '& .MuiOutlinedInput-notchedOutline': { borderColor: '#475569' },
                         '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#94a3b8' }
                     }}
-                    readOnly={!!contactType}
+                    readOnly={!!inquiryType}
                 >
                     <MenuItem value="bug-report">🐛 장애신고</MenuItem>
                     <MenuItem value="join-request">🤝 합류신청</MenuItem>
@@ -205,9 +205,9 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                 </Select>
             </FormControl>
 
-            {selectedContactType && (
+            {selectedInquiryType && (
                 <form onSubmit={handleSubmit}>
-                    {(selectedContactType === 'join-request' || selectedContactType === 'other') && (
+                    {(selectedInquiryType === 'join-request' || selectedInquiryType === 'other') && (
                         <TextField
                             fullWidth
                             label="연락처"
@@ -231,14 +231,14 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                         />
                     )}
 
-                    {(selectedContactType === 'join-request' || selectedContactType === 'other') && (
+                    {(selectedInquiryType === 'join-request' || selectedInquiryType === 'other') && (
                         <TextField
                             fullWidth
                             label="이메일"
                             placeholder="example@email.com"
                             value={formData.email}
                             onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                            required={selectedContactType === 'join-request'}
+                            required={selectedInquiryType === 'join-request'}
                             sx={{ mb: 1 }}
                             slotProps={{
                                 input: {
@@ -256,9 +256,9 @@ export function ContactModal({ isOpen, onClose, contactType }: ContactModalProps
                         fullWidth
                         label="내용"
                         placeholder={
-                            selectedContactType === 'bug-report'
+                            selectedInquiryType === 'bug-report'
                                 ? '어떤 문제가 발생했는지 자세히 설명해주세요...'
-                                : selectedContactType === 'join-request'
+                                : selectedInquiryType === 'join-request'
                                   ? '어떤 분야에서 기여하고 싶은지 알려주세요...'
                                   : '궁금한 점이나 의견을 적어주세요...'
                         }

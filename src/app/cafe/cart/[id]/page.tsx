@@ -3,11 +3,38 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ConfirmClient } from '@/app/cafe/cart/[id]/ConfirmClient';
 
+// export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+//     const cartData = await fetchCart(params.id);
+//
+//     const cart = cartData.data.cafeCart;
+//
+//     return {
+//         title: cart.title,
+//         description: cart.description,
+//         openGraph: {
+//             title: `${cart.title} 장바구니에 놀러오세요!`,
+//             description: `띵동🛎️~ 빵돌이의 장바구니 도착!\n\n🛒 ${cart.title} 장바구니에 입장해주세요~☕️🍞🥐`,
+//             images: `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/logo/og-image.png`
+//         }
+//     };
+// }
+
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     const cartData = await fetchCart(params.id);
 
-    const cart = cartData.data.cafeCart;
+    if (!cartData) {
+        return {
+            title: '장바구니를 찾을 수 없습니다',
+            description: '해당 장바구니가 존재하지 않거나 만료되었습니다.',
+            openGraph: {
+                title: '장바구니 정보 없음',
+                description: '공유하신 장바구니 정보를 불러올 수 없습니다.',
+                images: `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/logo/og-image.png`
+            }
+        };
+    }
 
+    const cart = cartData.data.cafeCart;
     return {
         title: cart.title,
         description: cart.description,
@@ -18,6 +45,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         }
     };
 }
+
 const fetchCart = async (cafeCartId: string) => {
     const secretKey: string = process.env.SECRET_ENCRYPT_KEY!;
     const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {

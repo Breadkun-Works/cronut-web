@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         openGraph: {
             title: `${cart.title} 장바구니에 놀러오세요!`,
             description: `띵동🛎️~ 빵돌이의 장바구니 도착!\n\n🛒 ${cart.title} 장바구니에 입장해주세요~☕️🍞🥐`,
-            images: `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/og-image.png`
+            images: `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}og-image.png`
         }
     };
 }

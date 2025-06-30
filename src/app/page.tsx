@@ -397,7 +397,7 @@ export default function Home() {
                         <Link href={'/cafe/menu'}>
                             <div>
                                 <div className={hs('home__link--title')}>카페</div>
-                                <div className={hs('home__link--text')}>-서비스 준비중-</div>
+                                {/*<div className={hs('home__link--text')}>-서비스 준비중-</div>*/}
                             </div>
                             <div style={{ position: 'relative', width: '100%', height: '80px' }}>
                                 <Image

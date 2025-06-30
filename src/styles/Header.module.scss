@@ -29,8 +29,8 @@
   }
   .header__logo {
     margin-left: 4vw;
-    height: 35px;
-    max-height: 35px; // 갤럭시 폴드 대응
+    height: 40px;
+    max-height: 50px; // 갤럭시 폴드 대응
     @include u.desktop {
       margin-left: 50px;
       margin-top:5px;

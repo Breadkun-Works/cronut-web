@@ -25,7 +25,7 @@ const fetchCart = async (cafeCartId: string) => {
     const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {
         headers: {
             Accept: 'application/vnd.breadkun.v1+json',
-            Origin: `${process.env.NEXT_SERVICE_URL}`,
+            Origin: `https://breadkun-dev.vercel.app`,
             'X-SSR-Token': secretKey
         },
         cache: 'no-store',

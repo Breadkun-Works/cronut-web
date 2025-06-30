@@ -42,7 +42,7 @@ export const useCreateCart = (
 
 const getCafeMenu = async (
     pageParam: number,
-    query: { size: number; category?: DrinkCategory; name?: string; cafeLocation?: Company }
+    query: { size: number; category?: DrinkCategory | string; name?: string; cafeLocation?: Company | string }
 ): Promise<{
     records: Array<ICafeMenuBoardResponse>;
     pageInfo: { first: boolean; last: boolean; currentPage: number; nextPage: number | null };
@@ -69,13 +69,14 @@ const getCafeMenu = async (
 
 export const useGetCafeMenuInfinite = (query: {
     size: number;
-    category?: DrinkCategory;
+    category?: DrinkCategory | string;
     name?: string;
-    cafeLocation?: Company;
+    cafeLocation?: Company | string;
 }) => {
     return useInfiniteQuery({
         queryKey: ['cafeMenuInfinite', { ...query }],
         refetchOnWindowFocus: false,
+        enabled: !!query.cafeLocation,
         queryFn: ({ pageParam = 0 }) => getCafeMenu(pageParam, query),
         initialPageParam: 0,
         getNextPageParam: lastPage => lastPage.pageInfo.nextPage
@@ -143,14 +144,25 @@ export const deleteCartItem = async ({ cafeCartId, user }: IDeleteCartItem) => {
 
 export const expireCart = async ({ cafeCartId, user }: IDeleteCartItem) => {
     try {
-        const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/${cafeCartId}/expire`, {
-            headers: {
-                Accept: 'application/vnd.breadkun.v1+json',
-                'X-User-UUID': user.uuid
+        const res = await axios.patch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cafe/carts/${cafeCartId}/expire`,
+            {},
+            {
+                headers: {
+                    Accept: 'application/vnd.breadkun.v1+json',
+                    'X-User-UUID': user.uuid
+                }
             }
-        });
+        );
         return res.status === 204;
     } catch (e) {
         console.error(e);
     }
+};
+
+export const getInitialCartItems = async (cartId: string) => {
+    const response = await fetch(`https://api.breadkun.com/api/cafe/carts/${cartId}/items?include=DETAILS`);
+    if (!response.ok) throw new Error('네트워크 응답 실패');
+    const json = await response.json();
+    return json.data?.cafeCartItem || [];
 };

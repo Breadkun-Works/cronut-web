@@ -3,13 +3,15 @@ import React, { useEffect } from 'react';
 import styles from '../styles/MenuBox.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
+import { InquiryModal } from '@/components/InquiryModal';
 import { usePathname } from 'next/navigation';
+import { useModal } from '@/atom/common-atom';
 
 const ms = classNames.bind(styles);
 
 function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateAction<boolean>> }) {
     const router = usePathname();
-
+    const { openModal, closeModal, modal } = useModal('inquiryModal');
     useEffect(() => {
         const handleTouchMove = (e: TouchEvent) => e.preventDefault();
         const handleKeyUp = (e: KeyboardEvent) => {
@@ -35,7 +37,7 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
             <nav className={ms('menu-box__menus')}>
                 <Link
                     className={router === '/' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    href={'/public'}
+                    href={'/'}
                     onClick={() => setMenuBox(false)}
                 >
                     HOME
@@ -56,7 +58,7 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                     BUS
                 </Link>
                 <Link
-                    className={router === '/cafe/menu' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
+                    className={router.startsWith('/cafe') ? ms('menu-box__menu-active') : ms('menu-box__menu')}
                     href={'/cafe/menu'}
                     onClick={() => setMenuBox(false)}
                 >
@@ -65,6 +67,7 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
                 <button className={ms('menu-box__exit')} onClick={() => setMenuBox(false)}>
                     닫기
                 </button>
+                <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
             </nav>
         </div>
     );

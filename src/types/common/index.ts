@@ -1,3 +1,5 @@
+import React, { ReactNode } from 'react';
+
 export const mealMenu = (company: string) => {
     const commonMenu = [
         { value: 'SPECIAL', label: '일품' },
@@ -49,5 +51,72 @@ export enum DrinkTemperature {
 export enum DrinkCategory {
     COFFEE = 'COFFEE',
     TEA = 'TEA',
-    DRINK = 'DRINK'
+    DRINK = 'DRINK',
+    SEASON = 'SEASON'
+}
+
+export interface CafeMenuTab {
+    name: string;
+    index: number;
+    value: DrinkCategory;
+}
+
+export const BASE_MENU: CafeMenuTab[] = [
+    { name: 'COFFEE', index: 0, value: DrinkCategory.COFFEE },
+    { name: 'TEA', index: 1, value: DrinkCategory.TEA },
+    { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK }
+];
+
+export const SEASON_MENU: CafeMenuTab = {
+    name: 'SEASON',
+    index: 3,
+    value: DrinkCategory.SEASON
+};
+
+export interface ICommonModalTypes {
+    open: boolean;
+    onClose?(): void;
+    content?: string | ReactNode;
+    title?: string;
+    onConfirm?(): void;
+    confirmText?: string;
+    width?: string | number;
+    maxWidth?: string | number;
+    height?: string | number;
+    maxHeight?: string | number;
+    fixedContent?: string | ReactNode;
+    hasCloseButton?: boolean;
+}
+
+type BreakpointConfig = {
+    min: number;
+    max: number;
+    fontSize?: number | string;
+    chipSize?: number | string;
+    iconSize?: number | string;
+    maxWidth?: number | string;
+    marginTop?: number;
+    ellipsisMaxWidth?: number | string;
+    cartImgWidthAndHeight?: number;
+};
+
+export type PageConfigs = {
+    [page: string]: BreakpointConfig[];
+};
+
+export interface ClapPosition {
+    id: string;
+    emoji: string;
+    x: number;
+    y: number;
+    opacity: number;
+}
+
+export interface EllipsisTooltipWithChipProps {
+    title: string;
+    children: React.ReactElement;
+    forceTooltip: boolean;
+    style?: any;
+    customMaxWidthKey: string | number;
+    withIcon?: boolean;
 }

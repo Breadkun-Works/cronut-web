@@ -1,35 +1,41 @@
 import crypto from 'crypto';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ConfirmClientV3 } from '@/app/cafe/cart/[id]/ConfirmClientV3';
-import { cookies } from 'next/headers';
+import { ConfirmClient } from '@/app/cafe/cart/[id]/ConfirmClient';
+
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     const cartData = await fetchCart(params.id);
+
     const cart = cartData.data.cafeCart;
 
     return {
         title: cart.title,
         description: cart.description,
         openGraph: {
-            title: cart.title,
-            description: cart.description,
-            images: ''
+            title: `${cart.title} 장바구니에 놀러오세요!`,
+            description: `띵동🛎️~ 빵돌이의 장바구니 도착!\n\n🛒 ${cart.title} 장바구니에 입장해주세요~☕️🍞🥐`,
+            images: `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/og-image.png`
         }
     };
 }
-const fetchCart = async (cafeCartId: string): Promise<any> => {
+const fetchCart = async (cafeCartId: string) => {
     const secretKey: string = process.env.SECRET_ENCRYPT_KEY!;
     const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {
         headers: {
             Accept: 'application/vnd.breadkun.v1+json',
             Origin: 'https://breadkun-dev.vercel.app',
             'X-SSR-Token': secretKey
-        }
+        },
+        cache: 'no-store',
+        next: { revalidate: 0 }
     });
+
     if (res.status === 404) {
         notFound();
     }
-    return res.json();
+
+    const data = await res.json();
+    return data;
 };
 
 const decryptAES256 = (encryptedDataBase64Url: string, keyBuffer: Buffer) => {
@@ -54,35 +60,13 @@ export default async function ConfirmPage({
     const encryptedData = searchParams.data;
     const cartData = await fetchCart(params.id);
     const status = cartData.data.cafeCart.status;
-    const isCartInactive = status === 'INACTIVE';
-
-    const cookieStore = cookies();
-    const uuid = cookieStore.get('BRK-UUID')?.value;
-    const userName = cookieStore.get('BRK-UserName')?.value;
-    const isCreator = uuid === cartData.data.cafeCart.createdById;
 
     if (encryptedData && status === 'ACTIVE') {
         const key = cartData.data.cafeCart.secureShareKey;
         const keyBuffer = Buffer.from(key, 'base64');
         const decryptedData = decryptAES256(encryptedData, keyBuffer);
-        return (
-            <ConfirmClientV3
-                decryptedData={decryptedData}
-                cartId={params.id}
-                status={status}
-                isCreator={isCreator}
-                user={{ uuid, userName }}
-            />
-        );
+        return <ConfirmClient decryptedData={decryptedData} cartId={params.id} cartData={cartData.data.cafeCart} />;
     } else {
-        return (
-            <ConfirmClientV3
-                cartId={params.id}
-                status={status}
-                isCartInactive={isCartInactive}
-                isCreator={isCreator}
-                user={{ uuid, userName }}
-            />
-        );
+        return <ConfirmClient cartId={params.id} cartData={cartData.data.cafeCart} />;
     }
 }

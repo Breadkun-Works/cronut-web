@@ -2,10 +2,11 @@
 import React, { useRef, useState, useEffect, useLayoutEffect, ChangeEvent, useCallback } from 'react';
 import Image from 'next/image';
 import { RefreshCw, Copy } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
 import { COLORS_DARK } from '@/data';
+import { Box } from '@mui/material';
 
 const PLACEHOLDER = '이름을 입력해주세요.';
 
@@ -181,7 +182,7 @@ const BKRInput = ({
     );
 };
 const StyledButton = styled.button`
-    background-color: ${COLORS_DARK.accent.dark};
+    background-color: ${COLORS_DARK.accent.main};
     border: none;
     cursor: pointer;
     border-radius: 50%;
@@ -203,9 +204,9 @@ const BRKButton = styled.button`
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
-    border: 1px solid ${COLORS_DARK.accent.dark};
+    border: 1px solid ${COLORS_DARK.accent.main};
     box-sizing: border-box;
-    background-color: ${COLORS_DARK.accent.dark};
+    background-color: ${COLORS_DARK.accent.main};
     color: #fff;
     padding: 0 10px;
     text-align: center;
@@ -213,8 +214,9 @@ const BRKButton = styled.button`
 `;
 
 const OrderPage = ({ params }: { params: { id: string } }) => {
+    const searchParams = useSearchParams();
     const baseUrl = window.location.origin;
-    const currentUrl = baseUrl + usePathname();
+    const currentUrl = baseUrl + usePathname() + `?${searchParams}`;
     const images = [
         `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m1.webp`,
         `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/cafe/cart/character/m2.webp`,
@@ -247,7 +249,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
         if (nameToUse !== PLACEHOLDER) {
             setCookie('BRK-UserName', nameToUse);
             setCookie('BRK-UserProfile', randomImage);
-            router.push(`/cafe/cart/menu/${params.id}`);
+            router.push(`/cafe/cart/menu/${params.id}?${searchParams}`);
         }
     }, [params.id, router, userName, userNamePlaceholder, randomImage]);
 
@@ -272,72 +274,74 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     };
 
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                padding: '20px',
-                boxSizing: 'border-box',
-                maxWidth: '680px'
-            }}
-        >
-            <BKRInput
-                value={currentUrl}
-                width="100%"
-                style={{ marginBottom: '50px', padding: '10px' }}
-                endDecoration={
-                    <button
-                        style={{
-                            border: 'none',
-                            cursor: 'pointer',
-                            boxSizing: 'border-box',
-                            height: '20px'
-                        }}
-                        onClick={() => {
-                            copyLink(currentUrl);
-                        }}
-                    >
-                        <Copy size={20} />
-                    </button>
-                }
-            />
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
             <div
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    position: 'relative',
-                    marginBottom: '20px'
+                    width: '100%',
+                    padding: '20px',
+                    boxSizing: 'border-box',
+                    maxWidth: '680px'
                 }}
             >
-                <ProfileCard image={randomImage} />
-                <div style={{ position: 'absolute', bottom: '0', right: '0' }}>
-                    <StyledButton onClick={setRandomProfileImage}>
-                        <RefreshCw size={40} style={{ color: '#fff' }} />
-                    </StyledButton>
+                <BKRInput
+                    value={currentUrl}
+                    width="100%"
+                    style={{ marginBottom: '50px', padding: '10px' }}
+                    endDecoration={
+                        <button
+                            style={{
+                                border: 'none',
+                                cursor: 'pointer',
+                                boxSizing: 'border-box',
+                                height: '20px'
+                            }}
+                            onClick={() => {
+                                copyLink(currentUrl);
+                            }}
+                        >
+                            <Copy size={20} />
+                        </button>
+                    }
+                />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                        marginBottom: '20px'
+                    }}
+                >
+                    <ProfileCard image={randomImage} />
+                    <div style={{ position: 'absolute', bottom: '0', right: '0' }}>
+                        <StyledButton onClick={setRandomProfileImage}>
+                            <RefreshCw size={40} style={{ color: '#fff' }} />
+                        </StyledButton>
+                    </div>
                 </div>
+                <div style={{ fontSize: '20px', margin: '20px 0' }}>주문자 이름을 입력해주세요.</div>
+
+                {/*<Input*/}
+                {/*    type="text"*/}
+                {/*    placeholder={userNamePlaceholder}*/}
+                {/*    value={userName}*/}
+                {/*    maxLength={30}*/}
+                {/*    onChange={e => setUserName(e.target.value)}*/}
+                {/*/>*/}
+
+                <InputWrapper>
+                    <Input type="text" value={userName} onChange={e => handleChange(e)} maxLength={30} />
+                    <UserNameCount>{`${userName.length}/${30}`}</UserNameCount>
+                </InputWrapper>
+
+                <BRKButton onClick={handleOrder}>주문하기</BRKButton>
             </div>
-            <div style={{ fontSize: '20px', margin: '20px 0' }}>주문자 이름을 입력해주세요.</div>
-
-            {/*<Input*/}
-            {/*    type="text"*/}
-            {/*    placeholder={userNamePlaceholder}*/}
-            {/*    value={userName}*/}
-            {/*    maxLength={30}*/}
-            {/*    onChange={e => setUserName(e.target.value)}*/}
-            {/*/>*/}
-
-            <InputWrapper>
-                <Input type="text" value={userName} onChange={e => handleChange(e)} maxLength={30} />
-                <UserNameCount>{`${userName.length}/${30}`}</UserNameCount>
-            </InputWrapper>
-
-            <BRKButton onClick={handleOrder}>주문하기</BRKButton>
-        </div>
+        </Box>
     );
 };
 

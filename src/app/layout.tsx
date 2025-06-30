@@ -2,7 +2,8 @@
 import './globals.css';
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
-import ClientLayout from './ClientLayout'; // Import the ClientLayout component
+import ClientLayout from './ClientLayout';
+import { nanumFonts } from '@/fonts/nanumFonts';
 
 export const metadata: Metadata = {
     title: '더존 빵돌이 | 다양한 더존ICT 생활 정보',
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
-        <html lang="en">
-            <head>
+        <html lang="en" className={nanumFonts.variable}>
+            <head title={'더존 빵돌이 | 다양한 더존ICT 생활 정보'}>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="apple-touch-icon" sizes="192x192" href="/logo192.png" />
             </head>

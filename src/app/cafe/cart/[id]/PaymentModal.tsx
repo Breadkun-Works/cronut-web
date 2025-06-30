@@ -13,12 +13,12 @@ import {
     Paper,
     Divider
 } from '@mui/material';
-import { Copy, Check, ScanQrCode } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import QRCodeComponent from '@/components/QRCodeComponent';
-import { useIsMobile } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 
-export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, handlePayment }: any) {
-    const isMobile = useIsMobile();
+export default function PaymentModal({ open, handleClose, cafeAccount, totalPrice }: any) {
+    const { isMobile } = useResponsive();
     const [tab, setTab] = useState('bank');
     const [copied, setCopied] = useState(false);
 
@@ -54,7 +54,7 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
     };
 
     return (
-        <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
+        <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
             <DialogTitle sx={{ bgcolor: '#2C2F31', color: 'white' }}>정산하기</DialogTitle>
             <DialogContent sx={{ bgcolor: '#2C2F31', color: 'white' }}>
                 <DialogContentText sx={{ color: 'gray', mb: 2 }}>
@@ -93,7 +93,7 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
                                 onClick={copyAccountNumber}
                                 sx={{ borderColor: 'gray', ':hover': { bgcolor: 'gray.800' } }}
                             >
-                                {copied ? '복사완료' : '복사하기'}
+                                {copied ? '완료' : '복사'}
                             </Button>
                         </Box>
                         <Divider sx={{ bgcolor: 'gray', my: 2 }} />
@@ -174,14 +174,14 @@ export default function PaymentModal({ open, setOpen, cafeAccount, totalPrice, h
                 <Button
                     variant="outlined"
                     color="inherit"
-                    onClick={() => setOpen(false)}
+                    onClick={handleClose}
                     sx={{ borderColor: 'gray', color: 'white', ':hover': { bgcolor: '#1C1F21' } }}
                 >
                     취소
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={() => handlePayment(false)}
+                    onClick={handleClose}
                     sx={{ bgcolor: '#8B4513', ':hover': { bgcolor: '#6B3410' }, color: 'white' }}
                 >
                     주문 완료

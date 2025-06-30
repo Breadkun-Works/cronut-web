@@ -1,6 +1,5 @@
 import { createTheme } from '@mui/material';
-import { DrinkCategory } from '@/types/common';
-import { Coffee, CoffeeIcon as Tea, Wine } from 'lucide-react';
+import { PageConfigs } from '@/types/common';
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
@@ -12,32 +11,131 @@ declare module '@mui/material/styles' {
         xxl: true;
         xxxl: true;
     }
+
+    interface Theme {
+        custom: {
+            responsiveConfig: typeof responsiveConfig;
+        };
+    }
+
+    interface ThemeOptions {
+        custom?: {
+            responsiveConfig: typeof responsiveConfig;
+        };
+    }
 }
 
+export const responsiveConfig = {
+    fontSizeSteps: {
+        companySelect: {
+            xs: '1rem',
+            sm: '1.1rem',
+            md: '1.2rem',
+            lg: '1.25rem',
+            xl: '1.25rem',
+            xxl: '1.25rem',
+            xxxl: '1.25rem'
+        },
+        cart: {
+            xs: '0.9rem',
+            sm: '0.95rem',
+            md: '1rem',
+            lg: '1.05rem',
+            xl: '1.1rem',
+            xxl: '1.15rem',
+            xxxl: '1.2rem'
+        },
+        menu: {
+            xs: '0.9rem',
+            sm: '0.95rem',
+            md: '1rem',
+            lg: '1.05rem',
+            xl: '1.1rem',
+            xxl: '1.15rem',
+            xxxl: '1.2rem'
+        },
+        cartRegister: {
+            xs: '0.8rem',
+            sm: '0.85rem',
+            md: '0.9rem',
+            lg: '0.95rem',
+            xl: '1rem',
+            xxl: '1.05rem',
+            xxxl: '1.1rem'
+        }
+    },
+    iconSizeSteps: {
+        cart: {
+            xs: 20,
+            sm: 22,
+            md: 24,
+            lg: 26,
+            xl: 28,
+            xxl: 30,
+            xxxl: 32
+        },
+        menu: {
+            xs: 22,
+            sm: 26,
+            md: 26,
+            lg: 26,
+            xl: 28,
+            xxl: 28,
+            xxxl: 30
+        }
+    },
+    chipSizeSteps: {
+        cart: {
+            xs: 18,
+            sm: 20,
+            md: 22,
+            lg: 24,
+            xl: 26,
+            xxl: 28,
+            xxxl: 30
+        },
+        cartRegister: {
+            xs: 16,
+            sm: 18,
+            md: 20,
+            lg: 22,
+            xl: 24,
+            xxl: 26,
+            xxxl: 28
+        }
+    },
+    paddingSteps: {
+        cartItem: {
+            xs: 1,
+            sm: 1.25,
+            md: 1.5,
+            lg: 2,
+            xl: 2.5,
+            xxl: 3,
+            xxxl: 3.5
+        }
+    }
+};
+
 export const MuiTheme = createTheme({
-    // breakpoints: {
-    //     values: {
-    //         xs: 375,
-    //         sm: 480,
-    //         md: 768,
-    //         lg: 1024,
-    //         xl: 1280
-    //     }
-    // },
+    custom: {
+        responsiveConfig
+    },
     breakpoints: {
         values: {
             xs: 0, // 기존대로 유지 (사실상 xxs 역할)
             sm: 360, // 일반적인 소형 스마트폰
-            md: 480, // 일반 스마트폰
-            lg: 768, // 태블릿
+            md: 481, // 일반 스마트폰
+            lg: 600, // 태블릿
             xl: 1024, // 노트북
             xxl: 1280, // 데스크탑
             xxxl: 1440 // 대형 데스크탑
         }
     },
+
     typography: {
         fontFamily:
-            "'DungGeunMo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+            "var(--font-nanum),'SCoreDream7', MangoByeolbyeol, GumiRomanceTTF, KCC-Ganpan, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
         body1: {
             color: 'white'
         },
@@ -75,7 +173,11 @@ export const MuiTheme = createTheme({
                 }
             }
         },
-
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true
+            }
+        },
         MuiTab: {
             styleOverrides: {
                 root: {
@@ -92,39 +194,6 @@ export const MuiTheme = createTheme({
         }
     }
 });
-
-export const CafeMenuData = [
-    {
-        name: 'COFFEE',
-        index: 0,
-        value: DrinkCategory.COFFEE,
-        icon: Coffee,
-        sx: { fontSize: '20px' }
-    },
-    { name: 'TEA', index: 1, value: DrinkCategory.TEA, icon: Tea, sx: { fontSize: '20px' } },
-    { name: 'BEVERAGE', index: 2, value: DrinkCategory.DRINK, icon: Wine, sx: { fontSize: '20px' } }
-];
-
-export const COLORS_LIGHT = {
-    background: {
-        main: '#ffffff', // 기본 배경색 (흰색)
-        light: '#f8f9fa', // 약간 어두운 배경 (매우 밝은 그레이)
-        lighter: '#e9ecef', // 더 어두운 배경 (밝은 그레이)
-        input: '#f1f3f5' // 입력 필드 배경
-    },
-    accent: {
-        main: '#f09000', // 메인 포인트 (오렌지)
-        light: '#ffb347', // 강조 포인트 (밝은 오렌지)
-        dark: '#cf7500', // 어두운 포인트 (진한 오렌지)
-        disabled: 'rgba(240, 144, 0, 0.5)' // 비활성화 (반투명 오렌지)
-    },
-    text: {
-        primary: '#212529', // 주요 텍스트 (거의 검정)
-        secondary: '#495057', // 부가 텍스트 (어두운 회색)
-        disabled: '#adb5bd' // 비활성화 텍스트 (중간 회색)
-    },
-    divider: 'rgba(0, 0, 0, 0.1)' // 구분선 색상
-};
 
 // 다크모드 색상 정의 - 기본 배경색 #212529 기준
 export const COLORS_DARK = {
@@ -166,16 +235,241 @@ export const COLORS_DARK = {
     divider: 'rgba(248, 249, 250, 0.1)'
 };
 
-export const BREAKPOINT = {
-    xsmall: '375px',
-    small: '480px',
-    medium: '768px',
-    large: '1024px'
-};
-
-export const FONT_SIZE = {
-    xsmall: '0.75rem', // 12px
-    small: '0.875rem', // 14px
-    medium: '1rem', // 16px
-    large: '1.125rem' // 18px
+export const responsiveConfigByPixel: PageConfigs = {
+    cart: [
+        {
+            min: 0,
+            max: 319,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
+            maxWidth: 90,
+            ellipsisMaxWidth: '48vw'
+        },
+        {
+            min: 320,
+            max: 329,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
+            maxWidth: 100,
+            ellipsisMaxWidth: '50vw'
+        },
+        {
+            min: 330,
+            max: 339,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
+            maxWidth: 110,
+            ellipsisMaxWidth: '52vw'
+        },
+        {
+            min: 340,
+            max: 349,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
+            maxWidth: 120,
+            ellipsisMaxWidth: '52.5vw'
+        },
+        {
+            min: 350,
+            max: 359,
+            fontSize: '0.95rem',
+            chipSize: 15,
+            iconSize: 18,
+            maxWidth: 130,
+            ellipsisMaxWidth: '53vw'
+            // cartImgWidthAndHeight: 65
+        },
+        {
+            min: 360,
+            max: 369,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 20,
+            maxWidth: 140,
+            ellipsisMaxWidth: '48vw',
+            cartImgWidthAndHeight: 65
+        },
+        {
+            min: 370,
+            max: 379,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 20,
+            maxWidth: 150,
+            ellipsisMaxWidth: '50vw',
+            cartImgWidthAndHeight: 65
+        },
+        {
+            min: 380,
+            max: 389,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 20,
+            maxWidth: 160,
+            ellipsisMaxWidth: '48vw',
+            cartImgWidthAndHeight: 65
+        },
+        {
+            min: 390,
+            max: 399,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 20,
+            maxWidth: 170,
+            ellipsisMaxWidth: '50vw',
+            cartImgWidthAndHeight: 65
+        },
+        {
+            min: 400,
+            max: 409,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 21,
+            maxWidth: 180,
+            ellipsisMaxWidth: '50vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 410,
+            max: 419,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 21,
+            maxWidth: 190,
+            ellipsisMaxWidth: '52vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 420,
+            max: 429,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 21,
+            maxWidth: 200,
+            ellipsisMaxWidth: '52vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 430,
+            max: 439,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 21,
+            maxWidth: 210,
+            ellipsisMaxWidth: '54vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 440,
+            max: 479,
+            fontSize: '1rem',
+            chipSize: 16,
+            iconSize: 21,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '56vw',
+            cartImgWidthAndHeight: 70
+        },
+        {
+            min: 480,
+            max: 509,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 21,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '54vw',
+            cartImgWidthAndHeight: 75
+        },
+        {
+            min: 510,
+            max: 539,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '56vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 540,
+            max: 569,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '58vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 570,
+            max: 599,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '60vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 600,
+            max: 639,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '63vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 640,
+            max: 679,
+            fontSize: 17,
+            chipSize: 16,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '65vw',
+            cartImgWidthAndHeight: 80
+        },
+        {
+            min: 680,
+            max: Infinity,
+            fontSize: 18,
+            chipSize: 17,
+            iconSize: 22,
+            maxWidth: '100%',
+            ellipsisMaxWidth: '70vw',
+            cartImgWidthAndHeight: 80
+        }
+    ],
+    'cart-items': [
+        { min: 0, max: 324, maxWidth: '33vw' },
+        { min: 325, max: 339, maxWidth: '37vw' },
+        { min: 340, max: 349, maxWidth: '37vw' },
+        { min: 350, max: 359, maxWidth: '40vw' },
+        { min: 360, max: 369, maxWidth: '37vw' },
+        { min: 370, max: 379, maxWidth: '39vw' }
+    ],
+    'cart-summary': [
+        { min: 0, max: 329, maxWidth: '23vw' },
+        { min: 330, max: 339, maxWidth: '24vw' },
+        { min: 340, max: 349, maxWidth: '26vw' },
+        { min: 350, max: 359, maxWidth: '27vw' },
+        { min: 360, max: 364, maxWidth: '25vw' },
+        { min: 365, max: 369, maxWidth: '27vw' },
+        { min: 370, max: 379, maxWidth: '27vw' },
+        { min: 380, max: 389, maxWidth: '28vw' },
+        { min: 390, max: 399, maxWidth: '29vw' },
+        { min: 400, max: 409, maxWidth: '30vw' },
+        { min: 410, max: 419, maxWidth: '32vw' },
+        { min: 420, max: 429, maxWidth: '33vw' },
+        { min: 430, max: 439, maxWidth: '35vw' }
+    ],
+    'cart-register': [
+        { min: 0, max: 359, fontSize: 13, iconSize: 15, maxWidth: 100 },
+        { min: 360, max: 479, fontSize: 14, iconSize: 18, maxWidth: 180 },
+        { min: 480, max: Infinity, fontSize: 15, iconSize: 20, maxWidth: '100%' }
+    ]
 };

@@ -1,18 +1,27 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '../styles/Header.module.scss';
 import classNames from 'classnames/bind';
 import Link from 'next/link';
-import { useMenuContext } from '@/context/MenuContext';
 import { usePathname } from 'next/navigation';
 import MenuBox from './MenuBox';
-
+import { useAtom } from 'jotai';
+import { menuBoxAtom, windowResizeAtom, useModal } from '@/atom/common-atom';
+import { MobileMenuButton, StyledEllipsis, StyledHeadset } from '@/styles/header.styles';
+import { InquiryModal } from '@/components/InquiryModal';
 const hs = classNames.bind(styles);
 
 function Header() {
-    const { menuBox, setMenuBox } = useMenuContext();
-
+    const [menuBox, setMenuBox] = useAtom(menuBoxAtom);
+    const [, setResize] = useAtom(windowResizeAtom);
     const router = usePathname();
+    const { openModal, closeModal, modal } = useModal('inquiryModal');
+    // 윈도우 리사이즈 감지 (Jotai로 처리)
+    useEffect(() => {
+        const handleResize = () => setResize(); // Atom에서 처리
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [setResize]);
 
     return (
         <>
@@ -25,13 +34,19 @@ function Header() {
                     />
                 </Link>
                 <nav className={hs('header__nav')}>
-                    <button className={hs('header__nav--button')} onClick={() => setMenuBox(true)}>
-                        <img
-                            className={hs('header__nav--button--img')}
-                            src="/icon/header-menu-button.webp"
-                            alt="breadkun-header-menu"
-                        />
-                    </button>
+                    <MobileMenuButton onClick={openModal}>
+                        <StyledHeadset />
+                    </MobileMenuButton>
+                    <MobileMenuButton onClick={() => setMenuBox(true)}>
+                        <StyledEllipsis />
+                    </MobileMenuButton>
+                    {/*<button className={hs('header__nav--button')} onClick={() => setMenuBox(true)}>*/}
+                    {/*    <img*/}
+                    {/*        className={hs('header__nav--button--img')}*/}
+                    {/*        src="/icon/header-menu-button.webp"*/}
+                    {/*        alt="breadkun-header-menu"*/}
+                    {/*    />*/}
+                    {/*</button>*/}
                     <div className={hs('header__nav--menus')}>
                         <Link
                             className={router === '/' ? hs('header__nav--menu', 'active') : hs('header__nav--menu')}
@@ -76,6 +91,7 @@ function Header() {
                 </nav>
             </header>
             {menuBox && <MenuBox setMenuBox={setMenuBox} />}
+            <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
         </>
     );
 }

@@ -9,7 +9,7 @@ export interface PaginationType {
 }
 
 export interface INewCartType {
-    cafeLocation: Company;
+    cafeLocation: Company | string;
     title: string;
     description?: string;
 }
@@ -76,6 +76,7 @@ export interface IAddCartMenuPayload {
 export interface IUserInfo {
     uuid: string;
     userName: string;
+    userProfile: string;
 }
 
 export interface IAddMenuCartParams {
@@ -118,6 +119,8 @@ export interface ICafeMenuPopoverProps {
 
 export interface TemperatureBadgeProps {
     temperature: 'ICED' | 'HOT';
+    height?: number | string;
+    marginTop?: number;
 }
 
 export interface IDeleteCartItem {
@@ -142,4 +145,16 @@ export interface CafeCartItem {
     imageUrl: string;
     isPersonalCup: boolean;
     quantity: number;
+}
+
+export interface GroupedCafeData {
+    [key: string]: {
+        cafeMenuId: number;
+        drinkName: string;
+        drinkImageUrl: string;
+        drinkTemperature: 'HOT' | 'ICED';
+        totalQuantity: number;
+        totalPrice: number;
+        items: CafeCartItem[];
+    };
 }

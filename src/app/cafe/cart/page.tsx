@@ -1,9 +1,9 @@
 'use client';
+
 import { CartButton, PageWrapper, CartContainer } from '@/styles/cart/cart.styles';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useConditionalTimeout } from '@/utils/util';
 import { useCreateCart } from '@/apis/cafe/cafe-api';
-import { useCompanyContext } from '@/context/CompanyContext';
 import NotificationBox from '@/components/NotificationBox';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
@@ -20,6 +20,11 @@ import {
     Typography
 } from '@mui/material';
 import { CompanySelect } from '@/components/CompanySelect';
+import { useResponsive } from '@/utils/hook';
+import { useAtom } from 'jotai';
+import { companyAtom, snackBarAtom } from '@/atom/common-atom';
+import { COLORS_DARK } from '@/data';
+
 type PaymentType = 'treat' | 'dutch';
 
 const CssTextField = styled(TextField)({
@@ -43,12 +48,16 @@ const CssTextField = styled(TextField)({
 });
 
 const CartPage = () => {
+    const { isMobile } = useResponsive();
+
     const [newCart, setNewCart] = useState({ title: '', description: '' });
     const [paymentType, setPaymentType] = useState<PaymentType>('treat');
     const [bankName, setBankName] = useState('');
     const [accountNumber, setAccountNumber] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const { company } = useCompanyContext(); // company와 setCompany를 가져옵니다.
+    const [company] = useAtom(companyAtom);
+    const [snackBar, setSnackBar] = useAtom(snackBarAtom);
     const router = useRouter();
 
     const { mutate, isPending, isSuccess } = useCreateCart({
@@ -61,31 +70,67 @@ const CartPage = () => {
         }
     });
 
-    const showLoading = useConditionalTimeout(isPending && !isSuccess, 1000);
+    useEffect(() => {
+        if (isPending) {
+            setIsLoading(true);
+        } else if (isSuccess) {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [isPending, isSuccess]);
 
     const handleCreateCart = () => {
+        if (!validateForm()) {
+            return;
+        }
         mutate({
             cafeLocation: company,
             title: newCart.title,
             ...(newCart.description && { description: newCart.description })
         });
     };
+    const validateForm = () => {
+        if (!newCart.title.trim()) {
+            setSnackBar({ open: true, message: '장바구니의 이름을 입력해주세요', severity: 'warning' });
+            return false;
+        }
+        if (paymentType === 'dutch' && (!bankName || !accountNumber)) {
+            setSnackBar({ open: true, message: '계좌 정보를 입력해주세요', severity: 'warning' });
+
+            return false;
+        }
+        return true;
+    };
     /* 추가 및 수정해야됨 */
     const banks = ['토스뱅크', '국민은행', '신한은행', '우리은행', '하나은행', 'NH농협'];
 
     return (
         <PageWrapper>
-            <CompanySelect />
+            <Box margin={isMobile ? '10px 16px' : '20px 30px'}>
+                <CompanySelect entry={'cafe'} />
+            </Box>
             <div className={'cart-wrapper'}>
                 <CartContainer>
-                    <div style={{ fontSize: '20px', margin: '20px 0', textAlign: 'center' }}>
-                        음료 주문을 시작합니다.
+                    <div style={{ fontSize: '1.3rem', margin: '20px 0', textAlign: 'center' }}>
+                        음료 주문을 시작합니다 🎉
                         <br />
-                        주문서는 생성 후 <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>3시간</span>
-                        동안 사용 가능합니다.
-                        <br />
-                        <br />
-                        장바구니 이름을 입력해주세요.
+                        <p
+                            style={{
+                                fontSize: '1.1rem',
+                                whiteSpace: 'pre-line',
+                                textAlign: 'center',
+                                lineHeight: 1.5,
+                                wordBreak: 'keep-all'
+                            }}
+                        >
+                            생성 후{' '}
+                            <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+                                <span style={{ fontSize: '1.2rem', color: COLORS_DARK.accent.light }}>3</span>시간
+                            </span>
+                            동안 사용 가능합니다
+                        </p>
                     </div>
                     <CssTextField
                         label="이름"
@@ -95,6 +140,7 @@ const CartPage = () => {
                             width: '100%',
                             mt: 2
                         }}
+                        required
                     />
                     <CssTextField
                         label="설명"
@@ -174,10 +220,12 @@ const CartPage = () => {
                             </Box>
                         )}
                     </Box>
-                    <CartButton onClick={handleCreateCart}>주문하기</CartButton>
+                    <CartButton onClick={handleCreateCart} disabled={isPending}>
+                        장바구니 생성하기
+                    </CartButton>
                 </CartContainer>
             </div>
-            {showLoading && <NotificationBox firstText={'장바구니 생성 중...'} secText={'잠시만 기다려 주세요.'} />}
+            {isLoading && <NotificationBox firstText={'장바구니 생성 중...'} secText={'잠시만 기다려 주세요.'} />}
         </PageWrapper>
     );
 };

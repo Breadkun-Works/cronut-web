@@ -1,6 +1,7 @@
 import { createTheme } from '@mui/material';
 import { PageConfigs } from '@/types/common';
 
+export const DEFAULT_OG_IMAGE = `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/logo/og-image.png`;
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
         xs: true;

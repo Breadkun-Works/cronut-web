@@ -449,7 +449,7 @@ export const StyledScrollableCartList = styled(Box, {
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        paddingBottom: footerOpen && bottomHeight > 24 ? bottomHeight : 24,
+        paddingBottom: footerOpen ? (bottomHeight > 24 ? bottomHeight : 160) : 24,
 
         '&::-webkit-scrollbar': {
             width: 0,

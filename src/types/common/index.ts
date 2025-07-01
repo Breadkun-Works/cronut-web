@@ -5,6 +5,7 @@ export const mealMenu = (company: string) => {
         { value: 'SPECIAL', label: '일품' },
         { value: 'KOREAN1', label: '한식' },
         { value: 'KOREAN2', label: '라면' },
+        { value: 'NOODLE', label: '누들' },
         {
             value: 'CONVENIENCE1',
             label: company === Company.KANGCHON ? '간편식' : '프레시박스'

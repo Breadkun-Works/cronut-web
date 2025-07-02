@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
-        <html lang="en" className={nanumFonts.variable}>
+        <html lang="ko" className={nanumFonts.variable}>
             <head title={'더존 빵돌이 | 다양한 더존ICT 생활 정보'}>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="apple-touch-icon" sizes="192x192" href="/logo192.png" />

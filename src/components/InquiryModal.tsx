@@ -26,101 +26,6 @@ export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps
     const [formData, setFormData] = useState<InquiryFormData>({ contact: '', email: '', content: '' });
     const [, setSnackBar] = useAtom(snackBarAtom);
 
-    const formMap = new Map<InquiryType, InquirySendForm>([
-        [
-            'bug-report',
-            {
-                username: '🚨 장애 신고',
-                avatar_url:
-                    'https://ax40oxk5pwva.objectstorage.ap-chuncheon-1.oci.customer-oci.com/p/ggBWzbdG5d85FYMMw0ox2fgAuITiYbFVcSJRa2f4is_rp69RHi1H3-HSMMUpU1el/n/ax40oxk5pwva/b/BreadFiles/o/images/logo/pullmanPadding.png',
-                embeds: [
-                    {
-                        title: '🚨 장애 신고 도착!',
-                        color: 16733525,
-                        fields: [
-                            {
-                                name: '📝 내용',
-                                value: formData.content,
-                                inline: false
-                            }
-                        ],
-                        footer: {
-                            text: `더존빵돌이(Web) > ${window.location.pathname}`
-                        }
-                    }
-                ]
-            }
-        ],
-        [
-            'join-request',
-            {
-                username: '💕 프로젝트 합류 문의',
-                avatar_url:
-                    'https://ax40oxk5pwva.objectstorage.ap-chuncheon-1.oci.customer-oci.com/p/ggBWzbdG5d85FYMMw0ox2fgAuITiYbFVcSJRa2f4is_rp69RHi1H3-HSMMUpU1el/n/ax40oxk5pwva/b/BreadFiles/o/images/logo/pullmanPadding.png',
-                embeds: [
-                    {
-                        title: '📨 프로젝트 합류 문의 도착!',
-                        color: 3447003,
-                        fields: [
-                            {
-                                name: '📞 연락처',
-                                value: formData.contact,
-                                inline: true
-                            },
-                            {
-                                name: '✉️ 이메일',
-                                value: formData.email,
-                                inline: true
-                            },
-                            {
-                                name: '📝 내용',
-                                value: formData.content,
-                                inline: false
-                            }
-                        ],
-                        footer: {
-                            text: `더존빵돌이(Web) > ${window.location.pathname}`
-                        }
-                    }
-                ]
-            }
-        ],
-        [
-            'other',
-            {
-                username: '📬 기타 문의',
-                avatar_url:
-                    'https://ax40oxk5pwva.objectstorage.ap-chuncheon-1.oci.customer-oci.com/p/ggBWzbdG5d85FYMMw0ox2fgAuITiYbFVcSJRa2f4is_rp69RHi1H3-HSMMUpU1el/n/ax40oxk5pwva/b/BreadFiles/o/images/logo/pullmanPadding.png',
-                embeds: [
-                    {
-                        title: '📨 문의 도착!',
-                        color: 10181046,
-                        fields: [
-                            {
-                                name: '📞 연락처',
-                                value: formData.contact || '-',
-                                inline: true
-                            },
-                            {
-                                name: '✉️ 이메일',
-                                value: formData.email || '-',
-                                inline: true
-                            },
-                            {
-                                name: '📝 내용',
-                                value: formData.content || '-',
-                                inline: false
-                            }
-                        ],
-                        footer: {
-                            text: `더존빵돌이(Web) > ${window.location.pathname}`
-                        }
-                    }
-                ]
-            }
-        ]
-    ]);
-
     const submitMutation = useInquiryMutation({
         onSuccess: () => {
             setSnackBar({
@@ -130,9 +35,9 @@ export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps
             });
             setFormData({ contact: '', email: '', content: '' });
         },
-        onError: () => {
+        onError: (error: any) => {
             setSnackBar({
-                message: '문의 전송에 실패했습니다. 다시 시도해주세요.',
+                message: error.response.data.error,
                 open: true,
                 severity: 'error'
             });
@@ -143,7 +48,7 @@ export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps
         e.preventDefault();
         submitMutation.mutate({
             type: selectedInquiryType,
-            formData: formMap.get(selectedInquiryType) as InquirySendForm
+            formData: formData
         });
     };
 

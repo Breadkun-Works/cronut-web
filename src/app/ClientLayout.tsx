@@ -9,7 +9,7 @@ import { CacheProvider } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { MuiTheme } from '@/data';
 import { Provider as JotaiProvider, useSetAtom } from 'jotai';
-import { CookiesProvider } from 'react-cookie';
+import { CookiesProvider, useCookies } from 'react-cookie';
 import { Snackbar } from '@/components/common/snackbar';
 import { companyAtom } from '@/atom/common-atom';
 import { Company } from '@/types/common';
@@ -55,18 +55,21 @@ export default function ClientLayout({
         </CacheProvider>
     );
 }
-
 function InitializeCompany() {
     const setCompany = useSetAtom(companyAtom);
+    const [cookies, setCookie] = useCookies(['recentCompany']);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedCompany = localStorage.getItem('recentCompany');
-            if (storedCompany) {
-                setCompany(storedCompany as Company);
-            }
+        // 쿠키에서 값 있는지 확인
+        const cookieCompany = cookies.recentCompany;
+
+        const company = cookieCompany ?? Company.KANGCHON;
+
+        setCompany(company as Company);
+        if (!cookieCompany) {
+            setCookie('recentCompany', company);
         }
-    }, [setCompany]);
+    }, [cookies.recentCompany, setCompany, setCookie]);
 
     return null;
 }

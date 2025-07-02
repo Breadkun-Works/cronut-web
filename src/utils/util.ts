@@ -39,3 +39,27 @@ export const isMobileDevice = (): boolean => {
     const hasTouch = navigator.maxTouchPoints > 1;
     return isMobile && hasTouch;
 };
+
+export const removeServiceWorker = async () => {
+    if ('serviceWorker' in navigator) {
+        try {
+            // 등록된 모든 서비스워커 제거
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (const registration of registrations) {
+                    registration.unregister();
+                }
+            });
+
+            // 브라우저 캐시 정리
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => caches.delete(cacheName))
+                );
+            }
+
+        } catch (error) {
+            console.error('breadkun.com 서비스워커 초기화 중 오류:', error);
+        }
+    }
+};

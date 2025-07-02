@@ -56,6 +56,13 @@ export default function Home() {
     const handleTouchMove = (e: TouchEvent) => e.preventDefault(); // 스크롤 정지 함수
     // 페이지 최상단으로 스크롤링
     useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
         window.scrollTo(0, 0);
         const cookieUserInfo = getCookie('BRK-UUID');
         if (!cookieUserInfo) {

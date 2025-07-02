@@ -53,11 +53,8 @@ export const removeServiceWorker = async () => {
             // 브라우저 캐시 정리
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
-                await Promise.all(
-                    cacheNames.map(cacheName => caches.delete(cacheName))
-                );
+                await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
             }
-
         } catch (error) {
             console.error('breadkun.com 서비스워커 초기화 중 오류:', error);
         }

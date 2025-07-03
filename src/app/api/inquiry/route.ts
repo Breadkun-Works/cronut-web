@@ -49,12 +49,12 @@ const createDiscordPayload = (type: InquiryType, formData: InquiryFormData, path
                         fields: [
                             {
                                 name: '📞 연락처',
-                                value: formData.contact,
+                                value: formData.contact || '-',
                                 inline: true
                             },
                             {
                                 name: '✉️ 이메일',
-                                value: formData.email,
+                                value: formData.email || '-',
                                 inline: true
                             },
                             {
@@ -79,6 +79,16 @@ const createDiscordPayload = (type: InquiryType, formData: InquiryFormData, path
                         title: '💬 기타 문의 도착!',
                         color: 9807270,
                         fields: [
+                            {
+                                name: '📞 연락처',
+                                value: formData.contact || '-',
+                                inline: true
+                            },
+                            {
+                                name: '✉️ 이메일',
+                                value: formData.email || '-',
+                                inline: true
+                            },
                             {
                                 name: '📝 내용',
                                 value: formData.content,

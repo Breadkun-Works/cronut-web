@@ -176,12 +176,13 @@ export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps
                         slotProps={{
                             input: {
                                 style: { color: 'white', fontSize: '16px' },
-                                inputProps: { maxLength: 50 }
+                                inputProps: { maxLength: 500 }
                             },
                             inputLabel: {
                                 style: { color: 'white' }
                             }
                         }}
+                        helperText={`${formData.content.length}/500`}
                     />
 
                     <Box display="flex" gap={2}>

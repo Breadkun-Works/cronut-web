@@ -36,9 +36,7 @@ const getCartById = async (cartId: string): Promise<any> => {
         next: { revalidate: 0 }
     });
 
-    const data = await response.json();
-
-    return data;
+    return await response.json();
 };
 
 export default async function CartMenuPage({ params }: { params: { id: string; userId: string } }) {

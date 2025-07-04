@@ -56,7 +56,7 @@ const returnIcon = (cafeMenu: DrinkCategory) => {
 };
 
 const CafeMenuTabPanel = ({ children, value, index }: any) => {
-    const { isSmall, isMobile } = useResponsive();
+    const { isSmall } = useResponsive();
 
     return (
         <div
@@ -96,7 +96,7 @@ const CafeMenu = ({
 
     useCartSync(cartId as string, false);
 
-    const { isMobile, isDesktop, isSmall, isTabletOnly } = useResponsive();
+    const { isMobile, isDesktop, isSmall } = useResponsive();
 
     const menuHeaderRef = useRef<HTMLDivElement>(null);
 
@@ -140,7 +140,6 @@ const CafeMenu = ({
     const { iconSizeSteps, fontSizeSteps } = responsiveConfig;
     const breakpoint = useCurrentBreakpoint();
     const iconSize = iconSizeSteps.menu[breakpoint];
-    const fontSize = fontSizeSteps.companySelect[breakpoint];
 
     const [showSearch, setShowSearch] = useState(false);
 

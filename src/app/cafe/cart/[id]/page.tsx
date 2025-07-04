@@ -36,8 +36,7 @@ const fetchCart = async (cafeCartId: string) => {
         notFound();
     }
 
-    const data = await res.json();
-    return data;
+    return await res.json();
 };
 
 const decryptAES256 = (encryptedDataBase64Url: string, keyBuffer: Buffer) => {

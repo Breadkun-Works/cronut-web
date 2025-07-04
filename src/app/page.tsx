@@ -15,7 +15,7 @@ import { getCookie, setCookie } from '@/utils/cookie';
 import { Company } from '@/types/common';
 import { CompanySelect } from '@/components/CompanySelect';
 import { Box } from '@mui/material';
-import { useDynamicTitle, useResponsive } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 import { companyAtom } from '@/atom/common-atom';
 import { useAtom } from 'jotai';
 import { removeServiceWorker } from '@/utils/util';

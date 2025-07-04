@@ -57,7 +57,7 @@ export const CartPage = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [company] = useAtom(companyAtom);
-    const [snackBar, setSnackBar] = useAtom(snackBarAtom);
+    const [, setSnackBar] = useAtom(snackBarAtom);
     const router = useRouter();
 
     const { mutate, isPending, isSuccess } = useCreateCart({

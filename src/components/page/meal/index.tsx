@@ -30,8 +30,7 @@ const Meal = () => {
         // 현재 날짜가 속한 주차를 계산합니다.
         const oneJan = new Date(date.getFullYear(), 0, 1);
         const daysUntilMonday = (monday.getTime() - oneJan.getTime()) / (24 * 60 * 60 * 1000);
-        const weekNumber = Math.ceil((daysUntilMonday + oneJan.getDay() + 1) / 7);
-        return weekNumber;
+        return Math.ceil((daysUntilMonday + oneJan.getDay() + 1) / 7);
     };
 
     const [company] = useAtom(companyAtom);

@@ -1,7 +1,7 @@
 'use client';
-import React, { useRef, useState, useEffect, useLayoutEffect, ChangeEvent, useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { RefreshCw, Copy } from 'lucide-react';
+import { Copy, RefreshCw } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getCookie, setCookie } from '@/utils/cookie';
 import styled from '@emotion/styled';
@@ -226,8 +226,7 @@ export const RegisterPage = ({ params }: { params: { id: string } }) => {
     const router = useRouter();
 
     const getRandomProfileImage = () => {
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        return randomImage;
+        return images[Math.floor(Math.random() * images.length)];
     };
     const setRandomProfileImage = () => {
         setRandomImage(getRandomProfileImage());

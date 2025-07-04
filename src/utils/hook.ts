@@ -2,12 +2,13 @@
 
 import { useMediaQuery, useTheme } from '@mui/material';
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
-import { BASE_MENU, CafeMenuTab, SEASON_MENU } from '@/types/common';
+import { BASE_MENU, CafeMenuTab, Company, SEASON_MENU } from '@/types/common';
 import { useAtom } from 'jotai/index';
 import { companyAtom } from '@/atom/common-atom';
 import { cartItemsAtom } from '@/atom/cart-atom';
 import { CafeCartItem } from '@/types/cart';
 import { responsiveConfigByPixel } from '@/data';
+import { useCookies } from 'react-cookie';
 
 let eventSource: EventSource | null = null; // 전역 SSE 변수
 
@@ -283,4 +284,21 @@ export const useHasVerticalScroll = () => {
     }, []);
 
     return { ref, hasScroll };
+};
+
+export const useDynamicTitle = (baseTitle?: string) => {
+    const [cookies] = useCookies(['recentCompany']);
+    const companyCode: string = cookies.recentCompany || 'KANGCHON';
+    const matchedCompany: string = companyCode === Company.KANGCHON ? '강촌' : '을지';
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (baseTitle === '') return;
+            if (!baseTitle) {
+                document.title = 'BBANGDORI';
+            } else {
+                document.title = `${baseTitle} | ${matchedCompany} - BBANGDORI`;
+            }
+        }
+    }, [baseTitle, matchedCompany]);
 };

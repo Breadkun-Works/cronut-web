@@ -67,7 +67,7 @@ function InitializeCompany() {
 
         setCompany(company as Company);
         if (!cookieCompany) {
-            setCookie('recentCompany', company);
+            setCookie('recentCompany', company, { path: '/' });
         }
     }, [cookies.recentCompany, setCompany, setCookie]);
 

@@ -1,4 +1,23 @@
 import CartMenuById from '@/components/page/cafe/menu/cafemenu-by-id';
+import { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/data';
+import { fetchCart } from '@/apis/cafe/cafe-api';
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+    const cartData = await fetchCart(params.id);
+
+    const cart = cartData.data.cafeCart;
+
+    return {
+        title: `${cart.title} | 카페 메뉴 - BBANGDORI`,
+        description: cart.description,
+        openGraph: {
+            title: `${cart.title} | 카페 메뉴 - BBANGDORI`,
+            description: `🛒 ${cart.title} 장바구니에 음료를 담아보세요~☕️🍞🥐`,
+            images: [DEFAULT_OG_IMAGE]
+        }
+    };
+}
 
 const getCartById = async (cartId: string): Promise<any> => {
     const secretKey = process.env.SECRET_ENCRYPT_KEY;

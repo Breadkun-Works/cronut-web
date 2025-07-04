@@ -14,10 +14,10 @@ import {
     StyledMenuTitleWithName
 } from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ICafeMenuBoardResponse, ICafeMenuOption } from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
-import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useResponsive } from '@/utils/hook';
+import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useDynamicTitle, useResponsive } from '@/utils/hook';
 import {
     CategoryTab,
     CategoryTabs,
@@ -81,6 +81,11 @@ const CafeMenu = ({
     cartId?: string;
     cartBasic?: any;
 }) => {
+    const pathname = usePathname();
+
+    const isMenuPage = pathname === '/cafe/cart/menu';
+
+    useDynamicTitle(isMenuPage ? '카페 메뉴' : '');
     const searchParams = useSearchParams();
     const name = getCookie('BRK-UserName') || '사용자';
     const [tabValue, setTabValue] = useState(0);

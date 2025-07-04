@@ -2,7 +2,7 @@ export type InquiryType = 'bug-report' | 'join-request' | 'other' | '';
 
 export interface InquiryModalProps {
     isOpen: boolean;
-    onClose: () => void;
+    onClose(): void;
     inquiryType?: InquiryType;
 }
 

@@ -30,7 +30,7 @@ const CartMenuById = ({ cartBasic, cartId, entry }: CartMenuByIdProps) => {
         if (cartBasic?.status === 'INACTIVE') {
             expiredModal.openModal();
         }
-    }, [cartBasic]);
+    }, [cartBasic?.status]);
 
     const handleClose = () => {
         expiredModal.closeModal();

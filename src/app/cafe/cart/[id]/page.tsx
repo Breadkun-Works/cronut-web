@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     const cart = cartData.data.cafeCart;
 
     return {
-        title: cart.title,
+        title: `${cart.title} | 장바구니 - BBANGDORI`,
         description: cart.description,
         openGraph: {
             title: `${cart.title} 장바구니에 놀러오세요!`,

@@ -52,7 +52,7 @@ const BRKSnackBar: React.FC<ISnackBarProps> = ({
                 }
             }}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            sx={{ marginBottom: '80px', width: { sx: '90%', sm: '90%' } }}
+            sx={{ marginBottom: '80px', maxWidth: '500px' }}
         >
             <Alert
                 onClose={() => {

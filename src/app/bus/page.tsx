@@ -1,5 +1,3 @@
-'use client';
-import React, { useEffect, useState } from 'react';
 import styles from '../../styles/Bus.module.scss';
 import classNames from 'classnames/bind';
 import axios from 'axios';
@@ -11,23 +9,32 @@ import useKakaoLoader from '../../components/UseKakaoLoader';
 import { Box, Typography } from '@mui/material';
 import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import { BusFront } from 'lucide-react';
-import { COLORS_DARK, responsiveConfig } from '@/data';
+import { COLORS_DARK, DEFAULT_OG_IMAGE, responsiveConfig } from '@/data';
 import { BusRenewal } from '@/components/page/bus/BusRenewal';
-
-interface BusStations {
-    arrivalTimeH?: number;
-    arrivalTimeM?: number;
-    distanceKm?: number;
-    durationH?: number;
-    durationM?: number;
-    notification?: string;
-    destinationName: string;
-    location: string;
-    latitude: number;
-    longitude: number;
-}
-
-const bs = classNames.bind(styles);
+export const generateMetadata = () => {
+    return {
+        title: '버스 - BBANGDORI',
+        description: '버스 정류장 위치와 승차 정보를 쉽게 확인해보세요.',
+        openGraph: {
+            title: '버스 - BBANGDORI',
+            images: [DEFAULT_OG_IMAGE]
+        }
+    };
+};
+// interface BusStations {
+//     arrivalTimeH?: number;
+//     arrivalTimeM?: number;
+//     distanceKm?: number;
+//     durationH?: number;
+//     durationM?: number;
+//     notification?: string;
+//     destinationName: string;
+//     location: string;
+//     latitude: number;
+//     longitude: number;
+// }
+//
+// const bs = classNames.bind(styles);
 
 // function Bus({ params }: { params: { destination: string } }) {
 //     useKakaoLoader();

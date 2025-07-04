@@ -19,6 +19,7 @@ import {
 import { getCookie } from '@/utils/cookie';
 import { Company, DrinkCategory } from '@/types/common';
 import { utf8ToBase64 } from '@/utils/util';
+import { notFound } from 'next/navigation';
 
 const createCart = async (newCart: INewCartType): Promise<ICreateCartResponse> => {
     const cookieUUID = getCookie('BRK-UUID');
@@ -165,4 +166,24 @@ export const getInitialCartItems = async (cartId: string) => {
     if (!response.ok) throw new Error('네트워크 응답 실패');
     const json = await response.json();
     return json.data?.cafeCartItem || [];
+};
+
+export const fetchCart = async (cafeCartId: string) => {
+    const secretKey: string = process.env.SECRET_ENCRYPT_KEY!;
+    const res = await fetch(`https://api.breadkun.com/api/cafe/carts/${cafeCartId}`, {
+        headers: {
+            Accept: 'application/vnd.breadkun.v1+json',
+            Origin: `https://breadkun-dev.vercel.app`,
+            'X-SSR-Token': secretKey
+        },
+        cache: 'no-store',
+        next: { revalidate: 0 }
+    });
+
+    if (res.status === 404) {
+        notFound();
+    }
+
+    const data = await res.json();
+    return data;
 };

@@ -3,19 +3,21 @@
 import { Box, FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { MapPin, Utensils } from 'lucide-react';
 import { Company, companyDropdownItem, companyMealDropdownItem } from '@/types/common';
-import { COLORS_DARK, responsiveConfig } from '@/data';
-import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
+import { COLORS_DARK } from '@/data';
+import { useResponsive } from '@/utils/hook';
 import React from 'react';
 import { useAtom } from 'jotai';
 import { companyAtom } from '@/atom/common-atom';
+import { useCookies } from 'react-cookie';
 
 export const CompanySelect = ({ entry }: { entry?: string }) => {
     const [company, setCompany] = useAtom(companyAtom);
+    const [, setCookie] = useCookies(['recentCompany']);
     const { isSmall, isMobile } = useResponsive();
     const handleChange = (event: SelectChangeEvent<string>) => {
         const selectedCompany = event.target.value as Company;
         setCompany(selectedCompany);
-        localStorage.setItem('recentCompany', selectedCompany);
+        setCookie('recentCompany', selectedCompany, { path: '/' });
     };
 
     return (

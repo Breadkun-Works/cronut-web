@@ -1,5 +1,13 @@
 import React, { ReactNode } from 'react';
 
+export interface ErrorResponse {
+    error: {
+        code: string;
+        message: string;
+    };
+    success: boolean;
+}
+
 export const mealMenu = (company: string) => {
     const commonMenu = [
         { value: 'SPECIAL', label: '일품' },

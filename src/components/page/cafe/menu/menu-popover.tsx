@@ -1,23 +1,23 @@
 'use client';
 
 import type React from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 
 import {
     Box,
+    Button,
     Card,
     CardMedia,
     Dialog,
     DialogContent,
+    Divider,
     IconButton,
     Slide,
-    Typography,
-    Button,
-    Divider
+    Typography
 } from '@mui/material';
-import { forwardRef, useState, useEffect } from 'react';
 import type { TransitionProps } from '@mui/material/transitions';
 import { DrinkTemperature } from '@/types/common';
-import type { ICafeMenuPopoverProps } from '@/types/cart';
+import type { ICafeMenuPopoverProps, IExtendedCafeMenuBoardResponse } from '@/types/cart';
 import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
 import { getCookie } from '@/utils/cookie';
 import { useAddMenuCart } from '@/apis/cafe/cafe-api';
@@ -26,6 +26,7 @@ import { HotToggleButton, IcedToggleButton, StyledToggleButtonGroup } from '@/st
 import { useResponsive } from '@/utils/hook';
 import { useModal } from '@/atom/common-atom';
 import { CommonModal } from '@/components/page/cafe/modal/common-modal';
+import { useRouter } from 'next/navigation';
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -36,13 +37,23 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSuccess }: ICafeMenuPopoverProps) => {
+export const MenuPopover = ({
+    open,
+    onClose,
+    popoverProps,
+    width,
+    cartId,
+    onSuccess,
+    handleChangeMenuData
+}: ICafeMenuPopoverProps) => {
     const { isMobile } = useResponsive();
     const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
     const userName = getCookie('BRK-UserName');
     const uuid = getCookie('BRK-UUID');
     const userProfile = getCookie('BRK-UserProfile');
     const [adjustedName, setAdjustedName] = useState(userName);
+    const expiredModal = useModal('expiredModal');
+    const router = useRouter();
 
     const userNameWarning = useModal('userNameWarning');
     // 창 크기 변경 감지
@@ -59,8 +70,7 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
         }
     }, []);
 
-    const defaultDrinkTemp = popoverProps.options?.[0].drinkTemperature || DrinkTemperature.HOT;
-    const drinkTempMenu = popoverProps.options.find(o => o.drinkTemperature === defaultDrinkTemp);
+    const drinkTempMenu = popoverProps.options.find(o => o.drinkTemperature === popoverProps.temp);
 
     const [selectedTempMenu, setSelectedTempMenu] = useState({
         ...drinkTempMenu,
@@ -98,6 +108,14 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
 
             return updatedMenu;
         });
+
+        handleChangeMenuData((prev: Record<string, IExtendedCafeMenuBoardResponse>) => ({
+            ...prev,
+            [popoverProps.menuName]: {
+                ...prev[popoverProps.menuName],
+                temp: value // temp만 변경
+            }
+        }));
     };
 
     const handleClick = () => {
@@ -128,6 +146,15 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
         }
     };
 
+    const handleClose = () => {
+        expiredModal.closeModal();
+        router.push(`/cafe/cart/${cartId}`);
+    };
+
+    const handleConfirm = () => {
+        router.push('/cafe/cart');
+    };
+
     const addMenuToCart = useAddMenuCart({
         onSuccess: () => {
             console.log('장바구니 추가 성공');
@@ -138,9 +165,33 @@ export const MenuPopover = ({ open, onClose, popoverProps, width, cartId, onSucc
             onClose();
         },
         onError: error => {
+            if (error?.response?.data?.error?.message === 'CafeCart must be ACTIVE') {
+                console.log('entered');
+                expiredModal.openModal();
+            }
             console.error('장바구니 추가 실패:', error);
         }
     });
+
+    if (expiredModal.modal.isOpen) {
+        return (
+            <CommonModal
+                open={expiredModal.modal.isOpen}
+                title={'장바구니 만료'}
+                content={
+                    <Box>
+                        <Typography variant="body1" fontWeight={'bold'}>
+                            {popoverProps.cartName}
+                        </Typography>
+                        장바구니의 이용 가능 시간이 만료되었습니다.
+                    </Box>
+                }
+                onClose={handleClose}
+                onConfirm={handleConfirm}
+                confirmText={'장바구니로 이동'}
+            />
+        );
+    }
 
     return (
         <>

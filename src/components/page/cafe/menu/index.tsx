@@ -15,7 +15,7 @@ import {
 } from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { ICafeMenuBoardResponse, ICafeMenuOption } from '@/types/cart';
+import { ICafeMenuBoardResponse, ICafeMenuOption, IExtendedCafeMenuBoardResponse } from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useDynamicTitle, useResponsive } from '@/utils/hook';
 import {
@@ -82,10 +82,10 @@ const CafeMenu = ({
     cartBasic?: any;
 }) => {
     const pathname = usePathname();
-
     const isMenuPage = pathname === '/cafe/cart/menu';
 
     useDynamicTitle(isMenuPage ? '카페 메뉴' : '');
+
     const searchParams = useSearchParams();
     const name = getCookie('BRK-UserName') || '사용자';
     const [tabValue, setTabValue] = useState(0);
@@ -99,6 +99,7 @@ const CafeMenu = ({
     const { isMobile, isDesktop, isSmall } = useResponsive();
 
     const menuHeaderRef = useRef<HTMLDivElement>(null);
+    const [menuTempMap, setMenuTempMap] = useState<Record<string, IExtendedCafeMenuBoardResponse>>({});
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -137,7 +138,7 @@ const CafeMenu = ({
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } = useGetCafeMenuInfinite(query);
 
     const cafeMenuData = useCafeMenuData(entry, cartBasic?.cafeLocation);
-    const { iconSizeSteps, fontSizeSteps } = responsiveConfig;
+    const { iconSizeSteps } = responsiveConfig;
     const breakpoint = useCurrentBreakpoint();
     const iconSize = iconSizeSteps.menu[breakpoint];
 
@@ -232,10 +233,32 @@ const CafeMenu = ({
         }
     }, [company]);
 
+    useEffect(() => {
+        if (data?.pages) {
+            const initialTempMap: Record<string, IExtendedCafeMenuBoardResponse> = {};
+
+            data.pages.forEach(page => {
+                page.records.forEach(record => {
+                    if (!initialTempMap[record.name]) {
+                        // initialTempMap[record.name] = record.options[0].drinkTemperature;
+                        initialTempMap[record.name] = { ...record, temp: record.options[0].drinkTemperature };
+                    }
+                });
+            });
+
+            setMenuTempMap(prev => ({
+                ...initialTempMap,
+                ...prev // 기존 선택 유지 (스크롤 등으로 추가 로드됐을 때도 안전하게)
+            }));
+        }
+    }, [data]);
+
     const handleTabChange = (event: React.SyntheticEvent, newTabValue: number) => {
         const selectedCategory = cafeMenuData[newTabValue].value;
         setTabValue(newTabValue);
         setQuery(prev => ({ ...prev, category: selectedCategory }));
+        // 탭이 바뀌면 맵 정보 초기화
+        setMenuTempMap({});
     };
 
     const handleCardClick = (name: string) => {
@@ -264,6 +287,7 @@ const CafeMenu = ({
         onToggle(value: string): void;
         options: Array<ICafeMenuOption>;
     }) => {
+        console.log(temp);
         const tempType = getTempType(options);
 
         if (tempType === 'ICE_ONLY') return <TemperatureBadge temperature="ICED" label="ICE ONLY" size="small" />;
@@ -317,16 +341,18 @@ const CafeMenu = ({
     };
 
     const MenuItem = ({
+        temp,
         record,
         onClick,
         entry
     }: {
+        temp: DrinkTemperature;
         record: ICafeMenuBoardResponse;
         onClick: () => void;
         entry?: string;
     }) => {
-        const [temp, setTemp] = useState<DrinkTemperature>(record.options[0].drinkTemperature);
-
+        console.log(temp);
+        // const [temp, setTemp] = useState<DrinkTemperature>(record.options[0].drinkTemperature);
         // 공통 컨텐츠
         const content = (
             <MenuItemContent>
@@ -335,7 +361,13 @@ const CafeMenu = ({
                         <CafeMenuTempUI
                             temp={temp}
                             onToggle={(value: DrinkTemperature) => {
-                                setTemp(value);
+                                setMenuTempMap(prev => ({
+                                    ...prev,
+                                    [record.name]: {
+                                        ...prev[record.name], // 기존 메뉴 데이터 유지
+                                        temp: value // temp만 변경
+                                    }
+                                }));
                             }}
                             options={record.options}
                         />
@@ -344,8 +376,7 @@ const CafeMenu = ({
                             image={
                                 (record.options.length > 1
                                     ? record.options?.[temp === DrinkTemperature.ICED ? 1 : 0]?.imageUrl
-                                    : record.options?.[0]?.imageUrl) ??
-                                'https://img.freepik.com/free-photo/iced-cola-tall-glass_1101-740.jpg'
+                                    : record.options?.[0]?.imageUrl) ?? '/logo/menu-fallback(2).webp'
                             }
                             sx={{ backgroundSize: 'contain' }}
                             title={record.name}
@@ -597,32 +628,39 @@ const CafeMenu = ({
                             <Box ref={loadMoreRef} component="div">
                                 <MenuGrid>
                                     {data?.pages?.map(page =>
-                                        page.records.map(record => (
-                                            <React.Fragment key={`menu_${record.name}`}>
-                                                <MenuItemCard isMenu={entry === 'menu'}>
-                                                    <MenuItem
-                                                        record={record}
-                                                        onClick={() => handleCardClick(record.name)}
-                                                        entry={entry}
-                                                    />
-                                                </MenuItemCard>
-                                                {entry !== 'menu' && openDialog && selectedMenu === record.name && (
-                                                    <MenuPopover
-                                                        width={dialogWidth}
-                                                        open={openDialog}
-                                                        onClose={handleCloseDialog}
-                                                        popoverProps={{
-                                                            menuName: record.name,
-                                                            options: record.options
-                                                        }}
-                                                        cartId={cartId}
-                                                        onSuccess={() => {
-                                                            setMoveToConfirm(true);
-                                                        }}
-                                                    />
-                                                )}
-                                            </React.Fragment>
-                                        ))
+                                        page.records.map(record => {
+                                            return (
+                                                <React.Fragment key={`menu_${record.name}`}>
+                                                    <MenuItemCard isMenu={entry === 'menu'}>
+                                                        <MenuItem
+                                                            temp={menuTempMap[record.name]?.temp}
+                                                            record={record}
+                                                            onClick={() => handleCardClick(record.name)}
+                                                            entry={entry}
+                                                        />
+                                                    </MenuItemCard>
+                                                    {entry !== 'menu' && openDialog && selectedMenu === record.name && (
+                                                        <MenuPopover
+                                                            width={dialogWidth}
+                                                            open={openDialog}
+                                                            onClose={handleCloseDialog}
+                                                            handleChangeMenuData={setMenuTempMap}
+                                                            popoverProps={{
+                                                                menuTempMap,
+                                                                cartName: cartBasic.name,
+                                                                temp: menuTempMap[record.name]?.temp,
+                                                                menuName: record.name,
+                                                                options: record.options
+                                                            }}
+                                                            cartId={cartId}
+                                                            onSuccess={() => {
+                                                                setMoveToConfirm(true);
+                                                            }}
+                                                        />
+                                                    )}
+                                                </React.Fragment>
+                                            );
+                                        })
                                     )}
                                 </MenuGrid>
 

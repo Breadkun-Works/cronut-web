@@ -44,6 +44,10 @@ export interface ICafeMenuBoardResponse {
     options: Array<ICafeMenuOption>;
 }
 
+export interface IExtendedCafeMenuBoardResponse extends ICafeMenuBoardResponse {
+    temp: DrinkTemperature;
+}
+
 export interface ICafeMenuOption {
     drinkTemperature: DrinkTemperature;
     id: number;
@@ -108,10 +112,14 @@ export interface ICafeMenuPopoverProps {
     open: boolean;
     onClose(): void;
     popoverProps: {
+        temp: DrinkTemperature;
+        cartName: string;
+        menuTempMap: Record<string, IExtendedCafeMenuBoardResponse>;
         menuName: string;
         options: Array<ICafeMenuOption>;
         price?: number;
     };
+    handleChangeMenuData: any;
     width: number;
     cartId?: string;
     onSuccess(): void;

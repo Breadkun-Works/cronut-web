@@ -17,7 +17,7 @@ import {
     INewCartType
 } from '@/types/cart';
 import { getCookie } from '@/utils/cookie';
-import { Company, DrinkCategory } from '@/types/common';
+import { Company, DrinkCategory, ErrorResponse } from '@/types/common';
 import { utf8ToBase64 } from '@/utils/util';
 import { notFound } from 'next/navigation';
 
@@ -116,9 +116,17 @@ const addMenuCart = async ({ cafeCartId, cartData, user }: IAddMenuCartParams): 
 };
 
 export const useAddMenuCart = (
-    options?: Omit<UseMutationOptions<IAddCartMenuResponse, Error, IAddMenuCartParams, unknown>, 'mutationFn'>
+    options?: Omit<
+        UseMutationOptions<
+            IAddCartMenuResponse,
+            AxiosError<ErrorResponse>,
+            IAddMenuCartParams,
+            AxiosError<ErrorResponse>
+        >,
+        'mutationFn'
+    >
 ) => {
-    return useMutation<IAddCartMenuResponse, Error, IAddMenuCartParams, unknown>({
+    return useMutation<IAddCartMenuResponse, AxiosError<ErrorResponse>, IAddMenuCartParams, AxiosError<ErrorResponse>>({
         mutationFn: addMenuCart,
         ...options
     });

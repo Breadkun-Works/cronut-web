@@ -82,7 +82,7 @@ const CafeMenu = ({
     cartBasic?: any;
 }) => {
     const pathname = usePathname();
-    const isMenuPage = pathname === '/cafe/cart/menu';
+    const isMenuPage = pathname.startsWith('/cafe/cart/menu') || pathname === '/cafe/menu';
 
     useDynamicTitle(isMenuPage ? '카페 메뉴' : '');
 

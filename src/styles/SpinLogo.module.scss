@@ -1,4 +1,4 @@
-@use '_utilities.scss';
+@use '_utilities.scss' as u;
 
 .spinLogo {
   text-align: center;
@@ -13,13 +13,13 @@
   }
 }
 .spinLogo__wrap {
-  background-color: $gray-09;
+  background-color: u.$gray-09;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(15px + 1.5vmin);
-  color: $gray-00;
+  color: u.$gray-00;
 }
 @keyframes App-logo-spin {
   from {

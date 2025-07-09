@@ -51,10 +51,12 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
                 {/* Google Analytics */}
                 <Script src={`https://www.googletagmanager.com/gtag/js?id=G-92E8PST3BH`} strategy="afterInteractive" />
                 <Script id="gtag-init" strategy="afterInteractive">
-                    {`window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                            gtag('config', 'G-92E8PST3BH');`}
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-92E8PST3BH');
+                    `}
                 </Script>
                 {/* KAKAO API */}
                 <Script

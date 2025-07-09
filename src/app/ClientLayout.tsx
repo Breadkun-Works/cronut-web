@@ -14,6 +14,8 @@ import { Snackbar } from '@/components/common/snackbar';
 import { companyAtom } from '@/atom/common-atom';
 import { Company } from '@/types/common';
 import InquiryDial from './InquiryDial';
+import { usePathname } from 'next/navigation';
+import { pageview } from '@/lib/gtag';
 export default function ClientLayout({
     children,
     dehydratedState
@@ -27,6 +29,13 @@ export default function ClientLayout({
     useEffect(() => {
         setIsClient(true);
     }, []);
+
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (!pathname) return;
+        pageview(pathname);
+    }, [pathname]);
 
     if (!isClient) {
         return null;

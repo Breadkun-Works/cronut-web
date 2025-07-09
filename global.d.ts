@@ -1,5 +1,8 @@
 declare global {
-    interface window {
+    interface Window {
         kakao: any;
+        gtag: (...args: any[]) => void;
     }
 }
+
+export {};

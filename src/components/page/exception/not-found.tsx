@@ -1,81 +1,138 @@
 'use client';
 import { Box, Button, Divider, Stack, Typography } from '@mui/material';
-import Link from 'next/link';
 import { ArrowLeft, HomeIcon } from 'lucide-react';
 import React from 'react';
-import styled from '@emotion/styled';
-import { StyledBox } from '@/styles/exception/exception.styles';
+import { useRouter } from 'next/navigation';
+import { useResponsive } from '@/utils/hook';
 
-const CTAButton = styled(Button)(({ theme }) => ({
-    backgroundColor: '#d97706',
-    color: 'white',
-    padding: theme.spacing(1.5, 4),
-    borderRadius: theme.spacing(1),
-    fontWeight: 'medium',
-    '&:hover': {
-        backgroundColor: '#b45309'
-    }
-}));
+const NotFound = () => {
+    const router = useRouter();
+    const { isDesktop } = useResponsive();
+    const goBack = () => {
+        const prevPath = window.location.pathname;
+        router.back();
+        setTimeout(() => {
+            if (window.location.pathname === prevPath) {
+                router.push('/'); // 이전 페이지 이동 실패시 홈으로 강제 이동
+            }
+        }, 300);
+    };
 
-const SecondaryButton = styled(Button)(({ theme }) => ({
-    borderColor: '#d97706',
-    color: '#d97706',
-    padding: theme.spacing(1.5, 4),
-    borderRadius: theme.spacing(1),
-    fontWeight: 'medium',
-    '&:hover': {
-        borderColor: '#b45309',
-        backgroundColor: 'rgba(217, 119, 6, 0.1)'
-    }
-}));
-
-const notFound = () => {
     return (
-        <StyledBox>
-            {/*<Box textAlign="center" sx={{ maxWidth: 600 }}>*/}
-            <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
-                페이지를 찾을 수 없습니다
-            </Typography>
-            <Stack spacing={2} sx={{ mb: 6, color: '#d1d5db', textAlign: 'center' }}>
-                <Typography variant="h6">앗! 길을 잃으셨나요? 😢</Typography>
-                <Typography variant="body1">요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.</Typography>
-                <Typography variant="body2" sx={{ color: '#9ca3af' }}>
-                    주소를 다시 확인해보시거나 아래 버튼을 통해 이동해주세요.
+        <Box
+            display={'flex'}
+            minHeight="calc(100vh - 90px)"
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems="center"
+        >
+            <Stack
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems="center"
+                justifyContent="center"
+                spacing={2}
+                sx={{ mb: 2 }}
+            >
+                <img
+                    alt={'moodyPullman'}
+                    src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/logo/moodyPullman.webp`}
+                    width={'27%'}
+                    height={'27%'}
+                ></img>
+                <Typography
+                    variant="h3"
+                    component="h1"
+                    fontWeight="bold"
+                    textAlign={'center'}
+                    sx={{
+                        padding: '0 16px 0 16px',
+                        whiteSpace: 'normal',
+                        textAlign: 'center',
+                        wordBreak: 'keep-all'
+                    }}
+                >
+                    페이지를 찾을 수 없습니다
+                </Typography>
+            </Stack>
+            <Stack spacing={2} sx={{ mb: 2, color: '#d1d5db', textAlign: 'center' }}>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        padding: '0 16px 0 16px',
+                        whiteSpace: 'normal',
+                        textAlign: 'center',
+                        wordBreak: 'keep-all'
+                    }}
+                >
+                    앗! 길을 잃으셨나요? 😢
+                </Typography>
+                <Typography
+                    variant="body1"
+                    sx={{
+                        padding: '0 20px',
+                        whiteSpace: 'normal',
+                        textAlign: 'center',
+                        wordBreak: 'keep-all'
+                    }}
+                >
+                    요청하신 페이지가 존재하지 않거나
+                    {!isDesktop ? <br /> : ' '}
+                    이동되었을 수 있습니다.
                 </Typography>
             </Stack>
             <Box padding={2}>
                 <Divider sx={{ borderColor: '#404040', mb: 4 }} />
-                <Stack spacing={3} alignItems={'center'} justifyContent="center">
-                    <Link href={'/'}>
-                        <CTAButton variant="contained" size="large" startIcon={<HomeIcon />}>
+                <Stack spacing={3} alignItems="center">
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: '#9ca3af',
+                            whiteSpace: 'normal',
+                            textAlign: 'center',
+                            wordBreak: 'keep-all'
+                        }}
+                    >
+                        주소를 다시 확인해보시거나 아래 버튼을 통해 이동해주세요.
+                    </Typography>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} width="100%" justifyContent="center">
+                        <Button
+                            startIcon={<HomeIcon />}
+                            sx={{
+                                backgroundColor: '#d97706',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#b45309'
+                                },
+                                padding: '8px 16px 8px 16px',
+                                width: { xs: '100%', sm: 'auto' }
+                            }}
+                            onClick={() => router.push('/')}
+                        >
                             홈으로 가기
-                        </CTAButton>
-                        <SecondaryButton variant="outlined" size="large" startIcon={<ArrowLeft />}>
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<ArrowLeft />}
+                            sx={{
+                                borderColor: '#d97706',
+                                color: '#d97706',
+                                '&:hover': {
+                                    borderColor: '#b45309',
+                                    backgroundColor: 'rgba(217, 119, 6, 0.1)'
+                                },
+                                padding: '8px 16px 8px 16px',
+                                width: { xs: '100%', sm: 'auto' }
+                            }}
+                            onClick={goBack}
+                        >
                             이전 페이지
-                        </SecondaryButton>
-                    </Link>
+                        </Button>
+                    </Stack>
                 </Stack>
             </Box>
-            <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="center"
-                alignItems="center"
-                sx={{ mb: 6 }}
-            >
-                <Link href={'/'}>
-                    <CTAButton variant="contained" size="large" startIcon={<HomeIcon />}>
-                        홈으로 가기
-                    </CTAButton>
-                </Link>
-
-                <SecondaryButton variant="outlined" size="large" startIcon={<ArrowLeft />}>
-                    이전 페이지
-                </SecondaryButton>
-            </Stack>
-            {/*</Box>*/}
-        </StyledBox>
+        </Box>
     );
 };
 
-export default notFound;
+export default NotFound;

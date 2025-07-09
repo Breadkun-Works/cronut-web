@@ -395,6 +395,7 @@
 .home__links {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 3.33vw;
   flex-wrap: wrap;
   @include u.desktop {
     display: none;

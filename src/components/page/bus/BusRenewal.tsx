@@ -24,6 +24,7 @@ export const BusRenewal = () => {
                 sx={{ mb: 2 }}
             >
                 <img
+                    alt={'pullman'}
                     src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}images/logo/pullman.webp`}
                     width={'25%'}
                     height={'25%'}
@@ -49,8 +50,10 @@ export const BusRenewal = () => {
                     <Button
                         variant="outlined"
                         sx={{
+                            width: { xs: '100%', sm: 'auto' },
                             borderColor: '#d97706',
                             color: '#d97706',
+                            padding: '8px 16px 8px 16px',
                             '&:hover': {
                                 borderColor: '#b45309',
                                 backgroundColor: 'rgba(217, 119, 6, 0.1)'

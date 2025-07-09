@@ -173,6 +173,7 @@
 }
 .days + .meal__body {
   margin-top: 3.33vw;
+  margin-bottom:3.33vw;
   @include u.desktop {
     margin-top: 20px;
   }
@@ -219,6 +220,7 @@
 }
 .meal-categories + .meal-menus {
   margin-top: 3.33vw;
+  margin-bottom:3.33vw;
   @include u.desktop {
     margin-top: 25px;
   }

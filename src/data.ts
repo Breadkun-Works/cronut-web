@@ -164,6 +164,16 @@ export const MuiTheme = createTheme({
         }
     },
     components: {
+        MuiCssBaseline: {
+            styleOverrides: {
+                body: {
+                    cursor: 'url("/images/cursor/default.png"), auto'
+                },
+                a: {
+                    cursor: 'url("/images/cursor/finger.png"), auto'
+                }
+            }
+        },
         MuiTabs: {
             styleOverrides: {
                 root: {

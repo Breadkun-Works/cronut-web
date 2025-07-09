@@ -275,8 +275,8 @@
   }
   .refresh-button {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
     z-index: 10;
     display: inline-block;
     width: 9vw;
@@ -306,7 +306,7 @@
 .home__weather + .home__dusts {
   margin-top: 3.33vw;
   @include u.desktop {
-    margin-top: 0px;
+    margin-top: 0;
   }
 }
 .home__dusts {

@@ -287,7 +287,6 @@ const CafeMenu = ({
         onToggle(value: string): void;
         options: Array<ICafeMenuOption>;
     }) => {
-        console.log(temp);
         const tempType = getTempType(options);
 
         if (tempType === 'ICE_ONLY') return <TemperatureBadge temperature="ICED" label="ICE ONLY" size="small" />;
@@ -351,7 +350,6 @@ const CafeMenu = ({
         onClick: () => void;
         entry?: string;
     }) => {
-        console.log(temp);
         // const [temp, setTemp] = useState<DrinkTemperature>(record.options[0].drinkTemperature);
         // 공통 컨텐츠
         const content = (

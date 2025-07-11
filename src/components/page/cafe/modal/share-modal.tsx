@@ -90,8 +90,6 @@ export function ShareCartDialog({
 
     if (!open) return null;
 
-    console.log(open);
-
     return (
         <>
             <Backdrop

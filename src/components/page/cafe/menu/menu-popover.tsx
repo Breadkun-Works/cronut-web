@@ -157,7 +157,7 @@ export const MenuPopover = ({
 
     const addMenuToCart = useAddMenuCart({
         onSuccess: () => {
-            console.log('장바구니 추가 성공');
+            // console.log('장바구니 추가 성공');
             onSuccess();
             if (userNameWarning.modal.isOpen) {
                 userNameWarning.closeModal();

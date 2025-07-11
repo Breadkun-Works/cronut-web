@@ -67,7 +67,7 @@ export const ScrollableCartList = ({
 
                     const distance = trashIconBoxRect.left - textBoxRect.right;
                     const isOverflowed = textBox.scrollWidth > textBox.clientWidth;
-                    console.log(`Index ${index} | Distance: ${distance}, Overflow: ${isOverflowed}`);
+                    // console.log(`Index ${index} | Distance: ${distance}, Overflow: ${isOverflowed}`);
 
                     return distance <= 8 || isOverflowed;
                 }

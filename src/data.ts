@@ -209,7 +209,8 @@ export const COLORS_DARK = {
         primary: '#f8f9fa', // gray-00
         secondary: '#adb5bd', // gray-05
         tertiary: '#868e96', // gray-06
-        disabled: '#6c757d' // 중간 회색
+        disabled: '#6c757d', // 중간 회색
+        inactive: '#9E9E9E'
     },
     accent: {
         main: '#cf7500',

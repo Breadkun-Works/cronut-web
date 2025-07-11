@@ -141,6 +141,7 @@ export const ScrollableCartList = ({
                     <CartItemCard key={item.id}>
                         <CartItemContent>
                             <Box display="flex" alignItems="stretch" justifyContent={'space-between'}>
+                                {/* 이미지 */}
                                 <CardImage
                                     imageUrl={item.drinkImageUrl}
                                     alt={item.drinkName}
@@ -148,7 +149,6 @@ export const ScrollableCartList = ({
                                     height={cartImgWidthAndHeight}
                                     blur={!item.available}
                                 />
-                                {/* 이미지 */}
                                 {/*<ItemImage*/}
                                 {/*    width={cartImgWidthAndHeight}*/}
                                 {/*    height={cartImgWidthAndHeight}*/}
@@ -252,7 +252,9 @@ export const ScrollableCartList = ({
                                         flexDirection={{ xs: 'row', md: 'row' }}
                                     >
                                         <QuantityTypography>수량: {item.quantity}잔</QuantityTypography>
-                                        <PriceTypography>{item.drinkTotalPrice.toLocaleString()} 원</PriceTypography>
+                                        <PriceTypography inactive={!item.available}>
+                                            {item.drinkTotalPrice.toLocaleString()} 원
+                                        </PriceTypography>
                                     </Box>
                                 </Box>
                             </Box>

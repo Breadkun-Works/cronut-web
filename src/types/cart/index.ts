@@ -153,6 +153,7 @@ export interface CafeCartItem {
     imageUrl: string;
     isPersonalCup: boolean;
     quantity: number;
+    available: boolean;
 }
 
 export interface GroupedCafeData {

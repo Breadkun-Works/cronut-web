@@ -20,6 +20,7 @@ import { deleteCartItem } from '@/apis/cafe/cafe-api';
 import { IDeleteCartItem, IUserInfo } from '@/types/cart';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { EllipsisTooltipWithChip } from '@/components/common/EllipsisTooltipWithChip';
+import { CardImage } from '@/components/common/CardImage';
 
 export const ScrollableCartList = ({
     footerOpen,
@@ -140,19 +141,30 @@ export const ScrollableCartList = ({
                     <CartItemCard key={item.id}>
                         <CartItemContent>
                             <Box display="flex" alignItems="stretch" justifyContent={'space-between'}>
+                                <CardImage
+                                    imageUrl={item.drinkImageUrl}
+                                    alt={item.drinkName}
+                                    width={cartImgWidthAndHeight}
+                                    height={cartImgWidthAndHeight}
+                                    blur={!item.available}
+                                />
                                 {/* 이미지 */}
-                                <ItemImage width={cartImgWidthAndHeight} height={cartImgWidthAndHeight}>
-                                    <CardMedia
-                                        component="img"
-                                        image={item.drinkImageUrl}
-                                        alt={item.drinkName}
-                                        sx={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}
-                                    />
-                                </ItemImage>
+                                {/*<ItemImage*/}
+                                {/*    width={cartImgWidthAndHeight}*/}
+                                {/*    height={cartImgWidthAndHeight}*/}
+                                {/*    blur={item.available}*/}
+                                {/*>*/}
+                                {/*    <CardMedia*/}
+                                {/*        component="img"*/}
+                                {/*        image={item.drinkImageUrl}*/}
+                                {/*        alt={item.drinkName}*/}
+                                {/*        sx={{*/}
+                                {/*            width: '100%',*/}
+                                {/*            height: '100%',*/}
+                                {/*            objectFit: 'cover'*/}
+                                {/*        }}*/}
+                                {/*    />*/}
+                                {/*</ItemImage>*/}
 
                                 <Box
                                     display="flex"

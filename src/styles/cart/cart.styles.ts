@@ -23,17 +23,18 @@ interface ConfirmHeaderProps {
 }
 
 const slideMarquee = keyframes`
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 `;
 
 export const PageWrapper = styled.div`
     width: 100%;
     max-width: 950px;
+
     .cart-wrapper {
         display: flex;
         justify-content: center;
@@ -380,19 +381,93 @@ export const CartItemContent = styled(CardContent)(({ theme }) => ({
 }));
 
 export const ItemImage = styled(Box, {
-    shouldForwardProp: prop => prop !== 'width' && prop !== 'height'
-})<{ width?: number | string; height?: number | string }>(({ theme, width, height }) => ({
-    position: 'relative',
-    width: width ?? 60,
-    height: height ?? 60,
-    borderRadius: 8,
-    overflow: 'hidden',
-    flexShrink: 0,
-    [theme.breakpoints.up('md')]: {
-        width: width ?? 100,
-        height: height ?? 100
-    }
-}));
+    shouldForwardProp: prop => !['width', 'height', 'blur', 'size'].includes(prop)
+})<{ width?: number | string; height?: number | string; blur: boolean; size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' }>(
+    ({ theme, width, height, blur, size }) => ({
+        position: 'relative',
+        width: width ?? 60,
+        height: height ?? 60,
+        borderRadius: 8,
+        overflow: 'hidden',
+        flexShrink: 0,
+        [theme.breakpoints.up('md')]: {
+            width: width ?? 100,
+            height: height ?? 100
+        },
+        // '&::after': blur && {
+        //     content: '"판매종료"',
+        //     position: 'absolute',
+        //     top: 0,
+        //     left: 0,
+        //     width: '100%',
+        //     height: '100%',
+        //     backgroundColor: 'rgba(0, 0, 0, 0.45)',
+        //     display: 'flex',
+        //     alignItems: 'center',
+        //     justifyContent: 'center',
+        //     color: '#fff',
+        //     fontWeight: 'bold',
+        //     pointerEvents: 'none',
+        //     fontSize:
+        //         size === 'xs'
+        //             ? '0.7rem' // 기본값: xs 사이즈
+        //             : '0.95rem', // 다른 경우 기본값
+        //     ...(size === 'xs'
+        //         ? {
+        //               [theme.breakpoints.down('sm')]: {
+        //                   fontSize: '0.6rem'
+        //               },
+        //               [theme.breakpoints.up('sm')]: {
+        //                   fontSize: '0.7rem'
+        //               }
+        //           }
+        //         : {
+        //               [theme.breakpoints.down('sm')]: {
+        //                   fontSize: '0.875rem'
+        //               },
+        //               [theme.breakpoints.up('lg')]: {
+        //                   fontSize: '1rem'
+        //               }
+        //           })
+        // }
+        '&::after': blur && {
+            content: '"판매종료"',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.45)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontWeight: 'bold',
+            pointerEvents: 'none',
+            fontSize: size === 'xs' ? '0.7rem' : '0.95rem',
+            '@media (max-width: 329px)': {
+                fontSize: '0.55rem'
+            },
+            ...(size === 'xs'
+                ? {
+                      [theme.breakpoints.down('sm')]: {
+                          fontSize: '0.6rem'
+                      },
+                      [theme.breakpoints.up('sm')]: {
+                          fontSize: '0.7rem'
+                      }
+                  }
+                : {
+                      [theme.breakpoints.down('sm')]: {
+                          fontSize: '0.875rem'
+                      },
+                      [theme.breakpoints.up('lg')]: {
+                          fontSize: '1rem'
+                      }
+                  })
+        }
+    })
+);
 
 export const UserAvatar = styled(Avatar)(({ theme }) => ({
     fontWeight: 600,
@@ -519,18 +594,6 @@ export const CartWarningText = styled('div')<{ isOverflowed: boolean }>(({ theme
     // fontSize: '0.8rem',
     alignItems: 'center',
     justifyContent: isOverflowed ? 'unset' : 'center',
-    // [theme.breakpoints.up('sm')]: {
-    //     fontSize: '0.95rem'
-    // },
-    // [theme.breakpoints.up('xs')]: {
-    //     fontSize: '0.9rem'
-    // },
-    // [theme.breakpoints.up('md')]: {
-    //     fontSize: '1rem'
-    // },
-    // [theme.breakpoints.up('lg')]: {
-    //     fontSize: '18px'
-    // },
     overflow: 'hidden',
     position: 'relative',
     '.marquee': {

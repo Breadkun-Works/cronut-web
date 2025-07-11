@@ -9,6 +9,7 @@ import { COLORS_DARK } from '@/data';
 import { ICommonModalTypes } from '@/types/common';
 import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 import { EllipsisTooltipWithChip } from '@/components/common/EllipsisTooltipWithChip';
+import { CardImage } from '@/components/common/CardImage';
 
 interface CafeSummaryModalProps extends ICommonModalTypes {
     cartItems: CafeCartItem[];
@@ -94,11 +95,13 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                         >
                             <Box display="flex" alignItems="center" sx={{ overflow: 'hidden' }}>
                                 <MenuImageContainer>
-                                    <Box
-                                        component="img"
-                                        src={group.drinkImageUrl}
+                                    <CardImage
+                                        width="100%"
+                                        height="100%"
+                                        imageUrl={group.drinkImageUrl}
                                         alt={group.drinkName}
-                                        sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        blur={group.items.some(g => !g.available)}
+                                        size={'xs'}
                                     />
                                 </MenuImageContainer>
                                 <Box

@@ -162,6 +162,7 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                         display: 'none'
                                     }
                                 }}
+                                inactive={group.items.some(g => !g.available)}
                             >
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}

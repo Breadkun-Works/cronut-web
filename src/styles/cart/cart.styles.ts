@@ -656,14 +656,12 @@ export const QuantityTypography = styled(Typography)(({ theme }) => ({
     // }
 }));
 
-export const PriceTypography = styled(Typography)(({ theme }) => ({
-    color: COLORS_DARK.accent.main,
+export const PriceTypography = styled(Typography, {
+    shouldForwardProp: prop => prop !== 'isSoldOut'
+})<{ inactive?: boolean }>(({ theme, inactive }) => ({
+    color: inactive ? COLORS_DARK.text.inactive : COLORS_DARK.accent.main,
     fontWeight: 700,
-    fontSize: '1.1rem', // 기본값(xs 기준)
-
-    // [theme.breakpoints.up('sm')]: {
-    //     fontSize: '1.2rem'
-    // },
+    fontSize: '1.1rem',
     [theme.breakpoints.up('md')]: {
         fontSize: '1.2rem'
     }
@@ -730,18 +728,20 @@ export const MenuImageContainer = styled(Box)(({ theme }) => ({
     }
 }));
 
-export const MenuCount = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#D97706',
-    color: '#FFFFFF',
-    borderRadius: '20%',
-    fontWeight: 'bold',
-    width: 20,
-    height: 22,
-    [theme.breakpoints.up('sm')]: {
-        width: 24,
-        height: 28
-    }
-}));
+export const MenuCount = styled(Box, { shouldForwardProp: prop => prop !== 'inactive' })<{ inactive?: boolean }>(
+    ({ theme, inactive }) => ({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: inactive ? COLORS_DARK.text.inactive : COLORS_DARK.accent.main,
+        color: '#FFFFFF',
+        borderRadius: '20%',
+        fontWeight: 'bold',
+        width: 20,
+        height: 22,
+        [theme.breakpoints.up('sm')]: {
+            width: 24,
+            height: 28
+        }
+    })
+);

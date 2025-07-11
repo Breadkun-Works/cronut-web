@@ -145,6 +145,7 @@ export function CafeSummaryModal({ open, onClose, cartItems }: CafeSummaryModalP
                                 ref={(el: HTMLDivElement | null) => {
                                     menuCountRefs.current[index] = el;
                                 }}
+                                inactive={group.items.some(g => !g.available)}
                             >
                                 {group.totalQuantity}
                             </MenuCount>

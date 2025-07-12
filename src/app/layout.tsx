@@ -39,7 +39,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
         <html lang="ko" className={nanumFonts.variable}>
-            <head title={'더존 빵돌이 | 다양한 더존ICT 생활 정보'}>
+            <head>
+                <title>BBANGDORI</title>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="theme-color" content="#212529" />

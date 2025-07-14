@@ -8,10 +8,10 @@
   }
   .home__body {
     padding: 0 3.33vw;
+
     @include u.desktop {
       padding: 0;
       display: flex;
-      margin: 0 10px;
     }
   }
 }
@@ -115,25 +115,30 @@
   }
 }
 .home__weather {
-  background-color: u.$gray-08;
-  height: 55vw;
-  width: 100%;
-  border-radius: 10.26vw;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
+  width: 100%;
+  height: 55vw;
+  padding: 20px;
+  border-radius: 10.26vw;
+  background-color: u.$gray-08;
+  box-sizing: border-box;
+
   @include u.desktop {
-    width: calc(63% - 10px);
-    margin-right: 10px;
+    width: 100%;
     height: 300px;
     border-radius: 35px;
   }
+
   .home__weather--now {
-    width: 38%;
+    width: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     @include u.desktop {
       width: 40%;
     }
@@ -141,9 +146,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      @include u.desktop {
+        flex-direction: row;
+      }
+
       .home__weather--now-temperature-img {
         height: 23vw;
         margin-bottom: 2.56vw;
+
         @include u.desktop {
           height: clamp(1px, 15.8vw, 150px);
           margin-bottom: 10px;
@@ -151,7 +162,10 @@
       }
       .home__weather--now-temperature-text {
         font-size: 7.69vw; // 갤럭시 폴드 대응
+
         @include u.desktop {
+          min-width: 53px;
+          margin-left: 10px;
           font-size: 35px;
           letter-spacing: 5px;
         }
@@ -183,7 +197,7 @@
     }
   }
   .home__weather--forecasts-wrapper {
-    width: calc(58% - 3.71vw);
+    width: calc(100% - 40%);
     height: 87%;
     border-radius: 7vw;
     background-color: u.$gray-07;
@@ -193,9 +207,9 @@
     align-items: center;
     padding-right: 2.23vw;
     padding-left: 1.48vw;
+
     @include u.desktop {
       width: 60%;
-      margin-right: 20px;
       padding-right: 18px;
       padding-left: 15px;
       border-radius: 35px;
@@ -303,18 +317,23 @@
     }
   }
 }
+
 .home__weather + .home__dusts {
   margin-top: 3.33vw;
+
   @include u.desktop {
+    display: none;
     margin-top: 0;
   }
 }
 .home__dusts {
   display: flex;
   justify-content: center;
+
   @include u.desktop {
     width: 37%;
   }
+
   .home__dust + .home__ultra-dust {
     margin-left: 3.33vw;
     @include u.desktop {
@@ -453,30 +472,86 @@
   display: none;
   @include u.desktop {
     display: flex;
-    flex-direction: column;
-    margin: 10px 10px 0 10px;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
   }
+
   .home__body-sec--bread {
     display: flex;
     flex-direction: column;
+    gap: 10px;
     align-items: center;
-    width: 250px;
-    height: 300px;
+    padding: 15px 25px;
     border-radius: 35px;
     background-color: u.$brown-00;
+    box-sizing: border-box;
+
+    @include u.desktop {
+      width: 100%;
+    }
+
     .body-sec__bread--title {
       font-size: 22px;
-      margin-top: 13px;
-      margin-bottom: 10px;
     }
-    .body-sec__bread--img {
-      height: 210px;
-      width: 210px;
+
+    .body-sec__bread--img--wrap {
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      height: 200px;
       border-radius: 35px;
-      margin-bottom: 10px;
+    }
+
+    .body-sec__bread--img {
+      display: flex;
+      width: 100%;
+      height: 100%;
+
+      @include u.desktop {
+        position: absolute;
+        width: 100%;
+        object-fit: cover;
+      }
     }
     .body-sec__bread--text {
       font-size: 20px;
+    }
+  }
+
+  .home__dust,
+  .home__ultra-dust {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 25px;
+    border-radius: 35px;
+    background-color: u.$blue-01;
+
+    .home__dust--title,
+    .home__ultra-dust--title{
+      font-size: 22px;
+    }
+
+    .home__dust--level,
+    .home__ultra-dust--level{
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .home__dust--img-letter-wrapper,
+    .home__ultra-dust--img-letter-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
   }
 }

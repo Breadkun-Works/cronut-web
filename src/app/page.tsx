@@ -1,5 +1,4 @@
 'use client';
-
 import styles from '../styles/Home.module.scss';
 import { useEffect, useState } from 'react';
 import { WeatherReturn } from '@/types/home';
@@ -14,7 +13,7 @@ import Image from 'next/image';
 import { getCookie, setCookie } from '@/utils/cookie';
 import { Company } from '@/types/common';
 import { CompanySelect } from '@/components/CompanySelect';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useResponsive } from '@/utils/hook';
 import { companyAtom } from '@/atom/common-atom';
 import { useAtom } from 'jotai';
@@ -296,9 +295,7 @@ export default function Home() {
                     </div>
                     <div className={hs('home__dusts')}>
                         <div className={hs('home__dust', dust.pm10Level === '---' ? '조회중' : dust.pm10Level)}>
-                            <div className={hs('home__dust--title')}>
-                                <span>미세먼지</span>
-                            </div>
+                            <div className={hs('home__dust--title')}>미세먼지</div>
                             <div className={hs('home__dust--img-letter-wrapper')}>
                                 {dust.pm10Level !== '통신장애' && (
                                     <Image
@@ -315,9 +312,7 @@ export default function Home() {
                             </div>
                         </div>
                         <div className={hs('home__ultra-dust', dust.pm25Level === '---' ? '조회중' : dust.pm25Level)}>
-                            <div className={hs('home__ultra-dust--title')}>
-                                <span>초미세먼지</span>
-                            </div>
+                            <div className={hs('home__ultra-dust--title')}>초미세먼지</div>
                             <div className={hs('home__ultra-dust--img-letter-wrapper')}>
                                 {dust.pm25Level !== '통신장애' && (
                                     <Image
@@ -432,18 +427,58 @@ export default function Home() {
                     <div className={hs('home__body-sec')}>
                         <div className={hs('home__body-sec--bread')}>
                             <div className={hs('body-sec__bread--title')}>오늘의 빵</div>
-                            <Image
-                                className={hs('body-sec__bread--img')}
-                                src={
-                                    bread?.img
-                                        ? `https://babkaotalk.herokuapp.com${bread?.img}`
-                                        : '/icon/home-bread.webp'
-                                }
-                                alt="todays bread"
-                                width={100}
-                                height={79}
-                            />
+                            <div className={hs('body-sec__bread--img--wrap')}>
+                                <Image
+                                    className={hs('body-sec__bread--img')}
+                                    src={
+                                        bread?.img
+                                            ? `https://babkaotalk.herokuapp.com${bread?.img}`
+                                            : '/icon/home-bread.webp'
+                                    }
+                                    alt="todays bread"
+                                    width={100}
+                                    height={79}
+                                />
+                            </div>
                             <div className={hs('body-sec__bread--text')}>{bread?.name ?? '정보가 없습니다.'}</div>
+                        </div>
+                        <div className={hs('home__dust', dust.pm10Level === '---' ? '조회중' : dust.pm10Level)}>
+                            <div className={hs('home__dust--title')}>
+                                <span>미세먼지</span>
+                            </div>
+                            <div className={hs('home__dust--img-letter-wrapper')}>
+                                {dust.pm10Level !== '통신장애' && (
+                                    <Image
+                                        className={hs('home__dust--img')}
+                                        src={imageReturn(dust.pm10Level)}
+                                        alt="dust-level-icon"
+                                        width={80}
+                                        height={80}
+                                    />
+                                )}
+                                <div className={hs('home__dust--level')}>
+                                    {dust.pm10Level}/{dust.pm10Value}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={hs('home__ultra-dust', dust.pm25Level === '---' ? '조회중' : dust.pm25Level)}>
+                            <div className={hs('home__ultra-dust--title')}>
+                                <span>초미세먼지</span>
+                            </div>
+                            <div className={hs('home__ultra-dust--img-letter-wrapper')}>
+                                {dust.pm25Level !== '통신장애' && (
+                                    <Image
+                                        className={hs('home__ultra-dust--img')}
+                                        src={imageReturn(dust.pm25Level)}
+                                        alt="dust-level-icon"
+                                        width={80}
+                                        height={80}
+                                    />
+                                )}
+                                <div className={hs('home__ultra-dust--level')}>
+                                    {dust.pm25Level}/{dust.pm25Value}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

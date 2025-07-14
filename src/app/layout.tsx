@@ -9,6 +9,9 @@ import Script from 'next/script';
 
 export const metadata: Metadata = {
     robots: 'index, follow',
+    title: 'BBANGDORI',
+    description:
+        '더존ICT의 구내식당 식단, 통근 버스의 실시간 도착 시간, 오늘의 빵, 사내 카페 메뉴, 날씨 등 다양한 생활 정보를 안내하는 더존 빵돌이 웹 서비스입니다.',
     keywords: [
         '빵돌이',
         '더존ICT',
@@ -27,21 +30,20 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'BBANGDORI',
         url: 'https://breadkun.com/',
+        description:
+            '더존ICT의 구내식당 식단, 통근 버스의 실시간 도착 시간, 오늘의 빵, 사내 카페 메뉴, 날씨 등 다양한 생활 정보를 안내하는 더존 빵돌이 웹 서비스입니다.',
         images: [DEFAULT_OG_IMAGE],
         type: 'website',
         siteName: 'BBANGDORI'
-    },
-    title: 'BBANGDORI',
-    description:
-        '더존ICT의 구내식당 식단, 통근 버스의 실시간 도착 시간, 오늘의 빵, 사내 카페 메뉴, 날씨 등 다양한 생활 정보를 안내하는 더존 빵돌이 웹 서비스입니다.'
+    }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
         <html lang="ko" className={nanumFonts.variable}>
             <head>
-                <title>BBANGDORI</title>
                 <meta charSet="utf-8" />
+                <meta name="title" content="BBANGDORI" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="theme-color" content="#212529" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />

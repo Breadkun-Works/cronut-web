@@ -205,6 +205,7 @@ export default function Home() {
 
     return (
         <>
+            <h1 style={{ display: 'none' }}>BBANGDORI</h1>
             <div className={hs('home')}>
                 <Box margin={isMobile ? '10px 16px' : '20px 30px'}>
                     <CompanySelect entry={'home'} />
@@ -408,7 +409,9 @@ export default function Home() {
                         </Link>
                         <Link href={'/omakase'}>
                             <div>
-                                <div className={hs('home__link--title')}>빵돌이오마카세</div>
+                                <div className={hs('home__link--title')} aria-hidden="true">
+                                    빵돌이오마카세
+                                </div>
                                 <div className={hs('home__link--text')}>-서비스 준비중-</div>
                             </div>
                             <div style={{ position: 'relative', width: '100%', height: '80px' }}>

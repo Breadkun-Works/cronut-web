@@ -2,7 +2,7 @@ import { StyledCartHeader, StyledCartHeaderTitle } from '@/styles/cart/cart.styl
 import { Box, IconButton, Snackbar, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useResponsive } from '@/utils/hook';
-import { ClipboardList, Share2 } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import { cartItemsAtom } from '@/atom/cart-atom';
 import { useAtom } from 'jotai';
 import { ShareCartDialog } from '@/components/page/cafe/modal/share-modal';
@@ -10,6 +10,8 @@ import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-moda
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { COLORS_DARK } from '@/data';
 import { isMobileDevice } from '@/utils/util';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import { AnimatedReceiptIcon } from '@/styles/cart/menu/cart-menu.styles';
 
 interface ICartHeaderProps {
     title: string;
@@ -90,7 +92,7 @@ export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) =
                                 onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
                                 sx={{ cursor: 'pointer' }}
                             >
-                                <ClipboardList />
+                                <AnimatedReceiptIcon />
                             </IconButton>
                         </Tooltip>
                     ) : (
@@ -102,7 +104,7 @@ export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) =
                                 }
                                 sx={{ cursor: 'pointer', padding: 0 }}
                             >
-                                <ClipboardList />
+                                <AnimatedReceiptIcon />
                             </IconButton>
                             <IconButton
                                 sx={{ cursor: 'pointer', padding: 0 }}

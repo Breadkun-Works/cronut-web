@@ -5,6 +5,7 @@ import { DrinkTemperature } from '@/types/common';
 import { TemperatureBadgeProps } from '@/types/cart';
 import { keyframes } from '@emotion/react';
 import { ShoppingCart } from 'lucide-react';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 
 const pulseGlow = keyframes`
     0% {
@@ -18,6 +19,17 @@ const pulseGlow = keyframes`
     100% {
         filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.8)) drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
         stroke: #fff;
+    }
+`;
+
+const bounce = keyframes`
+    0%, 100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: none;
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     }
 `;
 
@@ -261,6 +273,19 @@ export const GlowingIcon = styled(ShoppingCart)`
     color: white;
     animation: ${pulseGlow} 2s infinite ease-in-out;
 
+    & path,
+    & circle,
+    & line,
+    & polyline {
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+`;
+
+export const AnimatedReceiptIcon = styled(ReceiptLongOutlinedIcon)`
+    color: #fff;
+    animation: ${bounce} 1s ease-in-out infinite;
     & path,
     & circle,
     & line,

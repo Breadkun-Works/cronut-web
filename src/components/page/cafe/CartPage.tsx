@@ -133,7 +133,7 @@ export const CartPage = () => {
                         </p>
                     </div>
                     <CssTextField
-                        label="이름"
+                        label="장바구니 명"
                         value={newCart.title}
                         onChange={e => setNewCart({ ...newCart, title: e.target.value })}
                         sx={{

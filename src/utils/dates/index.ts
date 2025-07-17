@@ -76,8 +76,8 @@ export const getWeekDates = () => {
 export const getDefaultDrinkTemperatureBySeason = () => {
     let drinkTemp = DrinkTemperature.HOT;
     const month = new Date().getMonth() + 1;
-    const winterPeriod = [11, 12, 1, 2, 3];
-    const summerPeriod = [4, 5, 6, 7, 8, 9, 10];
+    const winterPeriod = [11, 12, 1, 2];
+    const summerPeriod = [3, 4, 5, 6, 7, 8, 9, 10];
 
     if (winterPeriod.includes(month)) {
         drinkTemp = DrinkTemperature.HOT;

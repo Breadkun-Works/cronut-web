@@ -1,3 +1,5 @@
+import { DrinkTemperature } from '@/types/common';
+
 export function cloneDate(d: Date) {
     return new Date(d.getTime());
 }
@@ -69,4 +71,18 @@ export const getWeekDates = () => {
         weekDates.push(formatDate(date, 2));
     }
     return weekDates;
+};
+
+export const getDefaultDrinkTemperatureBySeason = () => {
+    let drinkTemp = DrinkTemperature.HOT;
+    const month = new Date().getMonth() + 1;
+    const winterPeriod = [11, 12, 1, 2, 3];
+    const summerPeriod = [4, 5, 6, 7, 8, 9, 10];
+
+    if (winterPeriod.includes(month)) {
+        drinkTemp = DrinkTemperature.HOT;
+    } else if (summerPeriod.includes(month)) {
+        drinkTemp = DrinkTemperature.ICED;
+    }
+    return drinkTemp;
 };

@@ -409,14 +409,14 @@ export default function Home() {
                         </Link>
                         <Link href={'/omakase'}>
                             <div>
-                                <div className={hs('home__link--title')} aria-hidden="true">
-                                    빵돌이오마카세
+                                <div className={hs('home__link--title')} aria-hidden="true" role="presentation">
+                                    빵돌이 오마카세
                                 </div>
                                 <div className={hs('home__link--text')}>-서비스 준비중-</div>
                             </div>
                             <div style={{ position: 'relative', width: '100%', height: '80px' }}>
                                 <Image
-                                    className={hs('home__link--image', '빵돌이오마카세')}
+                                    className={hs('home__link--image', 'omakase')}
                                     src="/icon/home-omakase-button.webp"
                                     alt="today omakase"
                                     layout="fill"

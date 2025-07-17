@@ -160,7 +160,7 @@ export const useCurrentBreakpoint = () => {
     return 'xs';
 };
 
-export const useCartSync = (cartId: string, withClapAnimation = false) => {
+export const useCartSync = (cartId: string, withClapAnimation = false, inactive: boolean) => {
     const [cartItems, setCartItems] = useAtom(cartItemsAtom);
     const lastProcessedIds = useRef<Set<string>>(new Set());
     const [clapPositions, setClapPositions] = useState<{ id: string; x: number }[]>([]);
@@ -168,7 +168,7 @@ export const useCartSync = (cartId: string, withClapAnimation = false) => {
     const [sessionExpired, setSessionExpired] = useState(false);
 
     useEffect(() => {
-        if (!cartId) return;
+        if (!cartId || inactive) return;
 
         // SSE 중복 연결 방지
         if (!eventSource || eventSource.url !== `https://api.breadkun.com/sse/cafe/carts/${cartId}/items/subscribe`) {

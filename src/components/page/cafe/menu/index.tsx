@@ -15,7 +15,12 @@ import {
 } from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { ICafeMenuBoardResponse, ICafeMenuOption, IExtendedCafeMenuBoardResponse } from '@/types/cart';
+import {
+    ICafeCartBasicResponse,
+    ICafeMenuBoardResponse,
+    ICafeMenuOption,
+    IExtendedCafeMenuBoardResponse
+} from '@/types/cart';
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useDynamicTitle, useResponsive } from '@/utils/hook';
 import {
@@ -41,6 +46,7 @@ import { companyAtom } from '@/atom/common-atom';
 import { cartItemsAtom, cartItemsCountAtom } from '@/atom/cart-atom';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { getCookie, setCookie } from '@/utils/cookie';
+import { getDefaultDrinkTemperatureBySeason } from '@/utils/dates';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -79,7 +85,7 @@ const CafeMenu = ({
     title: ReactNode | string;
     entry?: string;
     cartId?: string;
-    cartBasic?: any;
+    cartBasic?: ICafeCartBasicResponse;
 }) => {
     const pathname = usePathname();
     const isMenuPage = pathname.startsWith('/cafe/cart/menu') || pathname === '/cafe/menu';
@@ -94,7 +100,7 @@ const CafeMenu = ({
     const [cartItemsCount] = useAtom(cartItemsCountAtom);
     const theme = useTheme();
 
-    useCartSync(cartId as string, false);
+    useCartSync(cartId as string, false, cartBasic?.status === 'INACTIVE');
 
     const { isMobile, isDesktop, isSmall } = useResponsive();
 
@@ -240,8 +246,7 @@ const CafeMenu = ({
             data.pages.forEach(page => {
                 page.records.forEach(record => {
                     if (!initialTempMap[record.name]) {
-                        // initialTempMap[record.name] = record.options[0].drinkTemperature;
-                        initialTempMap[record.name] = { ...record, temp: record.options[0].drinkTemperature };
+                        initialTempMap[record.name] = { ...record, temp: getDefaultDrinkTemperatureBySeason() };
                     }
                 });
             });
@@ -350,7 +355,6 @@ const CafeMenu = ({
         onClick: () => void;
         entry?: string;
     }) => {
-        // const [temp, setTemp] = useState<DrinkTemperature>(record.options[0].drinkTemperature);
         // 공통 컨텐츠
         const content = (
             <MenuItemContent>
@@ -501,7 +505,7 @@ const CafeMenu = ({
                                                             : 16,
                                                     height: 16,
                                                     borderRadius: '50%',
-                                                    backgroundColor: COLORS_DARK.accent.main,
+                                                    backgroundColor: '#DB661B',
                                                     color: '#fff',
                                                     fontSize: String(cartItemsCount).length >= 2 ? '0.8rem' : '1rem',
                                                     fontWeight: 'bold',
@@ -645,7 +649,7 @@ const CafeMenu = ({
                                                             handleChangeMenuData={setMenuTempMap}
                                                             popoverProps={{
                                                                 menuTempMap,
-                                                                cartName: cartBasic.name,
+                                                                cartName: cartBasic?.title ?? '장바구니',
                                                                 temp: menuTempMap[record.name]?.temp,
                                                                 menuName: record.name,
                                                                 options: record.options

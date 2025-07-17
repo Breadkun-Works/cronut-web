@@ -9,13 +9,10 @@ import CafeMenu from '@/components/page/cafe/menu/index';
 import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 import { useModal } from '@/atom/common-atom';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
+import { ICafeCartBasicResponse } from '@/types/cart';
 
 interface CartMenuByIdProps {
-    cartBasic: {
-        title: string;
-        status: string;
-        cafeLocation: string;
-    };
+    cartBasic: ICafeCartBasicResponse;
     cartId: string;
     entry?: string;
 }

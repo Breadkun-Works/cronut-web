@@ -5,14 +5,13 @@ import {
     CartItemCard,
     CartItemContent,
     ConfirmTemperatureBadge,
-    ItemImage,
     PriceTypography,
     QuantityTypography,
     ShoppingCartIcon,
     StyledScrollableCartList,
     UserAvatar
 } from '@/styles/cart/cart.styles';
-import { Box, CardMedia, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
 import { Trash2 } from 'lucide-react';
 import { getUserInitial, useResponsive, useResponsiveConfig } from '@/utils/hook';
@@ -149,22 +148,6 @@ export const ScrollableCartList = ({
                                     height={cartImgWidthAndHeight}
                                     blur={!item.available}
                                 />
-                                {/*<ItemImage*/}
-                                {/*    width={cartImgWidthAndHeight}*/}
-                                {/*    height={cartImgWidthAndHeight}*/}
-                                {/*    blur={item.available}*/}
-                                {/*>*/}
-                                {/*    <CardMedia*/}
-                                {/*        component="img"*/}
-                                {/*        image={item.drinkImageUrl}*/}
-                                {/*        alt={item.drinkName}*/}
-                                {/*        sx={{*/}
-                                {/*            width: '100%',*/}
-                                {/*            height: '100%',*/}
-                                {/*            objectFit: 'cover'*/}
-                                {/*        }}*/}
-                                {/*    />*/}
-                                {/*</ItemImage>*/}
 
                                 <Box
                                     display="flex"

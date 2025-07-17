@@ -14,6 +14,17 @@ export interface INewCartType {
     description?: string;
 }
 
+export interface ICafeCartResponse {
+    id: string;
+    cafeLocation: string;
+    title: string;
+    description: string;
+    createdAt: string;
+    expiresAt: string;
+    createdById: string;
+    status: string;
+}
+
 export interface ICreateCartResponse {
     success: boolean;
     meta: PaginationType;
@@ -29,6 +40,18 @@ export interface ICreateCartResponse {
             status: string;
         };
     };
+}
+
+export interface ICafeCartBasicResponse {
+    id: string;
+    cafeLocation: string;
+    title: string;
+    description?: string;
+    createdAt: string;
+    expiresAt: string;
+    secureShareKey?: string;
+    createdById: string;
+    status: string;
 }
 
 export interface ICafeMenuResponse {

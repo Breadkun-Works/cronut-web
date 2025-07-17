@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import {
     Avatar,
-    Badge,
     Box,
     Button,
     ButtonProps,
@@ -17,6 +16,7 @@ import { COLORS_DARK } from '@/data';
 import { TemperatureBadgeProps } from '@/types/cart';
 import { ShoppingCart } from 'lucide-react';
 import { keyframes } from '@emotion/react';
+import isPropValid from '@emotion/is-prop-valid';
 
 interface ConfirmHeaderProps {
     isMobile: boolean;
@@ -569,7 +569,7 @@ export const ShoppingCartIcon = styled(ShoppingCart)(({ theme }) => ({
     }
 }));
 
-export const CartWarningWrapper = styled(Box)<{ isOverflowed: boolean }>(({ theme }) => ({
+export const CartWarningWrapper = styled(Box)(({ theme }) => ({
     width: '100%',
     maxWidth: 902,
     overflow: 'hidden',
@@ -586,21 +586,22 @@ export const CartWarningWrapper = styled(Box)<{ isOverflowed: boolean }>(({ them
     }
 }));
 
-export const CartWarningText = styled('div')<{ isOverflowed: boolean }>(({ theme, isOverflowed }) => ({
+export const CartWarningText = styled('div', {
+    shouldForwardProp: prop => isPropValid(prop) && prop !== 'overflowed'
+})<{ overflowed: boolean }>(({ overflowed }) => ({
     display: 'flex',
     whiteSpace: 'nowrap',
     fontWeight: 700,
     color: '#ff6b6b',
-    // fontSize: '0.8rem',
     alignItems: 'center',
-    justifyContent: isOverflowed ? 'unset' : 'center',
+    justifyContent: overflowed ? 'unset' : 'center',
     overflow: 'hidden',
     position: 'relative',
     '.marquee': {
         display: 'flex',
         whiteSpace: 'nowrap',
         flexWrap: 'nowrap',
-        animation: isOverflowed ? `${slideMarquee} 25s linear infinite` : 'none'
+        animation: overflowed ? `${slideMarquee} 25s linear infinite` : 'none'
     },
     '.marquee-content': {
         display: 'inline-block',
@@ -657,7 +658,7 @@ export const QuantityTypography = styled(Typography)(({ theme }) => ({
 }));
 
 export const PriceTypography = styled(Typography, {
-    shouldForwardProp: prop => prop !== 'isSoldOut'
+    shouldForwardProp: prop => prop !== 'isSoldOut' && prop !== 'inactive'
 })<{ inactive?: boolean }>(({ theme, inactive }) => ({
     color: inactive ? COLORS_DARK.text.inactive : COLORS_DARK.accent.main,
     fontWeight: 700,

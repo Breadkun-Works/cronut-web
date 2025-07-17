@@ -24,8 +24,8 @@ export const CartWaring = ({ isCartInactive }: ICartWarningProps) => {
     if (!isCartInactive) return;
 
     return (
-        <CartWarningWrapper ref={textRef} isOverflowed={isOverflowed}>
-            <CartWarningText isOverflowed={isOverflowed} style={{ fontSize }}>
+        <CartWarningWrapper ref={textRef}>
+            <CartWarningText overflowed={isOverflowed} style={{ fontSize }}>
                 {isOverflowed ? (
                     <div className="marquee">
                         <div className="marquee-content">

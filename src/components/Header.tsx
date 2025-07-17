@@ -1,21 +1,29 @@
 'use client';
 import React, { useEffect } from 'react';
-import styles from '../styles/Header.module.scss';
-import classNames from 'classnames/bind';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import MenuBox from './MenuBox';
 import { useAtom } from 'jotai';
 import { menuBoxAtom, windowResizeAtom, useModal } from '@/atom/common-atom';
-import { MobileMenuButton, StyledEllipsis, StyledHeadset } from '@/styles/header.styles';
+import {
+    HeaderLogo,
+    HeaderWrap,
+    HeaderContent,
+    Menu,
+    MenuItem,
+    MenuWrap,
+    MobileMenuButton,
+    StyledEllipsis,
+    StyledHeadset
+} from '@/styles/components/header.styles';
 import { InquiryModal } from '@/components/InquiryModal';
-const hs = classNames.bind(styles);
 
 function Header() {
     const [menuBox, setMenuBox] = useAtom(menuBoxAtom);
     const [, setResize] = useAtom(windowResizeAtom);
     const router = usePathname();
     const { openModal, closeModal, modal } = useModal('inquiryModal');
+
     // 윈도우 리사이즈 감지 (Jotai로 처리)
     useEffect(() => {
         const handleResize = () => setResize(); // Atom에서 처리
@@ -25,71 +33,42 @@ function Header() {
 
     return (
         <>
-            <header className={hs('header')}>
-                <Link href={'/'}>
-                    <img
-                        className={hs('header__logo')}
-                        src="/logo/breadkunLogoDarkMode.webp"
-                        alt="breadkun-header-logo"
-                    />
-                </Link>
-                <nav className={hs('header__nav')}>
-                    <MobileMenuButton onClick={openModal}>
-                        <StyledHeadset />
-                    </MobileMenuButton>
-                    <MobileMenuButton onClick={() => setMenuBox(true)}>
-                        <StyledEllipsis />
-                    </MobileMenuButton>
-                    {/*<button className={hs('header__nav--button')} onClick={() => setMenuBox(true)}>*/}
-                    {/*    <img*/}
-                    {/*        className={hs('header__nav--button--img')}*/}
-                    {/*        src="/icon/header-menu-button.webp"*/}
-                    {/*        alt="breadkun-header-menu"*/}
-                    {/*    />*/}
-                    {/*</button>*/}
-                    <div className={hs('header__nav--menus')}>
-                        <Link
-                            className={router === '/' ? hs('header__nav--menu', 'active') : hs('header__nav--menu')}
-                            // className={({ isActive }) =>
-                            //     isActive ? hs('header__nav--menu', 'active') : hs('header__nav--menu')
-                            // }
-                            href={'/'}
-                            onClick={() => setMenuBox(false)}
-                        >
-                            HOME
+            <HeaderWrap>
+                <HeaderContent>
+                    <HeaderLogo>
+                        <Link href={'/'}>
+                            <img src={'/logo/breadkunLogoDarkMode.webp'} alt={'메인 로고'} />
                         </Link>
-                        <Link
-                            className={router === '/meal' ? hs('header__nav--menu', 'active') : hs('header__nav--menu')}
-                            // className={({ isActive }) =>
-                            //     isActive ? hs('header__nav--menu', 'active') : hs('header__nav--menu')
-                            // }
-                            href={'/meal'}
-                            onClick={() => setMenuBox(false)}
-                        >
-                            MEAL
-                        </Link>
-                        <Link
-                            className={router === '/bus' ? hs('header__nav--menu', 'active') : hs('header__nav--menu')}
-                            // className={({ isActive }) =>
-                            //     isActive ? hs('header__nav--menu', 'active') : hs('header__nav--menu')
-                            // }
-                            href={'/bus'}
-                            onClick={() => setMenuBox(false)}
-                        >
-                            BUS
-                        </Link>
-                        <Link
-                            className={
-                                router.startsWith('/cafe') ? hs('header__nav--menu', 'active') : hs('header__nav--menu')
-                            }
-                            href={'/cafe/menu'}
-                            onClick={() => setMenuBox(false)}
-                        >
-                            CAFE
-                        </Link>
-                    </div>
-                </nav>
-            </header>
+                    </HeaderLogo>
+
+                    <MenuWrap>
+                        <Menu>
+                            <MenuItem href={'/'} onClick={() => setMenuBox(false)} active={router === '/'}>
+                                HOME
+                            </MenuItem>
+                            <MenuItem href={'/meal'} onClick={() => setMenuBox(false)} active={router === '/meal'}>
+                                MEAL
+                            </MenuItem>
+                            <MenuItem href={'/bus'} onClick={() => setMenuBox(false)} active={router === '/bus'}>
+                                BUS
+                            </MenuItem>
+                            <MenuItem
+                                href={'/cafe/menu'}
+                                onClick={() => setMenuBox(false)}
+                                active={router === '/cafe/menu'}
+                            >
+                                CAFE
+                            </MenuItem>
+                        </Menu>
+                        <MobileMenuButton onClick={openModal}>
+                            <StyledHeadset />
+                        </MobileMenuButton>
+                        <MobileMenuButton onClick={() => setMenuBox(true)}>
+                            <StyledEllipsis />
+                        </MobileMenuButton>
+                    </MenuWrap>
+                </HeaderContent>
+            </HeaderWrap>
             {menuBox && <MenuBox setMenuBox={setMenuBox} />}
             <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
         </>

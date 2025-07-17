@@ -43,7 +43,6 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <html lang="ko" className={nanumFonts.variable}>
             <head>
                 <meta charSet="utf-8" />
-                <meta name="title" content="BBANGDORI" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="theme-color" content="#212529" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />

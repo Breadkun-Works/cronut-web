@@ -1,22 +1,33 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
-import styles from '../../../styles/Meal.module.scss';
-import classNames from 'classnames/bind';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import { dayNumToSpell, getWeekDates } from '@/utils/dates';
 import { fetchMealData } from '@/apis/meal/meal-api';
 import { Company, mealMenu } from '@/types/common';
 import { getMealImagePath } from '@/utils/image-return';
 import { CompanySelect } from '@/components/CompanySelect';
-import { Box } from '@mui/material';
-import { useDynamicTitle, useResponsive } from '@/utils/hook';
+import { useDynamicTitle } from '@/utils/hook';
 import { useAtom } from 'jotai';
 import { companyAtom } from '@/atom/common-atom';
-
-const ms = classNames.bind(styles);
+import {
+    DaysButtonText,
+    DaysTab,
+    MealCategoryItem,
+    MealCategoryTab,
+    MealCategoryText,
+    MealDetail,
+    MealEmpty,
+    MealItem,
+    MealLabel,
+    MealMenu,
+    MealMenuBox,
+    MealMenuList,
+    MealSelectWrap,
+    MealThumbnail,
+    MealTitle
+} from '@/styles/components/page/meal/meal.styles';
 
 const Meal = () => {
     useDynamicTitle('식단');
-    const { isMobile } = useResponsive();
     const getWeekNumber = (date: Date): number => {
         // 월요일이 0이 되도록 요일을 조정합니다.
         const dayOfWeek = (date.getDay() + 6) % 7;
@@ -58,13 +69,22 @@ const Meal = () => {
         }
     };
 
+    // 식단표 label 설정
+    const categoryMap: Record<string, string> = {
+        한식: 'korean',
+        일품: 'dish',
+        누들: 'noodle',
+        라면: 'ramen',
+        간편식: 'convenience',
+        프로틴: 'protein'
+    };
+
     // menu name 자르는 함수
     const menuNameEdit = (value: string[]): string => {
         if (value[0] === '★특별한 한상★') {
             return value[1];
         } else {
-            // "+", "(", " ", "&", "*" 5개로 자르는 정규식
-            return value[0].split(/[+ (&*]/)[0];
+            return value[0].split(/[+(&*\s]/)[0];
         }
     };
 
@@ -143,13 +163,23 @@ const Meal = () => {
         });
     }, [company, weekNumber]);
 
-    return (
-        <div className={ms('meal')}>
-            <Box margin={isMobile ? '10px 20px' : '20px 30px'}>
-                <CompanySelect entry={'meal'} />
-            </Box>
+    const currentMenus = mealMenu(company).menu;
 
-            <div className={ms('days')}>
+    const isEmpty = currentMenus.every(menu => {
+        const menuList =
+            mealData?.[dayNumToSpell(selectedDay)]?.[mealCategoriesEdit(selectedMealCategories)]?.[menu.value]?.[
+                '메뉴'
+            ];
+        return !menuList || menuList.length === 0;
+    });
+
+    return (
+        <>
+            <MealSelectWrap>
+                <CompanySelect entry={'meal'} />
+            </MealSelectWrap>
+
+            <DaysTab>
                 {company === Company.KANGCHON &&
                     days?.map((day, index) => (
                         <button
@@ -160,11 +190,12 @@ const Meal = () => {
                                 setSelectedDay(index);
                             }}
                         >
-                            <div className={index === selectedDay ? ms('day', 'selected-day') : ms('day')}>
+                            <DaysButtonText active={index === selectedDay}>
                                 {index === today ? '오늘의 메뉴' : day}
-                            </div>
+                            </DaysButtonText>
                         </button>
                     ))}
+
                 {company === Company.EULJI &&
                     days?.map((day, index) =>
                         index < 5 ? (
@@ -176,65 +207,81 @@ const Meal = () => {
                                     setSelectedDay(index);
                                 }}
                             >
-                                <div className={index === selectedDay ? ms('day', 'selected-day') : ms('day')}>
+                                <DaysButtonText active={index === selectedDay}>
                                     {index === today ? '오늘의 메뉴' : day}
-                                </div>
+                                </DaysButtonText>
                             </button>
                         ) : undefined
                     )}
-            </div>
-            <div className={ms('meal__body')}>
-                <div className={ms('meal-categories')}>
-                    {mealMenu(company).mealTime.map((v, index) => (
-                        <div
-                            className={
-                                selectedMealCategories === v
-                                    ? ms('meal-category', 'selected-meal-category')
-                                    : ms('meal-category')
-                            }
-                            onClick={() => setSelectedMealCategories(v)}
-                            key={index}
-                        >
-                            {v}
-                        </div>
-                    ))}
-                </div>
-                <div className={ms('meal-menus')}>
-                    {mealMenu(company).menu.map((menu, index) => {
-                        return (
-                            mealData?.[dayNumToSpell(selectedDay)]?.[mealCategoriesEdit(selectedMealCategories)]?.[
-                                menu.value
-                            ]?.메뉴 && (
-                                <div className={ms('meal-menu')} key={index}>
-                                    <div className={ms('meal-menu__title--wrapper')}>
-                                        <div className={ms('meal-menu__title', `${menu.value}`)}>{menu.label}</div>
-                                        <div className={ms('meal-menu__name')}>
-                                            {menuNameEdit(
-                                                mealData[dayNumToSpell(selectedDay)][
+            </DaysTab>
+
+            <MealCategoryTab>
+                {mealMenu(company).mealTime.map((v, index) => (
+                    <MealCategoryItem onClick={() => setSelectedMealCategories(v)} key={index}>
+                        <MealCategoryText active={selectedMealCategories === v}>{v}</MealCategoryText>
+                    </MealCategoryItem>
+                ))}
+            </MealCategoryTab>
+
+            <MealMenuList>
+                {isEmpty ? (
+                    <MealEmpty>
+                        <p>
+                            오늘은 메뉴가 비어있네요!
+                            <br /> 잠시만 기다려 주세요🍽️
+                        </p>
+                    </MealEmpty>
+                ) : (
+                    <>
+                        {mealMenu(company).menu.map((menu, index) => {
+                            return (
+                                mealData?.[dayNumToSpell(selectedDay)]?.[mealCategoriesEdit(selectedMealCategories)]?.[
+                                    menu.value
+                                ]?.메뉴 && (
+                                    <MealMenuBox key={index} dinner={selectedMealCategories === '석식'}>
+                                        <MealTitle>
+                                            <MealLabel category={categoryMap[menu.label] || ''}>{menu.label}</MealLabel>
+                                            <MealMenu>
+                                                {menuNameEdit(
+                                                    mealData[dayNumToSpell(selectedDay)][
+                                                        mealCategoriesEdit(selectedMealCategories)
+                                                    ][menu.value]['메뉴']
+                                                )}
+                                            </MealMenu>
+                                        </MealTitle>
+                                        <MealItem
+                                            className={
+                                                selectedMealCategories === '중식'
+                                                    ? 'lunch'
+                                                    : selectedMealCategories === '석식'
+                                                      ? 'dinner'
+                                                      : ''
+                                            }
+                                            eulji={company === Company.EULJI}
+                                        >
+                                            <MealThumbnail
+                                                className={
+                                                    selectedMealCategories === '석식' || company === Company.EULJI
+                                                        ? 'dinner-img'
+                                                        : ''
+                                                }
+                                            >
+                                                <img src={getMealImagePath(menu.value)} alt={`${menu.label} 이미지`} />
+                                            </MealThumbnail>
+                                            <MealDetail eulji={company === Company.EULJI}>
+                                                {mealData[dayNumToSpell(selectedDay)][
                                                     mealCategoriesEdit(selectedMealCategories)
-                                                ][menu.value]['메뉴']
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className={ms('meal-menu__body')}>
-                                        <img
-                                            className={ms('meal-menu__image')}
-                                            src={getMealImagePath(menu.value)}
-                                            alt={'menu-img'}
-                                        />
-                                        <div className={ms('meal-menu__detaile')}>
-                                            {mealData[dayNumToSpell(selectedDay)][
-                                                mealCategoriesEdit(selectedMealCategories)
-                                            ][menu.value]['메뉴'].join(',')}
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        );
-                    })}
-                </div>
-            </div>
-        </div>
+                                                ][menu.value]['메뉴'].join(', ')}
+                                            </MealDetail>
+                                        </MealItem>
+                                    </MealMenuBox>
+                                )
+                            );
+                        })}
+                    </>
+                )}
+            </MealMenuList>
+        </>
     );
 };
 

@@ -50,11 +50,11 @@ export default function ClientLayout({
                         <JotaiProvider>
                             <CookiesProvider>
                                 <Header />
-                                <main style={{ maxWidth: '950px', margin: '0 auto' }}>
+                                <section style={{ maxWidth: '950px', margin: '0 auto', paddingBottom: '60px' }}>
                                     <InitializeCompany />
                                     {children}
                                     <Snackbar />
-                                </main>
+                                </section>
                                 <InquiryDial />
                             </CookiesProvider>
                         </JotaiProvider>

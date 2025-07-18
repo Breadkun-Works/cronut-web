@@ -420,11 +420,7 @@ const CafeMenu = ({
     return (
         <>
             <PageContainer ref={containerRef} maxWidth={false} disableGutters>
-                <Box
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                    margin={!isMobile ? '20px 14px 0 14px' : '10px 4px'}
-                >
+                <Box display={'flex'} justifyContent={'space-between'} margin={!isMobile ? '20px 0 0 0' : '10px 4px'}>
                     {entry === 'personalCart' ? (
                         <Box
                             display={'flex'}

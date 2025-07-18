@@ -140,15 +140,12 @@ export const PageContainer = styled(Container)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-
+    paddingBottom: '16px',
     backgroundColor: theme.palette.background.default,
-    padding: '0 16px 16px 16px'
 
-    // [theme.breakpoints.up('lg')]: {
-    //     padding: '24px 16px 16px 16px',
-    //     width: '90%',
-    //     margin: '0 auto'
-    // }
+    [theme.breakpoints.down('xl')]: {
+        padding: '0 15px'
+    }
 }));
 
 interface ConfirmHeaderProps {

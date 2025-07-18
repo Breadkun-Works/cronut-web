@@ -207,7 +207,7 @@ export default function Home() {
         <>
             <h1 style={{ display: 'none' }}>BBANGDORI</h1>
             <div className={hs('home')}>
-                <Box margin={isMobile ? '10px 16px' : '20px 30px'}>
+                <Box margin={isMobile ? '10px 15px' : '20px 0'}>
                     <CompanySelect entry={'home'} />
                 </Box>
                 <div className={hs('home__body')}>

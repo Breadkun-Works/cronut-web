@@ -11,6 +11,7 @@ import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 import { EllipsisTooltipWithChip } from '@/components/common/EllipsisTooltipWithChip';
 import { CardImage } from '@/components/common/CardImage';
 import { ExpandMore } from '@mui/icons-material';
+import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 
 interface CafeSummaryModalProps extends ICommonModalTypes {
     cartItems: CafeCartItem[];
@@ -220,17 +221,20 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                                             textBoxRefs.current[categoryIndex][index] = el;
                                                         }}
                                                     >
-                                                        <EllipsisTooltipWithChip
-                                                            title={group.drinkName}
-                                                            forceTooltip={
-                                                                forceTooltipList[categoryIndex]?.[index] ?? false
-                                                            }
-                                                            // forceTooltip={forceTooltipList[index] ?? false}
-                                                            customMaxWidthKey={'cart-summary'}
-                                                            withIcon
-                                                        >
-                                                            <>{group.drinkName}</>
-                                                        </EllipsisTooltipWithChip>
+                                                        <EllipsisTooltip title={group.drinkName}>
+                                                            {group.drinkName}
+                                                        </EllipsisTooltip>
+                                                        {/*<EllipsisTooltipWithChip*/}
+                                                        {/*    title={group.drinkName}*/}
+                                                        {/*    forceTooltip={*/}
+                                                        {/*        forceTooltipList[categoryIndex]?.[index] ?? false*/}
+                                                        {/*    }*/}
+                                                        {/*    // forceTooltip={forceTooltipList[index] ?? false}*/}
+                                                        {/*    customMaxWidthKey={'cart-summary'}*/}
+                                                        {/*    withIcon*/}
+                                                        {/*>*/}
+                                                        {/*    <>{group.drinkName}</>*/}
+                                                        {/*</EllipsisTooltipWithChip>*/}
                                                         <Box
                                                             component="span"
                                                             sx={{

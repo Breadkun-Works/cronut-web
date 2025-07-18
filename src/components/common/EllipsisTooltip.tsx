@@ -67,7 +67,7 @@ export const EllipsisTooltip = ({ title, children, entry }: EllipsisTooltipProps
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: entry === 'cartHeader' ? '100%' : ellipsisMaxWidth
+                maxWidth: ['cartHeader', 'meal'].includes(entry ?? '') ? '100%' : ellipsisMaxWidth
             }
         })
     ) : (

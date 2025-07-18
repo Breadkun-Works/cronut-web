@@ -1,5 +1,5 @@
 'use client';
-import React, { RefObject, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { dayNumToSpell, getWeekDates } from '@/utils/dates';
 import { fetchMealData } from '@/apis/meal/meal-api';
 import { Company, mealMenu } from '@/types/common';
@@ -25,6 +25,9 @@ import {
     MealThumbnail,
     MealTitle
 } from '@/styles/components/page/meal/meal.styles';
+import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
+import { menuNameEdit } from '@/utils/page/meal/util';
+import { categoryMap } from '@/types/meal';
 
 const Meal = () => {
     useDynamicTitle('식단');
@@ -66,25 +69,6 @@ const Meal = () => {
                 return '저녁';
             default:
                 return '아침';
-        }
-    };
-
-    // 식단표 label 설정
-    const categoryMap: Record<string, string> = {
-        한식: 'korean',
-        일품: 'dish',
-        누들: 'noodle',
-        라면: 'ramen',
-        간편식: 'convenience',
-        프로틴: 'protein'
-    };
-
-    // menu name 자르는 함수
-    const menuNameEdit = (value: string[]): string => {
-        if (value[0] === '★특별한 한상★') {
-            return value[1];
-        } else {
-            return value[0].split(/[+(&*\s]/)[0];
         }
     };
 
@@ -241,13 +225,22 @@ const Meal = () => {
                                     <MealMenuBox key={index} dinner={selectedMealCategories === '석식'}>
                                         <MealTitle>
                                             <MealLabel category={categoryMap[menu.label] || ''}>{menu.label}</MealLabel>
-                                            <MealMenu>
-                                                {menuNameEdit(
+                                            <EllipsisTooltip
+                                                entry={'meal'}
+                                                title={menuNameEdit(
                                                     mealData[dayNumToSpell(selectedDay)][
                                                         mealCategoriesEdit(selectedMealCategories)
                                                     ][menu.value]['메뉴']
                                                 )}
-                                            </MealMenu>
+                                            >
+                                                <MealMenu>
+                                                    {menuNameEdit(
+                                                        mealData[dayNumToSpell(selectedDay)][
+                                                            mealCategoriesEdit(selectedMealCategories)
+                                                        ][menu.value]['메뉴']
+                                                    )}
+                                                </MealMenu>
+                                            </EllipsisTooltip>
                                         </MealTitle>
                                         <MealItem
                                             className={

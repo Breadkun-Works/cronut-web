@@ -175,16 +175,16 @@ export const IcedToggleButton = styled(StyledToggleButton)(() => ({
     }
 }));
 
-export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ temperature }) => ({
+export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ type }) => ({
     height: 22,
     borderRadius: 4,
     fontWeight: 600,
     fontSize: '0.75rem',
     padding: '0 6px',
-    backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
+    backgroundColor: type === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
     color: '#fff',
-    boxShadow: temperature === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)',
-    display: 'inline-flex', // ✅ 핵심 포인트
+    boxShadow: type === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)',
+    display: 'inline-flex',
     alignItems: 'center',
     position: 'absolute',
     top: 8,
@@ -192,7 +192,7 @@ export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ temperatu
     zIndex: 2,
 
     '& .MuiChip-label': {
-        padding: 0, // ✅ 기본 Chip 내부 padding 제거
+        padding: 0,
         display: 'inline-block',
         lineHeight: 1
     },

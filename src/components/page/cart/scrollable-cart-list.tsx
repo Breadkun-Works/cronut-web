@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     CartItemCard,
     CartItemContent,
-    ConfirmTemperatureBadge,
+    CafeMenuBadge,
     PriceTypography,
     QuantityTypography,
     ShoppingCartIcon,
@@ -186,8 +186,8 @@ export const ScrollableCartList = ({
                                             </EllipsisTooltipWithChip>
 
                                             {item.drinkTemperature && (
-                                                <ConfirmTemperatureBadge
-                                                    temperature={item.drinkTemperature}
+                                                <CafeMenuBadge
+                                                    type={item.drinkTemperature}
                                                     label={item.drinkTemperature}
                                                     height={chipSize}
                                                 />

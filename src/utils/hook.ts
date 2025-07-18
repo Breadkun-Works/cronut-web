@@ -22,6 +22,7 @@ export function useResponsive() {
         isLg: useMediaQuery(theme.breakpoints.only('lg')),
         isXl: useMediaQuery(theme.breakpoints.only('xl')),
         isSmall: useMediaQuery(theme.breakpoints.between('xs', 'sm')),
+        isSmUp: useMediaQuery(theme.breakpoints.up('sm')),
         isMedium: useMediaQuery(theme.breakpoints.between('sm', 'md')),
         isMobile: useMediaQuery(theme.breakpoints.between('xs', 'md')), // 예: 360 이하
         isTablet: useMediaQuery(theme.breakpoints.between('sm', 'lg')),

@@ -152,7 +152,12 @@ export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClient
         >
             <Box ref={semiHeaderRef}>
                 <CartWaring isCartInactive={isCartInactive} />
-                <CartHeader title={cartData?.title as string} snackbar={snackbar} setSnackbar={setSnackbar} />
+                <CartHeader
+                    title={cartData?.title as string}
+                    cafeLocation={cartData?.cafeLocation as string}
+                    snackbar={snackbar}
+                    setSnackbar={setSnackbar}
+                />
             </Box>
 
             {!isMobileDevice() && !isMobile && (

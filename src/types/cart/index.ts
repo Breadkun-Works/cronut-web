@@ -149,7 +149,7 @@ export interface ICafeMenuPopoverProps {
 }
 
 export interface TemperatureBadgeProps {
-    temperature: 'ICED' | 'HOT';
+    type?: 'ICED' | 'HOT' | 'SEASON' | string;
     height?: number | string;
     marginTop?: number;
 }
@@ -180,13 +180,16 @@ export interface CafeCartItem {
 }
 
 export interface GroupedCafeData {
-    [key: string]: {
-        cafeMenuId: number;
-        drinkName: string;
-        drinkImageUrl: string;
-        drinkTemperature: 'HOT' | 'ICED';
-        totalQuantity: number;
-        totalPrice: number;
-        items: CafeCartItem[];
-    };
+    [key: string]: GroupedCafeItem;
+}
+
+export interface GroupedCafeItem {
+    cafeMenuId: number;
+    drinkName: string;
+    drinkImageUrl: string;
+    drinkTemperature: 'HOT' | 'ICED';
+    totalQuantity: number;
+    totalPrice: number;
+    items: CafeCartItem[];
+    drinkCategory: string;
 }

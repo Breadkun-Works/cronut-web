@@ -498,12 +498,13 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     }
 }));
 
-export const ConfirmTemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, temperature, height }) => ({
+export const CafeMenuBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, type, height }) => ({
     height: height,
     borderRadius: 4,
     fontWeight: 600,
     fontSize: '0.65rem',
-    backgroundColor: temperature === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
+    backgroundColor:
+        type === 'ICED' ? COLORS_DARK.badge.ice : type === 'SEASON' ? COLORS_DARK.badge.season : COLORS_DARK.badge.hot,
     color: '#fff',
     marginTop: -1,
     boxShadow: 'none',

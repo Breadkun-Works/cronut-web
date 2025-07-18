@@ -294,9 +294,9 @@ const CafeMenu = ({
     }) => {
         const tempType = getTempType(options);
 
-        if (tempType === 'ICE_ONLY') return <TemperatureBadge temperature="ICED" label="ICE ONLY" size="small" />;
+        if (tempType === 'ICE_ONLY') return <TemperatureBadge type="ICED" label="ICE ONLY" size="small" />;
 
-        if (tempType === 'HOT_ONLY') return <TemperatureBadge temperature="HOT" label="HOT ONLY" size="small" />;
+        if (tempType === 'HOT_ONLY') return <TemperatureBadge type="HOT" label="HOT ONLY" size="small" />;
 
         if (tempType === 'BOTH') {
             return (

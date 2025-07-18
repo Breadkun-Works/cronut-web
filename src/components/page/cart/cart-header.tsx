@@ -10,11 +10,11 @@ import { CafeSummaryModal } from '@/components/page/cafe/modal/cafe-summary-moda
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { COLORS_DARK } from '@/data';
 import { isMobileDevice } from '@/utils/util';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import { AnimatedReceiptIcon } from '@/styles/cart/menu/cart-menu.styles';
 
 interface ICartHeaderProps {
     title: string;
+    cafeLocation: string;
     snackbar: { open: boolean; message?: string; variant?: 'success' | 'error'; device?: 'PC' | 'MOBILE' };
     setSnackbar: (
         value: React.SetStateAction<{
@@ -25,9 +25,9 @@ interface ICartHeaderProps {
         }>
     ) => void;
 }
-export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) => {
+export const CartHeader = ({ title, cafeLocation, snackbar, setSnackbar }: ICartHeaderProps) => {
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
-    const { isMobile, isDesktop } = useResponsive();
+    const { isMobile } = useResponsive();
     const [cartItems] = useAtom(cartItemsAtom);
 
     const [headerModalOpen, setHeaderModalOpen] = useState({ type: '', open: false });
@@ -129,6 +129,7 @@ export const CartHeader = ({ title, snackbar, setSnackbar }: ICartHeaderProps) =
             )}
             {headerModalOpen.open && headerModalOpen.type === 'summary' && (
                 <CafeSummaryModal
+                    cafeLocation={cafeLocation}
                     cartItems={cartItems}
                     open={headerModalOpen.open}
                     onClose={() => setHeaderModalOpen({ type: '', open: false })}

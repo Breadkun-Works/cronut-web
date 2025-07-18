@@ -6,7 +6,7 @@ import { ICommonModalTypes } from '@/types/common';
 import { useHasVerticalScroll, useMaxWidthByViewport } from '@/utils/hook';
 
 export const CommonModal = (props: ICommonModalTypes) => {
-    const { open, onClose, content, title, onConfirm, confirmText, width } = props;
+    const { open, onClose, content, title, onConfirm, confirmText, width, fixedContentPosition = 'bottom' } = props;
     const theme = useTheme();
     const isSm = useMediaQuery(theme.breakpoints.down('sm'));
     const { fontSize } = useMaxWidthByViewport();
@@ -62,6 +62,10 @@ export const CommonModal = (props: ICommonModalTypes) => {
                     </Typography>
                 </Box>
 
+                {props.fixedContent && fixedContentPosition === 'top' && (
+                    <Box padding="16px 16px 0 16px">{props.fixedContent}</Box>
+                )}
+
                 <Box
                     sx={{
                         position: 'relative',
@@ -96,7 +100,7 @@ export const CommonModal = (props: ICommonModalTypes) => {
                         {content}
                     </Box>
                 </Box>
-                {props.fixedContent && <Box padding={2}>{props.fixedContent}</Box>}
+                {props.fixedContent && fixedContentPosition === 'bottom' && <Box padding={2}>{props.fixedContent}</Box>}
                 <Box
                     sx={{
                         display: 'flex',
@@ -146,49 +150,6 @@ export const CommonModal = (props: ICommonModalTypes) => {
                     )}
                 </Box>
             </Box>
-            {/*<Box*/}
-            {/*    sx={{*/}
-            {/*        display: 'flex',*/}
-            {/*        justifyContent: 'center',*/}
-            {/*        gap: 2,*/}
-            {/*        width: width ?? '90%',*/}
-            {/*        maxWidth: 500,*/}
-            {/*        mt: 2*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <Button*/}
-            {/*        onClick={onClose}*/}
-            {/*        sx={{*/}
-            {/*            backgroundColor: 'transparent',*/}
-            {/*            color: COLORS_DARK.accent.main,*/}
-            {/*            border: `2px solid ${COLORS_DARK.accent.main}`,*/}
-            {/*            fontWeight: 'bold',*/}
-            {/*            px: isSm ? 2 : 4,*/}
-            {/*            py: isSm ? 0.5 : 1,*/}
-            {/*            borderRadius: 2,*/}
-            {/*            width: '100px'*/}
-            {/*        }}*/}
-            {/*    >*/}
-            {/*        닫기*/}
-            {/*    </Button>*/}
-            {/*    {onConfirm && (*/}
-            {/*        <Button*/}
-            {/*            onClick={onConfirm}*/}
-            {/*            sx={{*/}
-            {/*                backgroundColor: COLORS_DARK.accent.main,*/}
-            {/*                color: '#fff',*/}
-            {/*                fontWeight: 'bold',*/}
-            {/*                fontSize,*/}
-            {/*                px: isSm ? 2 : 4,*/}
-            {/*                py: isSm ? 0.5 : 1,*/}
-            {/*                borderRadius: 2,*/}
-            {/*                width: '100px'*/}
-            {/*            }}*/}
-            {/*        >*/}
-            {/*            {confirmText ?? '확인'}*/}
-            {/*        </Button>*/}
-            {/*    )}*/}
-            {/*</Box>*/}
         </Backdrop>
     );
 };

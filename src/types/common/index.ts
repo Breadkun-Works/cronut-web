@@ -82,6 +82,18 @@ export const SEASON_MENU: CafeMenuTab = {
     value: DrinkCategory.SEASON
 };
 
+export const titleMap: Record<string, string> = {
+    HOT_COFFEE: 'HOT 커피',
+    ICED_COFFEE: 'ICE 커피',
+    HOT_TEA: 'HOT 차',
+    ICED_TEA: 'ICE 차',
+    HOT_DRINK: 'HOT 음료',
+    ICED_DRINK: 'ICE 음료',
+    SEASON: '시즌음료'
+};
+
+export const drinkSortOrder = ['HOT_COFFEE', 'ICED_COFFEE', 'HOT_TEA', 'ICED_TEA', 'HOT_DRINK', 'ICED_DRINK', 'SEASON'];
+
 export interface ICommonModalTypes {
     open: boolean;
     onClose?(): void;
@@ -94,6 +106,7 @@ export interface ICommonModalTypes {
     height?: string | number;
     maxHeight?: string | number;
     fixedContent?: string | ReactNode;
+    fixedContentPosition?: 'top' | 'bottom';
     hasCloseButton?: boolean;
 }
 

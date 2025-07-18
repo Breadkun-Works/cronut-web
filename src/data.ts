@@ -234,7 +234,8 @@ export const COLORS_DARK = {
     },
     badge: {
         ice: '#4dabf7',
-        hot: '#ff6b6b'
+        hot: '#ff6b6b',
+        season: '#a78bfa'
     },
     theme: {
         blue: '#404258',

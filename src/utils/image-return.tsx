@@ -42,21 +42,20 @@ export const getWeatherIconPath = (ptyCode: string | undefined, skyCode: string 
 };
 
 export const getMealImagePath = (meal: string) => {
-    const baseUrl = '/icon/meal';
+    const baseUrl = '/images/meal';
     switch (meal) {
         case 'SPECIAL':
-            return `${baseUrl}/special.webp`;
+            return `${baseUrl}/special.svg`;
         case 'KOREAN1':
-            return `${baseUrl}/korfood.webp`;
+            return `${baseUrl}/korean.svg`;
         case 'KOREAN2':
-            return `${baseUrl}/ramen.webp`;
         case 'NOODLE':
-            return `${baseUrl}/noodle.webp`;
+            return `${baseUrl}/ramen.svg`;
         case 'CONVENIENCE1':
         case 'CONVENIENCE2':
-            return `${baseUrl}/simpleFood.webp`;
+            return `${baseUrl}/convenience.svg`;
         case 'CONVENIENCE3':
-            return `${baseUrl}/protein.webp`;
+            return `${baseUrl}/protein.svg`;
         default:
             return '';
     }

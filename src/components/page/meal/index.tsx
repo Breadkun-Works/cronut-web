@@ -7,7 +7,7 @@ import { getMealImagePath } from '@/utils/image-return';
 import { CompanySelect } from '@/components/CompanySelect';
 import { useDynamicTitle } from '@/utils/hook';
 import { useAtom } from 'jotai';
-import { companyAtom } from '@/atom/common-atom';
+import { companyAtom, useModal } from '@/atom/common-atom';
 import {
     DaysButtonText,
     DaysTab,
@@ -28,9 +28,12 @@ import {
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { menuNameEdit } from '@/utils/page/meal/util';
 import { categoryMap } from '@/types/meal';
+import { CommonModal } from '@/components/page/cafe/modal/common-modal';
+import { Typography } from '@mui/material';
 
 const Meal = () => {
     useDynamicTitle('식단');
+    const mealErrorOpen = useModal('meal-error');
     const getWeekNumber = (date: Date): number => {
         // 월요일이 0이 되도록 요일을 조정합니다.
         const dayOfWeek = (date.getDay() + 6) % 7;
@@ -141,7 +144,7 @@ const Meal = () => {
 
     // 식단 api
     useEffect(() => {
-        fetchMealData(company, weekNumber).then(res => {
+        fetchMealData(company, weekNumber, () => mealErrorOpen.openModal()).then(res => {
             const { updated, ...rest } = res;
             setMealData(rest);
         });
@@ -274,6 +277,21 @@ const Meal = () => {
                     </>
                 )}
             </MealMenuList>
+            <CommonModal
+                open={mealErrorOpen.modal.isOpen}
+                onClose={() => mealErrorOpen.closeModal()}
+                content={
+                    <Typography
+                        sx={{
+                            whiteSpace: 'pre-line',
+                            wordBreak: 'keep-all',
+                            overflowWrap: 'break-word'
+                        }}
+                    >
+                        {`죄송합니다.\n현재 식단 정보를 가져올 수 없습니다.\n문제가 지속되면 관리자에게 문의해 주시기 바랍니다.`}
+                    </Typography>
+                }
+            />
         </>
     );
 };

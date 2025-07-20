@@ -67,6 +67,25 @@ export const EllipsisTooltipWithChip = ({
         if (isMobileDevice()) setOpen(prev => !prev);
     };
 
+    useEffect(() => {
+        if (!isMobileDevice() || !open || !textRef.current) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) {
+                    setOpen(false);
+                }
+            },
+            { root: null, threshold: 0 }
+        );
+
+        observer.observe(textRef.current);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [open]);
+
     if (shouldShowTooltip) {
         if (isMobileDevice()) {
             return (
@@ -74,7 +93,6 @@ export const EllipsisTooltipWithChip = ({
                     <Tooltip
                         title={
                             <Typography
-                                // fontSize={'small'}
                                 fontSize={fontSize}
                                 sx={{ maxWidth: tooltipMaxWidth, whiteSpace: 'normal', wordWrap: 'break-word' }}
                             >

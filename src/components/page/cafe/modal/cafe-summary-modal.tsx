@@ -1,17 +1,16 @@
 'use client';
 
-import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CafeCartItem, GroupedCafeData, GroupedCafeItem } from '@/types/cart';
 import { CafeMenuBadge, MenuCount, MenuImageContainer } from '@/styles/cart/cart.styles';
-import { useMaxWidthByViewport, useResponsive } from '@/utils/hook';
+import { useResponsive } from '@/utils/hook';
 import { COLORS_DARK } from '@/data';
 import { Company, DrinkCategory, drinkSortOrder, ICommonModalTypes, titleMap } from '@/types/common';
 import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 import { EllipsisTooltipWithChip } from '@/components/common/EllipsisTooltipWithChip';
 import { CardImage } from '@/components/common/CardImage';
 import { ExpandMore } from '@mui/icons-material';
-import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 
 interface CafeSummaryModalProps extends ICommonModalTypes {
     cartItems: CafeCartItem[];
@@ -158,12 +157,32 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                 key={title}
                                 disableGutters
                                 slotProps={{ heading: { component: 'div' } }}
+                                sx={{
+                                    '&:last-of-type .MuiAccordionSummary-root::after': {
+                                        display: 'none'
+                                    }
+                                }}
                             >
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}
                                     sx={{
+                                        justifyContent: 'space-between',
+                                        padding: '0 8px 0 12px',
+                                        position: 'relative',
+                                        '&::after': {
+                                            content: '""',
+                                            position: 'absolute',
+                                            bottom: 0,
+                                            left: 0,
+                                            right: 0,
+                                            height: '1px',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.12)'
+                                        },
                                         '& .MuiAccordionSummary-content.Mui-expanded': {
                                             margin: '1rem 0 0 0'
+                                        },
+                                        '&.Mui-expanded::after': {
+                                            display: 'none'
                                         }
                                     }}
                                 >
@@ -183,7 +202,7 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                         </Typography>
                                     </Box>
                                 </AccordionSummary>
-                                <AccordionDetails sx={{ padding: '0px 16px' }}>
+                                <AccordionDetails sx={{ padding: '0 8px' }}>
                                     {items.map((group: GroupedCafeItem, index: number) => {
                                         return (
                                             <Box
@@ -221,43 +240,39 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                                             textBoxRefs.current[categoryIndex][index] = el;
                                                         }}
                                                     >
-                                                        <EllipsisTooltip title={group.drinkName}>
-                                                            {group.drinkName}
-                                                        </EllipsisTooltip>
-                                                        {/*<EllipsisTooltipWithChip*/}
-                                                        {/*    title={group.drinkName}*/}
-                                                        {/*    forceTooltip={*/}
-                                                        {/*        forceTooltipList[categoryIndex]?.[index] ?? false*/}
-                                                        {/*    }*/}
-                                                        {/*    // forceTooltip={forceTooltipList[index] ?? false}*/}
-                                                        {/*    customMaxWidthKey={'cart-summary'}*/}
-                                                        {/*    withIcon*/}
-                                                        {/*>*/}
-                                                        {/*    <>{group.drinkName}</>*/}
-                                                        {/*</EllipsisTooltipWithChip>*/}
-                                                        <Box
-                                                            component="span"
-                                                            sx={{
-                                                                display: 'inline-flex',
-                                                                alignItems: 'center',
-                                                                marginLeft: 0.5
-                                                            }}
+                                                        <EllipsisTooltipWithChip
+                                                            title={group.drinkName}
+                                                            forceTooltip={
+                                                                forceTooltipList[categoryIndex]?.[index] ?? false
+                                                            }
+                                                            customMaxWidthKey={'cart-summary'}
+                                                            withIcon
                                                         >
-                                                            {/*<Chip*/}
-                                                            {/*    label={group.drinkTemperature}*/}
-                                                            {/*    size="small"*/}
-                                                            {/*    sx={{*/}
-                                                            {/*        backgroundColor:*/}
-                                                            {/*            group.drinkTemperature === 'HOT'*/}
-                                                            {/*                ? '#F87171'*/}
-                                                            {/*                : '#60A5FA',*/}
-                                                            {/*        color: '#fff',*/}
-                                                            {/*        fontSize: '0.6rem',*/}
-                                                            {/*        height: fontSize,*/}
-                                                            {/*        borderRadius: '4px'*/}
-                                                            {/*    }}*/}
-                                                            {/*/>*/}
-                                                        </Box>
+                                                            <>{group.drinkName}</>
+                                                        </EllipsisTooltipWithChip>
+                                                        {/*<Box*/}
+                                                        {/*    component="span"*/}
+                                                        {/*    sx={{*/}
+                                                        {/*        display: 'inline-flex',*/}
+                                                        {/*        alignItems: 'center',*/}
+                                                        {/*        marginLeft: 0.5*/}
+                                                        {/*    }}*/}
+                                                        {/*>*/}
+                                                        {/*<Chip*/}
+                                                        {/*    label={group.drinkTemperature}*/}
+                                                        {/*    size="small"*/}
+                                                        {/*    sx={{*/}
+                                                        {/*        backgroundColor:*/}
+                                                        {/*            group.drinkTemperature === 'HOT'*/}
+                                                        {/*                ? '#F87171'*/}
+                                                        {/*                : '#60A5FA',*/}
+                                                        {/*        color: '#fff',*/}
+                                                        {/*        fontSize: '0.6rem',*/}
+                                                        {/*        height: fontSize,*/}
+                                                        {/*        borderRadius: '4px'*/}
+                                                        {/*    }}*/}
+                                                        {/*/>*/}
+                                                        {/*</Box>*/}
                                                     </Box>
                                                 </Box>
 

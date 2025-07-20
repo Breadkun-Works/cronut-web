@@ -466,19 +466,19 @@ export const responsiveConfigByPixel: PageConfigs = {
         { min: 370, max: 379, maxWidth: '39vw' }
     ],
     'cart-summary': [
-        { min: 0, max: 329, maxWidth: '23vw' },
-        { min: 330, max: 339, maxWidth: '24vw' },
-        { min: 340, max: 349, maxWidth: '26vw' },
-        { min: 350, max: 359, maxWidth: '27vw' },
-        { min: 360, max: 364, maxWidth: '25vw' },
-        { min: 365, max: 369, maxWidth: '27vw' },
-        { min: 370, max: 379, maxWidth: '27vw' },
-        { min: 380, max: 389, maxWidth: '28vw' },
-        { min: 390, max: 399, maxWidth: '29vw' },
-        { min: 400, max: 409, maxWidth: '30vw' },
-        { min: 410, max: 419, maxWidth: '32vw' },
-        { min: 420, max: 429, maxWidth: '33vw' },
-        { min: 430, max: 439, maxWidth: '35vw' }
+        { min: 0, max: 329, maxWidth: '32vw' },
+        { min: 330, max: 339, maxWidth: '33vw' },
+        { min: 340, max: 349, maxWidth: '35vw' },
+        { min: 350, max: 359, maxWidth: '34vw' },
+        { min: 360, max: 364, maxWidth: '34vw' },
+        { min: 365, max: 369, maxWidth: '35vw' },
+        { min: 370, max: 379, maxWidth: '36vw' },
+        { min: 380, max: 389, maxWidth: '38vw' },
+        { min: 390, max: 399, maxWidth: '40vw' },
+        { min: 400, max: 409, maxWidth: '40vw' },
+        { min: 410, max: 419, maxWidth: '40vw' },
+        { min: 420, max: 429, maxWidth: '40vw' },
+        { min: 430, max: 439, maxWidth: '40vw' }
     ],
     'cart-register': [
         { min: 0, max: 359, fontSize: 13, iconSize: 15, maxWidth: 100 },

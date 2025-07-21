@@ -64,6 +64,7 @@ export const MealCategoryItem = styled.div`
 
     ${({ theme }) => theme.breakpoints.down('md')} {
         width: calc(100% / 3);
+        font-size: 16px;
     }
 `;
 
@@ -109,7 +110,7 @@ export const DaysButtonText = styled.div<{ active?: boolean }>`
     ${({ theme }) => theme.breakpoints.down('md')} {
         height: 40px;
         padding: 0 15px;
-        font-size: 15px;
+        font-size: 16px;
     }
 `;
 
@@ -234,7 +235,6 @@ export const MealThumbnail = styled.div`
 
     img {
         height: 80%;
-        object-fit: cover;
     }
 
     ${({ theme }) => theme.breakpoints.down('xl')} {
@@ -247,6 +247,8 @@ export const MealThumbnail = styled.div`
         width: 100px !important;
 
         img {
+            object-fit: contain;
+            width: 100%;
             height: auto;
         }
     }

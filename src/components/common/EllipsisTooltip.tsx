@@ -55,6 +55,25 @@ export const EllipsisTooltip = ({ title, children, entry }: EllipsisTooltipProps
         };
     }, [children]);
 
+    useEffect(() => {
+        if (!isMobileDevice() || !open || !localRef.current) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) {
+                    setOpen(false);
+                }
+            },
+            { root: null, threshold: 0 }
+        );
+
+        observer.observe(localRef.current);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [open]);
+
     const handleToggleTooltip = () => {
         if (isMobileDevice()) setOpen(prev => !prev);
     };

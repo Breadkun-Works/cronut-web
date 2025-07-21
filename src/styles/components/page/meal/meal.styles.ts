@@ -143,7 +143,9 @@ export const MealMenuBox = styled.div<{ dinner?: boolean }>`
         }
 
         .dinner-img {
-            ${rowThumbnail};
+            ${({ theme }) => theme.breakpoints.up('xl')} {
+                ${rowThumbnail};
+            }
         }
     }
 `;
@@ -222,35 +224,26 @@ export const MealThumbnail = styled.div`
     box-sizing: border-box;
 
     &.dinner-img {
-        height: 160px;
-
-        ${({ theme }) => theme.breakpoints.down('md')} {
-            width: 100px !important;
-        }
-
-        img {
-            height: 100%;
-        }
     }
 
     img {
-        height: 80%;
+        height: 130px;
     }
 
     ${({ theme }) => theme.breakpoints.down('xl')} {
-        width: 150px !important;
-        height: auto !important;
+        width: 150px;
+        height: auto;
         padding: 10px;
-    }
-
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        width: 100px !important;
 
         img {
             object-fit: contain;
             width: 100%;
             height: auto;
         }
+    }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        width: 100px;
     }
 `;
 

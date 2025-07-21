@@ -21,6 +21,7 @@ import { CartWaring } from '@/components/page/cart/cart-warning';
 import { CartHeader } from '@/components/page/cart/cart-header';
 import { CartFooter } from '@/components/page/cart/cart-footer';
 import { getCookie } from '@/utils/cookie';
+import { CartWrap } from '@/styles/cafe/cart/comfirmClient.styles';
 
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
@@ -142,186 +143,181 @@ export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClient
     }
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                px: { xs: 2, sm: 2.5, md: 3 },
-                position: 'relative'
-            }}
-        >
-            <Box ref={semiHeaderRef}>
-                <CartWaring isCartInactive={isCartInactive} />
-                <CartHeader
-                    title={cartData?.title as string}
-                    cafeLocation={cartData?.cafeLocation as string}
-                    snackbar={snackbar}
-                    setSnackbar={setSnackbar}
-                />
-            </Box>
-
-            {!isMobileDevice() && !isMobile && (
-                <LinkShareCard ref={linkShareCardRef}>
-                    <LinkShareContent>
-                        <Box display="flex" alignItems="center" mb={'8px'}>
-                            <Share2
-                                size={24}
-                                style={{
-                                    marginRight: '8px',
-                                    color: COLORS_DARK.accent.main
-                                }}
-                            />
-                            <Typography variant="subtitle2" fontSize={'1rem'} fontWeight="medium">
-                                장바구니 공유하기
-                            </Typography>
-                        </Box>
-                        <Box display="flex" alignItems="center">
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                value={shareLink}
-                                InputProps={{
-                                    readOnly: true,
-                                    style: { color: COLORS_DARK.text.primary },
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Box display="flex" alignItems="center">
-                                                <IconButton
-                                                    edge="end"
-                                                    onClick={copyLinkToClipboard}
-                                                    sx={{
-                                                        color: COLORS_DARK.accent.main,
-                                                        '&:hover': {
-                                                            backgroundColor: `${COLORS_DARK.accent.main}20`
-                                                        },
-                                                        fontSize: '1.2rem'
-                                                    }}
-                                                >
-                                                    <CopyIcon fontSize="small" />
-                                                </IconButton>
-                                            </Box>
-                                        </InputAdornment>
-                                    )
-                                }}
-                                sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none !important'
-                                    },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none !important'
-                                    },
-                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none !important'
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: 12,
-                                        backgroundColor: COLORS_DARK.background.main
-                                    }
-                                }}
-                            />
-                        </Box>
-                    </LinkShareContent>
-                </LinkShareCard>
-            )}
-
-            {/*카페 장바구니 아이템 영역*/}
-            <ScrollableCartList
-                footerOpen={open}
-                bottomHeight={bottomHeight}
-                minHeight={minHeightValue}
-                user={userInfo}
-                cartInfo={cartData}
-            />
-
-            <CartFooter
-                ref={bottomRef}
-                isCollapsed={isCollapsed}
-                setIsCollapsed={setIsCollapsed}
-                footerOpen={open}
-                setFooterOpen={setOpen}
-                cartInfo={{ isCartInactive, cartId, user: userInfo, totalPrice, isCreator }}
-                decryptedData={decryptedData}
-            />
-
-            {reloadModal.modal.isOpen && !isCartInactive && (
-                <CartConfirmModal
-                    open={reloadModal.modal.isOpen}
-                    disableEscapeKeyDown
-                    onConfirm={() => {
-                        handleRefresh();
-                        reloadModal.closeModal();
-                    }}
-                    title={'세션 만료'}
-                    content={<>페이지를 새로고침 해주세여.</>}
-                />
-            )}
-
-            {decryptedData && (
-                <PaymentModal
-                    open={paymentModal.modal.isOpen}
-                    handleClose={paymentModal.closeModal}
-                    cafeAccount={decryptedData}
-                    totalPrice={totalPrice}
-                />
-            )}
-
-            {snackbar.open && snackbar.device === 'PC' && (
-                <Dialog
-                    open={snackbar.open && snackbar.device === 'PC'}
-                    onClose={handleCloseSnackbar}
-                    PaperProps={{
-                        sx: {
-                            backgroundColor: 'transparent',
-                            boxShadow: 'none',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: '16px'
-                        }
-                    }}
-                >
-                    <SnackbarDialogContent>
-                        <SnackbarDialogText>{snackbar.message}</SnackbarDialogText>
-                    </SnackbarDialogContent>
-                </Dialog>
-            )}
-
-            {snackbar.open && snackbar.device === 'MOBILE' && (
-                <Snackbar
-                    open={snackbar.open && snackbar.device === 'MOBILE'}
-                    autoHideDuration={2000}
-                    onClose={handleCloseSnackbar}
-                    message={snackbar.message}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    ContentProps={{
-                        sx: {
-                            backgroundColor: COLORS_DARK.accent.main,
-                            color: '#fff',
-                            fontSize: 14,
-                            fontWeight: 'bold'
-                        }
-                    }}
-                />
-            )}
-
-            {clapPositions.map(pos => (
-                <Box
-                    key={pos.id}
-                    sx={{
-                        position: 'fixed',
-                        left: `${pos.x}px`,
-                        bottom: bottomRef.current
-                            ? `${window.innerHeight - bottomRef.current.getBoundingClientRect().top}px`
-                            : '120px',
-                        zIndex: 9999,
-                        pointerEvents: 'none',
-                        transform: 'translateX(-50%)'
-                    }}
-                >
-                    <ClapAnimation />
+        <>
+            <CartWrap>
+                <Box ref={semiHeaderRef}>
+                    <CartWaring isCartInactive={isCartInactive} />
+                    <CartHeader
+                        title={cartData?.title as string}
+                        cafeLocation={cartData?.cafeLocation as string}
+                        snackbar={snackbar}
+                        setSnackbar={setSnackbar}
+                    />
                 </Box>
-            ))}
-        </Box>
+
+                {!isMobileDevice() && !isMobile && (
+                    <LinkShareCard ref={linkShareCardRef}>
+                        <LinkShareContent>
+                            <Box display="flex" alignItems="center" mb={'8px'}>
+                                <Share2
+                                    size={24}
+                                    style={{
+                                        marginRight: '8px',
+                                        color: COLORS_DARK.accent.main
+                                    }}
+                                />
+                                <Typography variant="subtitle2" fontSize={'1rem'} fontWeight="medium">
+                                    장바구니 공유하기
+                                </Typography>
+                            </Box>
+                            <Box display="flex" alignItems="center">
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    value={shareLink}
+                                    InputProps={{
+                                        readOnly: true,
+                                        style: { color: COLORS_DARK.text.primary },
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <Box display="flex" alignItems="center">
+                                                    <IconButton
+                                                        edge="end"
+                                                        onClick={copyLinkToClipboard}
+                                                        sx={{
+                                                            color: COLORS_DARK.accent.main,
+                                                            '&:hover': {
+                                                                backgroundColor: `${COLORS_DARK.accent.main}20`
+                                                            },
+                                                            fontSize: '1.2rem'
+                                                        }}
+                                                    >
+                                                        <CopyIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Box>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-notchedOutline': {
+                                            border: 'none !important'
+                                        },
+                                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                                            border: 'none !important'
+                                        },
+                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                            border: 'none !important'
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 12,
+                                            backgroundColor: COLORS_DARK.background.main
+                                        }
+                                    }}
+                                />
+                            </Box>
+                        </LinkShareContent>
+                    </LinkShareCard>
+                )}
+
+                {/*카페 장바구니 아이템 영역*/}
+                <ScrollableCartList
+                    footerOpen={open}
+                    bottomHeight={bottomHeight}
+                    minHeight={minHeightValue}
+                    user={userInfo}
+                    cartInfo={cartData}
+                />
+
+                <CartFooter
+                    ref={bottomRef}
+                    isCollapsed={isCollapsed}
+                    setIsCollapsed={setIsCollapsed}
+                    footerOpen={open}
+                    setFooterOpen={setOpen}
+                    cartInfo={{ isCartInactive, cartId, user: userInfo, totalPrice, isCreator }}
+                    decryptedData={decryptedData}
+                />
+
+                {reloadModal.modal.isOpen && !isCartInactive && (
+                    <CartConfirmModal
+                        open={reloadModal.modal.isOpen}
+                        disableEscapeKeyDown
+                        onConfirm={() => {
+                            handleRefresh();
+                            reloadModal.closeModal();
+                        }}
+                        title={'세션 만료'}
+                        content={<>페이지를 새로고침 해주세여.</>}
+                    />
+                )}
+
+                {decryptedData && (
+                    <PaymentModal
+                        open={paymentModal.modal.isOpen}
+                        handleClose={paymentModal.closeModal}
+                        cafeAccount={decryptedData}
+                        totalPrice={totalPrice}
+                    />
+                )}
+
+                {snackbar.open && snackbar.device === 'PC' && (
+                    <Dialog
+                        open={snackbar.open && snackbar.device === 'PC'}
+                        onClose={handleCloseSnackbar}
+                        PaperProps={{
+                            sx: {
+                                backgroundColor: 'transparent',
+                                boxShadow: 'none',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: '16px'
+                            }
+                        }}
+                    >
+                        <SnackbarDialogContent>
+                            <SnackbarDialogText>{snackbar.message}</SnackbarDialogText>
+                        </SnackbarDialogContent>
+                    </Dialog>
+                )}
+
+                {snackbar.open && snackbar.device === 'MOBILE' && (
+                    <Snackbar
+                        open={snackbar.open && snackbar.device === 'MOBILE'}
+                        autoHideDuration={2000}
+                        onClose={handleCloseSnackbar}
+                        message={snackbar.message}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                        ContentProps={{
+                            sx: {
+                                backgroundColor: COLORS_DARK.accent.main,
+                                color: '#fff',
+                                fontSize: 14,
+                                fontWeight: 'bold'
+                            }
+                        }}
+                    />
+                )}
+
+                {clapPositions.map(pos => (
+                    <Box
+                        key={pos.id}
+                        sx={{
+                            position: 'fixed',
+                            left: `${pos.x}px`,
+                            bottom: bottomRef.current
+                                ? `${window.innerHeight - bottomRef.current.getBoundingClientRect().top}px`
+                                : '120px',
+                            zIndex: 9999,
+                            pointerEvents: 'none',
+                            transform: 'translateX(-50%)'
+                        }}
+                    >
+                        <ClapAnimation />
+                    </Box>
+                ))}
+            </CartWrap>
+        </>
     );
 };

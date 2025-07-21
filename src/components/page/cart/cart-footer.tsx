@@ -21,6 +21,7 @@ import { useResponsiveConfig } from '@/utils/hook';
 import { expireCart } from '@/apis/cafe/cafe-api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
+import { CartFooterBottom } from '@/styles/components/page/cart/cart-footer.styles';
 
 interface ICartFooterProps {
     isCollapsed: boolean;
@@ -123,7 +124,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                             </IconButton>
                         </Box>
 
-                        <Box sx={{ width: '100%', maxWidth: '902px', margin: '0 auto' }}>
+                        <CartFooterBottom>
                             {!isCartInactive && (
                                 <OrderAmountCard>
                                     <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -201,7 +202,7 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
                                     </>
                                 )}
                             </ButtonsContainer>
-                        </Box>
+                        </CartFooterBottom>
                     </OrderFooter>
                 </Slide>
 

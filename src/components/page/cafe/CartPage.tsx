@@ -1,6 +1,6 @@
 'use client';
 
-import { CartButton, PageWrapper, CartContainer } from '@/styles/cart/cart.styles';
+import { CartButton, PageWrapper, CartContainer, CartTitle } from '@/styles/cart/cart.styles';
 import React, { useState, useEffect } from 'react';
 import { useCreateCart } from '@/apis/cafe/cafe-api';
 import NotificationBox from '@/components/NotificationBox';
@@ -108,30 +108,21 @@ export const CartPage = () => {
 
     return (
         <PageWrapper>
-            <Box margin={isMobile ? '10px 16px' : '20px 30px'}>
+            <Box margin={isMobile ? '10px 16px' : '20px 0'}>
                 <CompanySelect entry={'cafe'} />
             </Box>
             <div className={'cart-wrapper'}>
                 <CartContainer>
-                    <div style={{ fontSize: '1.3rem', margin: '20px 0', textAlign: 'center' }}>
+                    <CartTitle>
                         음료 주문을 시작합니다 🎉
-                        <br />
-                        <p
-                            style={{
-                                fontSize: '1.1rem',
-                                whiteSpace: 'pre-line',
-                                textAlign: 'center',
-                                lineHeight: 1.5,
-                                wordBreak: 'keep-all'
-                            }}
-                        >
+                        <p>
                             생성 후{' '}
-                            <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
-                                <span style={{ fontSize: '1.2rem', color: COLORS_DARK.accent.light }}>3</span>시간
+                            <span>
+                                <strong>3</strong>시간
                             </span>
                             동안 사용 가능합니다
                         </p>
-                    </div>
+                    </CartTitle>
                     <CssTextField
                         label="장바구니 이름"
                         value={newCart.title}

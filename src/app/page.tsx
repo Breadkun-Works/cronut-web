@@ -504,7 +504,7 @@ export default function Home() {
                     </div>
                 </div>
             )}
-            {notification && <NotificationBox firstText={'기상상태 분석 중.'} secText={'잠시만 기다려 주세요.'} />}
+            {notification && <NotificationBox firstText={'기상상태 분석 중...'} secText={'잠시만 기다려 주세요.'} />}
         </>
     );
 }

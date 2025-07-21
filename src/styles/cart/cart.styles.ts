@@ -17,6 +17,7 @@ import { TemperatureBadgeProps } from '@/types/cart';
 import { ShoppingCart } from 'lucide-react';
 import { keyframes } from '@emotion/react';
 import isPropValid from '@emotion/is-prop-valid';
+import { inner } from '@/styles/common.styles';
 
 interface ConfirmHeaderProps {
     isMobile: boolean;
@@ -32,12 +33,30 @@ const slideMarquee = keyframes`
 `;
 
 export const PageWrapper = styled.div`
-    width: 100%;
-    max-width: 950px;
+    ${inner};
 
     .cart-wrapper {
         display: flex;
         justify-content: center;
+    }
+`;
+
+export const CartTitle = styled.div`
+    font-size: 22px;
+    text-align: center;
+
+    p {
+        margin: 10px 0 20px 0;
+        font-size: 20px;
+
+        span {
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+
+            strong {
+                color: ${COLORS_DARK.accent.light};
+            }
+        }
     }
 `;
 

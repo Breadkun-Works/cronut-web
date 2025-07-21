@@ -202,7 +202,11 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                         </Typography>
                                     </Box>
                                 </AccordionSummary>
-                                <AccordionDetails sx={{ padding: '0 8px' }}>
+                                <AccordionDetails
+                                    sx={{
+                                        padding: categorizedGroupMenuList.length === 1 ? '0 8px 13px 8px' : '0 8px'
+                                    }}
+                                >
                                     {items.map((group: GroupedCafeItem, index: number) => {
                                         return (
                                             <Box

@@ -45,17 +45,18 @@ export const getMealImagePath = (meal: string) => {
     const baseUrl = '/images/meal';
     switch (meal) {
         case 'SPECIAL':
-            return `${baseUrl}/special.svg`;
+            return `${baseUrl}/special.png`;
         case 'KOREAN1':
-            return `${baseUrl}/korean.svg`;
+            return `${baseUrl}/korean.png`;
         case 'KOREAN2':
+            return `${baseUrl}/noodle.png`;
         case 'NOODLE':
-            return `${baseUrl}/ramen.svg`;
+            return `${baseUrl}/ramen.png`;
         case 'CONVENIENCE1':
         case 'CONVENIENCE2':
-            return `${baseUrl}/convenience.svg`;
+            return `${baseUrl}/convenience.png`;
         case 'CONVENIENCE3':
-            return `${baseUrl}/protein.svg`;
+            return `${baseUrl}/protein.png`;
         default:
             return '';
     }

@@ -141,12 +141,6 @@ export const MealMenuBox = styled.div<{ dinner?: boolean }>`
         .dinner {
             ${rowLayout};
         }
-
-        .dinner-img {
-            ${({ theme }) => theme.breakpoints.up('xl')} {
-                ${rowThumbnail};
-            }
-        }
     }
 `;
 
@@ -223,11 +217,14 @@ export const MealThumbnail = styled.div`
     background-color: rgba(255, 255, 255, 0.25);
     box-sizing: border-box;
 
-    &.dinner-img {
-    }
-
     img {
         height: 130px;
+    }
+
+    &.korean-img {
+        img {
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+        }
     }
 
     ${({ theme }) => theme.breakpoints.down('xl')} {
@@ -270,11 +267,21 @@ export const MealDetail = styled.div<{ eulji?: boolean }>`
 
 export const MealEmpty = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     min-height: 300px;
     text-align: center;
+
+    & > div {
+        margin-bottom: 5px;
+
+        img {
+            width: 200px;
+            filter: brightness(0.7);
+        }
+    }
 
     p {
         margin: 0;

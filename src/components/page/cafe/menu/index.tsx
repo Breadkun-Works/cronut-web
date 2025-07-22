@@ -246,7 +246,13 @@ const CafeMenu = ({
             data.pages.forEach(page => {
                 page.records.forEach(record => {
                     if (!initialTempMap[record.name]) {
-                        initialTempMap[record.name] = { ...record, temp: getDefaultDrinkTemperatureBySeason() };
+                        initialTempMap[record.name] = {
+                            ...record,
+                            temp:
+                                record.options.length > 1
+                                    ? getDefaultDrinkTemperatureBySeason()
+                                    : record.options[0].drinkTemperature
+                        };
                     }
                 });
             });

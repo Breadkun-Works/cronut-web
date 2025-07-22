@@ -102,7 +102,7 @@ export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClient
         setSnackbar({ open: false, message: '', variant: 'success', device: 'PC' });
     };
 
-    const { clapPositions, sessionExpired } = useCartSync(cartId as string, false, cartData?.status === 'INACTIVE');
+    const { clapPositions, sessionExpired } = useCartSync(cartId as string, true, cartData?.status === 'INACTIVE');
 
     const reloadModal = useModal('reloadModal');
 

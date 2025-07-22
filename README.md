@@ -13,6 +13,7 @@
     <li><a href="#stacks">Stacks</a></li>
    <li><a href="#browser-support">Browser Support</a></li>
    <li><a href="#members">Members</a></li>
+   <li><a href="#icon-attribution">Icon Attribution</a></li>
 </ul>
 
 ---
@@ -116,6 +117,28 @@
 - **PARK(BACK-END)**
     - **GitHub**: https://github.com/pannchat
     - **Blog**: https://pannchat.tistory.com/
+
+
+# Icon Attribution
+This project uses icons from [Flaticon](https://www.flaticon.com), licensed under the [Flaticon Basic License](https://www.flaticon.com/license).
+
+## Used Icons :
+- **Bibimbap icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/bibimbap_4480768
+- **Noodles icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/noodles_2515373
+- **Smoothie icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/smoothie_9260469
+- **Milk Bottle icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/milk-bottle_2049100
+- **Sandwich icon** by [smashingstocks](https://www.flaticon.com/authors/smashingstocks)  
+  https://www.flaticon.com/free-icon/sandwich_7627769
+- **Chef icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/chef_3461977
+- **Ramen icon** by [monkik](https://www.flaticon.com/authors/monkik)  
+  https://www.flaticon.com/free-icon/ramen_1623675
+- **Nutrition plan icon** by[gravisio](https://www.flaticon.com/authors/gravisio)
+  https://www.flaticon.com/free-icon/nutrition-plan_14106417
 
 ---
 

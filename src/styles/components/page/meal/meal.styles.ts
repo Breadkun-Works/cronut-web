@@ -270,11 +270,21 @@ export const MealDetail = styled.div<{ eulji?: boolean }>`
 
 export const MealEmpty = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     min-height: 300px;
     text-align: center;
+
+    & > div {
+        margin-bottom: 5px;
+
+        img {
+            width: 200px;
+            filter: brightness(0.7);
+        }
+    }
 
     p {
         margin: 0;

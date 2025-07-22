@@ -10,13 +10,14 @@ export interface ErrorResponse {
 
 export const mealMenu = (company: string) => {
     const commonMenu = [
-        { value: 'SPECIAL', label: '일품' },
-        { value: 'KOREAN1', label: '한식' },
-        { value: 'KOREAN2', label: '라면' },
-        { value: 'NOODLE', label: '누들' },
+        { value: 'SPECIAL', label: '일품', license: 'Chef' },
+        { value: 'KOREAN1', label: '한식', license: 'Bibimbap' },
+        { value: 'KOREAN2', label: '라면', license: 'Ramen' },
+        { value: 'NOODLE', label: '누들', license: 'Noodles' },
         {
             value: 'CONVENIENCE1',
-            label: company === Company.KANGCHON ? '간편식' : '프레시박스'
+            label: company === Company.KANGCHON ? '간편식' : '프레시박스',
+            license: 'Sandwich, Milk Bottle'
         }
     ];
     const mealTime = ['조식', '중식', '석식'];
@@ -25,8 +26,8 @@ export const mealMenu = (company: string) => {
             mealTime,
             menu: [
                 ...commonMenu,
-                { value: 'CONVENIENCE2', label: '간편식' },
-                { value: 'CONVENIENCE3', label: '프로틴' }
+                { value: 'CONVENIENCE2', label: '간편식', license: 'Sandwich, Milk Bottle' },
+                { value: 'CONVENIENCE3', label: '프로틴', license: 'Smoothie' }
             ]
         };
     } else {

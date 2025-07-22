@@ -213,6 +213,9 @@ const Meal = () => {
             <MealMenuList>
                 {isEmpty ? (
                     <MealEmpty>
+                        <div>
+                            <img src={'/images/meal/empty.png'} alt={'Nutrition plan icon'} />
+                        </div>
                         <p>
                             오늘은 메뉴가 비어있네요!
                             <br /> 잠시만 기다려 주세요🍽️
@@ -220,7 +223,7 @@ const Meal = () => {
                     </MealEmpty>
                 ) : (
                     <>
-                        {mealMenu(company).menu.map((menu, index) => {
+                        {mealMenu(company).menu.map((menu, index, license) => {
                             return (
                                 mealData?.[dayNumToSpell(selectedDay)]?.[mealCategoriesEdit(selectedMealCategories)]?.[
                                     menu.value
@@ -262,7 +265,10 @@ const Meal = () => {
                                                         : ''
                                                 }
                                             >
-                                                <img src={getMealImagePath(menu.value)} alt={`${menu.label} 이미지`} />
+                                                <img
+                                                    src={getMealImagePath(menu.value)}
+                                                    alt={`${menu.license} icon from Flaticon`}
+                                                />
                                             </MealThumbnail>
                                             <MealDetail eulji={company === Company.EULJI}>
                                                 {mealData[dayNumToSpell(selectedDay)][

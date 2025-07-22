@@ -1,0 +1,43 @@
+This project includes icons downloaded from Flaticon (https://www.flaticon.com),
+licensed under the Flaticon Basic License (https://www.flaticon.com/license).
+
+Used Icons:
+
+--------------------------------------
+Meal Icon - /public/images/meal
+--------------------------------------
+- "Bibimbap" icon by Freepik
+    https://www.flaticon.com/free-icon/bibimbap_4480768
+
+- "Noodles" icon by Freepik
+    https://www.flaticon.com/free-icon/noodles_2515373
+
+- "Smoothie" icon by Freepik
+    https://www.flaticon.com/free-icon/smoothie_9260469
+
+- "Milk Bottle" icon by Freepik
+    https://www.flaticon.com/free-icon/milk-bottle_2049100
+
+- "Sandwich" icon by smashingstocks
+    https://www.flaticon.com/free-icon/sandwich_7627769
+
+- "Chef" icon by Freepik
+    https://www.flaticon.com/free-icon/chef_3461977
+
+- "Ramen" icon by monkik
+    https://www.flaticon.com/free-icon/ramen_1623675
+
+- "Nutrition Plan" icon by gravisio
+    https://www.flaticon.com/free-icon/nutrition-plan_14106417
+
+------------------------------------------------------------
+
+Icon Usage Guide:
+1. alt 속성에 사용한 아이콘 이름 명시
+    ex: <img src="/images/meal/bibimbap.png" alt="Bibimbap icon" />
+
+2. ATTRIBUTION.txt 파일, README.md 파일에 아이콘 링크 작성
+    - "alt에 사용된 아이콘 명" icon by Freepik
+        img url 작성
+
+3. 이 프로젝트를 배포하거나 수정해서 사용할 경우, 이 파일에 포함된 저작권 및 출처 정보를 반드시 유지해야 합니다.

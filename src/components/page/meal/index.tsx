@@ -223,7 +223,7 @@ const Meal = () => {
                     </MealEmpty>
                 ) : (
                     <>
-                        {mealMenu(company).menu.map((menu, index, license) => {
+                        {mealMenu(company).menu.map((menu, index) => {
                             return (
                                 mealData?.[dayNumToSpell(selectedDay)]?.[mealCategoriesEdit(selectedMealCategories)]?.[
                                     menu.value
@@ -258,13 +258,7 @@ const Meal = () => {
                                             }
                                             eulji={company === Company.EULJI}
                                         >
-                                            <MealThumbnail
-                                                className={
-                                                    selectedMealCategories === '석식' || company === Company.EULJI
-                                                        ? 'dinner-img'
-                                                        : ''
-                                                }
-                                            >
+                                            <MealThumbnail className={menu.label === '한식' ? 'korean-img' : ''}>
                                                 <img
                                                     src={getMealImagePath(menu.value)}
                                                     alt={`${menu.license} icon from Flaticon`}

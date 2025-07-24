@@ -21,7 +21,8 @@ import { useResponsiveConfig } from '@/utils/hook';
 import { expireCart } from '@/apis/cafe/cafe-api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
-import { CartFooterBottom } from '@/styles/components/page/cart/cart-footer.styles';
+import { CartFooterBottom, ExpireCartText } from '@/styles/components/page/cart/cart-footer.styles';
+import { css } from '@emotion/react';
 
 interface ICartFooterProps {
     isCollapsed: boolean;
@@ -208,39 +209,21 @@ export const CartFooter = forwardRef<HTMLDivElement, ICartFooterProps>(
 
                 <CommonModal
                     open={confirmModal.modal.isOpen}
+                    width={400}
+                    modalType={'alert'}
                     onClose={() => confirmModal.closeModal()}
                     title={'장바구니 마감'}
                     onConfirm={handleExpireCart}
                     confirmText={'마감'}
                     content={
-                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                            <Typography
-                                sx={{
-                                    whiteSpace: 'pre-line',
-                                    textAlign: 'center',
-                                    wordBreak: 'keep-all',
-                                    overflowWrap: 'break-word',
-                                    maxWidth: '90%',
-                                    fontSize: fontSize,
-                                    lineHeight: 1.4
-                                }}
-                            >
-                                공유받은 사용자는 장바구니 메뉴{' '}
-                                {/*마감 시, 이 장바구니에 접근한 모든 사용자는 더 이상{' '}*/}
-                                <strong style={{ textDecoration: 'underline' }}>추가/수정</strong> 및{' '}
-                                <strong style={{ textDecoration: 'underline' }}>송금</strong>이 제한됩니다😭
-                                {/*<strong style={{ textDecoration: 'underline' }}>메뉴 담기</strong>를 할 수 없습니다.😭*/}
-                                <br />
-                                <br />
-                                정말 마감하시겠습니까?
-                                {/*주문 마감 시, 이 장바구니에 접근한 모든 사용자가 더 이상 상품을{' '}*/}
-                                {/*<strong style={{ textDecoration: 'underline' }}>추가</strong>하거나{' '}*/}
-                                {/*<strong style={{ textDecoration: 'underline' }}>수정</strong>할 수 없습니다😭*/}
-                                {/*<br />*/}
-                                {/*<br />*/}
-                                {/*마감하시겠습니까?*/}
-                            </Typography>
-                        </Box>
+                        <ExpireCartText>
+                            공유받은 사용자는 장바구니 메뉴
+                            <br />
+                            <strong>추가/수정</strong> 및 <strong>송금</strong>이 제한됩니다😭
+                            <br />
+                            <br />
+                            정말 마감하시겠습니까?
+                        </ExpireCartText>
                     }
                 />
             </>

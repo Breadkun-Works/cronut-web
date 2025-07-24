@@ -17,11 +17,11 @@ import { useAtom } from 'jotai';
 import { cartItemsAtom } from '@/atom/cart-atom';
 import { useModal } from '@/atom/common-atom';
 import { ScrollableCartList } from '@/components/page/cart/scrollable-cart-list';
-import { CartWaring } from '@/components/page/cart/cart-warning';
 import { CartHeader } from '@/components/page/cart/cart-header';
 import { CartFooter } from '@/components/page/cart/cart-footer';
 import { getCookie } from '@/utils/cookie';
 import { CartWrap } from '@/styles/cafe/cart/comfirmClient.styles';
+import { Stack } from '@/components/ui/Stack/Stack';
 
 interface ConfirmClientPageProps {
     decryptedData?: { accountNumber: string; bankName: string };
@@ -145,20 +145,19 @@ export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClient
     return (
         <>
             <CartWrap>
-                <Box ref={semiHeaderRef}>
-                    <CartWaring isCartInactive={isCartInactive} />
-                    <CartHeader
-                        title={cartData?.title as string}
-                        cafeLocation={cartData?.cafeLocation as string}
-                        snackbar={snackbar}
-                        setSnackbar={setSnackbar}
-                    />
-                </Box>
+                <CartHeader
+                    title={cartData?.title as string}
+                    description={cartData?.description as string}
+                    cafeLocation={cartData?.cafeLocation as string}
+                    snackbar={snackbar}
+                    setSnackbar={setSnackbar}
+                    status={cartData?.status}
+                />
 
                 {!isMobileDevice() && !isMobile && (
                     <LinkShareCard ref={linkShareCardRef}>
                         <LinkShareContent>
-                            <Box display="flex" alignItems="center" mb={'8px'}>
+                            <Stack margin={'0 0 8px 0'}>
                                 <Share2
                                     size={24}
                                     style={{
@@ -169,7 +168,7 @@ export const ConfirmClient = ({ decryptedData, cartId, cartData }: ConfirmClient
                                 <Typography variant="subtitle2" fontSize={'1rem'} fontWeight="medium">
                                     장바구니 공유하기
                                 </Typography>
-                            </Box>
+                            </Stack>
                             <Box display="flex" alignItems="center">
                                 <TextField
                                     fullWidth

@@ -1,15 +1,30 @@
 'use client';
 
-import { COLORS_DARK } from '@/data';
-import { Backdrop, Box, Button, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Backdrop } from '@mui/material';
 import { ICommonModalTypes } from '@/types/common';
-import { useHasVerticalScroll, useMaxWidthByViewport } from '@/utils/hook';
+import { useHasVerticalScroll } from '@/utils/hook';
+import {
+    ModalButtonWrap,
+    ModalContent,
+    ModalFixedContent,
+    ModalTitle,
+    ModalWrap,
+    ScrollContent
+} from '@/styles/components/page/cafe/modal/common-modal.styles';
+import { Button } from '@/components/ui/Button/Button';
 
 export const CommonModal = (props: ICommonModalTypes) => {
-    const { open, onClose, content, title, onConfirm, confirmText, width, fixedContentPosition = 'bottom' } = props;
-    const theme = useTheme();
-    const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-    const { fontSize } = useMaxWidthByViewport();
+    const {
+        open,
+        onClose,
+        content,
+        title,
+        onConfirm,
+        confirmText,
+        width,
+        fixedContentPosition = 'bottom',
+        modalType
+    } = props;
     const { ref, hasScroll } = useHasVerticalScroll();
 
     return (
@@ -27,129 +42,33 @@ export const CommonModal = (props: ICommonModalTypes) => {
                 padding: 2
             }}
         >
-            <Box
-                onClick={e => e.stopPropagation()}
-                sx={{
-                    width: width ?? '90%',
-                    maxWidth: 500,
-                    backgroundColor: COLORS_DARK.background.main,
-                    borderRadius: 3,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.5)',
-                    overflow: 'hidden'
-                }}
-            >
-                <Box
-                    sx={{
-                        position: 'relative',
-                        display: 'flex',
-                        alignItems: 'baseline',
-                        justifyContent: 'space-between',
-                        padding: '16px 16px 0 16px'
-                    }}
-                >
-                    <Typography
-                        fontSize={isSm ? 18 : 20}
-                        fontWeight="bold"
-                        sx={{
-                            textAlign: 'center',
-                            flex: 1
-                        }}
-                    >
-                        {title}
-                    </Typography>
-                </Box>
-
-                {props.fixedContent && fixedContentPosition === 'top' && (
-                    <Box padding="16px 16px 0 16px">{props.fixedContent}</Box>
-                )}
-
-                <Box
-                    sx={{
-                        position: 'relative',
-                        display: 'flex',
-                        flex: '1 1 auto',
-                        flexDirection: 'column',
-                        overflow: 'hidden',
-                        padding: props.fixedContent ? '16px 16px 0 16px' : '30px 30px 10px 30px',
-                        maxHeight: '60vh',
-                        textAlign: 'center',
-                        alignItems: props.fixedContent ? '' : 'center'
-                    }}
-                >
+            <ModalWrap onClick={e => e.stopPropagation()} width={width} modalType={modalType}>
+                <ModalTitle modalType={modalType}>{title}</ModalTitle>
+                <ModalContent fixedContentPosition={fixedContentPosition} modalType={modalType}>
+                    {props.fixedContent && (
+                        <ModalFixedContent position={fixedContentPosition}>{props.fixedContent}</ModalFixedContent>
+                    )}
                     {/* 스크롤 영역 */}
-                    <Box
+                    <ScrollContent
                         ref={ref}
-                        sx={{
-                            overflowY: 'auto',
-                            paddingRight: hasScroll ? '8px' : 0, // 스크롤바 여백
-                            '&::-webkit-scrollbar': {
-                                width: '6px'
-                            },
-                            '&::-webkit-scrollbar-thumb': {
-                                backgroundColor: '#444',
-                                borderRadius: '4px'
-                            },
-                            '&::-webkit-scrollbar-track': {
-                                backgroundColor: COLORS_DARK.background.main
-                            }
-                        }}
+                        className={hasScroll ? 'isScroll' : ''}
+                        fixedContentPosition={fixedContentPosition}
                     >
                         {content}
-                    </Box>
-                </Box>
-                {props.fixedContent && fixedContentPosition === 'bottom' && <Box padding={2}>{props.fixedContent}</Box>}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        gap: 2,
-                        maxWidth: 500,
-                        margin: 2
-                    }}
-                >
-                    <Button
-                        onClick={onClose}
-                        sx={{
-                            // backgroundColor: 'transparent',
-                            backgroundColor: '#fff',
-                            color: COLORS_DARK.accent.main,
-                            border: `2px solid ${COLORS_DARK.accent.main}`,
-                            fontWeight: 'bold',
-                            fontSize: fontSize,
-                            px: isSm ? 2 : 4,
-                            py: isSm ? 0.5 : 1,
-                            borderRadius: 2,
-                            whiteSpace: 'nowrap'
-                        }}
-                    >
+                    </ScrollContent>
+                </ModalContent>
+
+                <ModalButtonWrap onClick={e => e.stopPropagation()}>
+                    <Button variant={'line'} color={'#cf7500'} onClick={onClose}>
                         닫기
                     </Button>
                     {onConfirm && (
-                        <Button
-                            onClick={onConfirm}
-                            sx={{
-                                backgroundColor: COLORS_DARK.accent.main,
-                                color: '#fff',
-                                fontWeight: 'bold',
-                                fontSize,
-                                // fontSize:confirmText==='새 장바구니 만들기'?:fontSize,
-                                px: isSm ? 2 : 4,
-                                py: isSm ? 0.5 : 1,
-                                borderRadius: 2,
-                                minWidth: confirmText === '새 장바구니 만들기' ? 160 : undefined,
-                                // minWidth: 160,
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
+                        <Button variant={'contained'} onClick={onConfirm}>
                             {confirmText ?? '확인'}
                         </Button>
                     )}
-                </Box>
-            </Box>
+                </ModalButtonWrap>
+            </ModalWrap>
         </Backdrop>
     );
 };

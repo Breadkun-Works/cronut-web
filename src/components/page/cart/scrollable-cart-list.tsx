@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     CartItemCard,
     CartItemContent,
-    CafeMenuBadge,
     PriceTypography,
     QuantityTypography,
     ShoppingCartIcon,
     StyledScrollableCartList,
-    UserAvatar
+    UserAvatar,
+    CafeMenuBadge
 } from '@/styles/cart/cart.styles';
 import { Box, Typography } from '@mui/material';
 import { COLORS_DARK } from '@/data';
@@ -186,11 +186,9 @@ export const ScrollableCartList = ({
                                             </EllipsisTooltipWithChip>
 
                                             {item.drinkTemperature && (
-                                                <CafeMenuBadge
-                                                    type={item.drinkTemperature}
-                                                    label={item.drinkTemperature}
-                                                    height={chipSize}
-                                                />
+                                                <CafeMenuBadge type={item.drinkTemperature}>
+                                                    {item.drinkTemperature}
+                                                </CafeMenuBadge>
                                             )}
                                         </Box>
                                         {item.createdById === user.uuid && cartInfo?.status !== 'INACTIVE' && (

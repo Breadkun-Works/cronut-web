@@ -109,6 +109,7 @@ export interface ICommonModalTypes {
     fixedContent?: string | ReactNode;
     fixedContentPosition?: 'top' | 'bottom';
     hasCloseButton?: boolean;
+    modalType?: string;
 }
 
 type BreakpointConfig = {

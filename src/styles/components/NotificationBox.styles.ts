@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const NotificationBoxWrap = styled.div`
+export const NotificationBoxWrap = styled.div<{ bgColor?: string }>`
     position: fixed;
     top: 50%;
     left: 50%;

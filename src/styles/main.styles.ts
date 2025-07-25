@@ -88,11 +88,18 @@ export const MainBread = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 180px;
     background-color: #fff;
     cursor: pointer;
 
     img {
         width: 80%;
+    }
+
+    &.no-img {
+        img {
+            width: 50%;
+        }
     }
 `;
 

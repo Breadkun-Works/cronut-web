@@ -356,14 +356,14 @@ export default function Home() {
                             <MainBoxTitle>오늘의 빵</MainBoxTitle>
                             {isDesktop ? (
                                 <>
-                                    <MainBread>
+                                    <MainBread className={bread?.img ? '' : 'no-img'}>
                                         <img
                                             src={
                                                 bread?.img
                                                     ? `https://babkaotalk.herokuapp.com${bread?.img}`
-                                                    : '/icon/home-bread.webp'
+                                                    : '/images/main/bread.png'
                                             }
-                                            alt={'오늘의 빵 이미지'}
+                                            alt={bread?.img ? '오늘의 빵 이미지' : 'bread icon from Flaticon'}
                                         />
                                     </MainBread>
                                     <BreadText>{bread?.name ?? '🥨🍞빵정보 배송중🍰🍩'}</BreadText>

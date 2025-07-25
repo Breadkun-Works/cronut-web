@@ -79,13 +79,18 @@ export const MenuItem = styled.a<{ active?: boolean }>`
         `}
 `;
 
-export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
-    display: 'none',
+export const MobileMenuButton = styled.button`
+    display: none;
+    padding: 0;
 
-    [theme.breakpoints.down(768)]: {
-        display: 'flex'
+    &:not(:last-of-type) {
+        margin-right: 5px;
     }
-}));
+
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        display: flex;
+    }
+`;
 
 export const StyledEllipsis = styled(Ellipsis)(({ theme }) => ({
     width: '3rem',

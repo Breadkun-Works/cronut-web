@@ -1,4 +1,6 @@
+/** @jsxImportSource @emotion/react */
 'use client';
+
 import styles from '../styles/Home.module.scss';
 import { useEffect, useState } from 'react';
 import { WeatherReturn } from '@/types/home';
@@ -7,23 +9,45 @@ import classNames from 'classnames/bind';
 import { getWeatherIconPath, imageReturn } from '@/utils/image-return';
 import { fetchDustDataTest } from '@/apis/dust/dust-api';
 import { fetchWeatherData } from '@/apis/weather/weather-api';
-import Link from 'next/link';
 import NotificationBox from '@/components/NotificationBox';
 import Image from 'next/image';
 import { getCookie, setCookie } from '@/utils/cookie';
 import { Company } from '@/types/common';
 import { CompanySelect } from '@/components/CompanySelect';
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import { useResponsive } from '@/utils/hook';
 import { companyAtom } from '@/atom/common-atom';
 import { useAtom } from 'jotai';
 import { removeServiceWorker } from '@/utils/util';
+import { blind } from '@/styles/common.styles';
+import { CommonModal } from '@/components/page/cafe/modal/common-modal';
+import {
+    BreadImgWrap,
+    BreadText,
+    DustLevel,
+    DustWrap,
+    MainBox,
+    MainBoxImg,
+    MainBoxList,
+    MainBoxTitle,
+    MainBread,
+    MainWrap,
+    WeatherBox,
+    WeatherLeft,
+    WeatherRight,
+    WeatherText,
+    WeatherTime,
+    WeatherWrap
+} from '@/styles/main.styles';
+import { useRouter } from 'next/navigation';
 
 const hs = classNames.bind(styles);
 
 export default function Home() {
+    const router = useRouter();
+
     const [company] = useAtom(companyAtom);
-    const { isMobile } = useResponsive();
+    const { isMobile, isDesktop } = useResponsive();
     const [notification, setNotification] = useState(true);
     const [dustRequestCompleted, setDustRequestCompleted] = useState(false);
     const [weatherRequestCompleted, setWeatherRequestCompleted] = useState(false);
@@ -203,306 +227,227 @@ export default function Home() {
         }
     }, [company]);
 
+    // 미세먼지, 초미세먼지 배경색
+    const getDustColor = (level: string) => {
+        switch (level) {
+            case '좋음':
+                return '#30475e';
+            case '보통':
+                return '#2e4f4f';
+            case '나쁨':
+                return '#cf7500';
+            case '최악':
+                return '#a80038';
+            case '---':
+            case '통신장애':
+            default:
+                return '#343a40';
+        }
+    };
+
     return (
         <>
-            <h1 style={{ display: 'none' }}>BBANGDORI</h1>
-            <div className={hs('home')}>
-                <Box margin={isMobile ? '10px 15px' : '20px 0'}>
+            <h1 css={blind}>BBANGDORI</h1>
+            <MainWrap>
+                <Box margin={isMobile ? '10px 0' : '20px 0'}>
                     <CompanySelect entry={'home'} />
                 </Box>
-                <div className={hs('home__body')}>
-                    <div className={hs('home__weather')}>
-                        <div className={hs('home__weather--now')}>
-                            <div className={hs('home__weather--now-temperature')}>
-                                {PTY?.[0].fcstValue && (
+
+                <MainBox color={'#343a40'}>
+                    <WeatherWrap>
+                        <WeatherLeft>
+                            <h4>오늘의 날씨</h4>
+                            <div>
+                                <div>
+                                    {PTY?.[0].fcstValue && (
+                                        <Image
+                                            src={getWeatherIconPath(PTY?.[0].fcstValue, SKY?.[0].fcstValue)}
+                                            alt="weather-icon"
+                                            width={21}
+                                            height={21}
+                                        />
+                                    )}
+                                    <p>{`${TMP?.[0].fcstValue.padStart(2, '0') || '-'}°C`}</p>
+                                </div>
+                                <div>
                                     <Image
-                                        // className={hs('home__weather--now-temperature-img')}
-                                        src={getWeatherIconPath(PTY?.[0].fcstValue, SKY?.[0].fcstValue)}
-                                        alt="weather-icon"
-                                        width={21}
-                                        height={21}
+                                        src="/icon/weather/popPercent.webp"
+                                        alt="rain-percent"
+                                        width={40}
+                                        height={40}
                                     />
-                                )}
-                                <div
-                                    className={hs('home__weather--now-temperature-text')}
-                                >{`${TMP?.[0].fcstValue.padStart(2, '0') || '-'}°C`}</div>
-                            </div>
-                            <div className={hs('home__weather--now-rain')}>
-                                <Image src="/icon/weather/popPercent.webp" alt="rain-percent" width={21} height={21} />
-                                <div className={hs('home__weather--now-rain-text')}>
-                                    {`${RAIN?.[0].fcstValue.padStart(2, '0') || '-'}%`}
+                                    <p>{`${RAIN?.[0].fcstValue.padStart(2, '0') || '-'}%`}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className={hs('home__weather--forecasts-wrapper')}>
-                            <div className={hs('home__weather--forecasts')}>
-                                {new Array(12).fill('0').map((currentVal, index) => (
-                                    <div className={hs('home__weather--forecast')} key={currentVal + index}>
-                                        <div className={hs('home__weather--forecast-time')} key={index}>
-                                            {getWeatherTime(TMP?.[index + 1].fcstTime || '')}
-                                        </div>
-                                        {PTY?.[index + 1].fcstValue && (
+                        </WeatherLeft>
+                        <WeatherRight>
+                            {new Array(12).fill('0').map((_, index) => {
+                                const time = TMP?.[index + 1]?.fcstTime;
+                                const temp = TMP?.[index + 1]?.fcstValue;
+                                const pty = PTY?.[index + 1]?.fcstValue;
+                                const sky = SKY?.[index + 1]?.fcstValue;
+                                const rain = RAIN?.[index + 1]?.fcstValue;
+
+                                if (!time || !temp || !rain) return null;
+
+                                return (
+                                    <WeatherBox key={`weather-${index}`}>
+                                        <WeatherTime>{getWeatherTime(time)}</WeatherTime>
+
+                                        {pty && (
                                             <Image
-                                                // className={hs('home__weather--forecast-sky-icon')}
-                                                src={getWeatherIconPath(
-                                                    PTY?.[index + 1].fcstValue,
-                                                    SKY?.[index + 1].fcstValue
-                                                )}
+                                                src={getWeatherIconPath(pty, sky)}
                                                 alt="weather-icon"
-                                                key={`a${index}`}
                                                 width={21}
                                                 height={21}
                                             />
                                         )}
-                                        <div className={hs('home__weather--forecast-temperature')} key={`d${index}`}>
-                                            {TMP?.[index + 1].fcstValue
-                                                ? `${TMP?.[index + 1].fcstValue.padStart(2, '0')}°C`
-                                                : ''}
-                                        </div>
 
-                                        {PTY?.[index + 1].fcstValue && (
+                                        <WeatherText>{temp.padStart(2, '0')}°C</WeatherText>
+
+                                        {pty && (
                                             <Image
-                                                // className={hs('home__weather--forecast-rain-img')}
                                                 src="/icon/weather/popPercent.webp"
                                                 alt="rain-percent"
-                                                key={`c${index}`}
-                                                objectFit="cover"
                                                 width={21}
                                                 height={21}
                                             />
                                         )}
-                                        <div className={hs('home__weather--forecast-rain-text')} key={`t${index}`}>
-                                            {RAIN?.[index + 1].fcstValue
-                                                ? `${RAIN?.[index + 1].fcstValue.padStart(2, '0')}%`
-                                                : ''}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => {
-                                reFreshButtonClick();
-                            }}
-                        >
+
+                                        <WeatherText>{rain.padStart(2, '0')}%</WeatherText>
+                                    </WeatherBox>
+                                );
+                            })}
+                        </WeatherRight>
+                    </WeatherWrap>
+                </MainBox>
+
+                <MainBoxList company={company === Company.EULJI ? 'EULJI' : 'KANGCHON'}>
+                    <MainBox color={'#413543'} mobileOrder={3} mobile onClick={() => router.push('/meal')} button>
+                        <MainBoxTitle>식단</MainBoxTitle>
+                        <MainBoxImg>
                             <Image
-                                className={hs('refresh-button')}
-                                src="/icon/bus-refresh-button.webp"
-                                alt="refresh-button"
-                                width={45}
-                                height={45}
+                                src={'/images/main/fried-rice.png'}
+                                alt={'fried-rice icon from Flaticon'}
+                                width={512}
+                                height={512}
                             />
-                        </button>
-                    </div>
-                    <div className={hs('home__dusts')}>
-                        <div className={hs('home__dust', dust.pm10Level === '---' ? '조회중' : dust.pm10Level)}>
-                            <div className={hs('home__dust--title')}>미세먼지</div>
-                            <div className={hs('home__dust--img-letter-wrapper')}>
-                                {dust.pm10Level !== '통신장애' && (
-                                    <Image
-                                        className={hs('home__dust--img')}
-                                        src={imageReturn(dust.pm10Level)}
-                                        alt="dust-level-icon"
-                                        width={80}
-                                        height={80}
-                                    />
-                                )}
-                                <div className={hs('home__dust--level')}>
-                                    {dust.pm10Level}/{dust.pm10Value}
-                                </div>
-                            </div>
-                        </div>
-                        <div className={hs('home__ultra-dust', dust.pm25Level === '---' ? '조회중' : dust.pm25Level)}>
-                            <div className={hs('home__ultra-dust--title')}>초미세먼지</div>
-                            <div className={hs('home__ultra-dust--img-letter-wrapper')}>
-                                {dust.pm25Level !== '통신장애' && (
-                                    <Image
-                                        className={hs('home__ultra-dust--img')}
-                                        src={imageReturn(dust.pm25Level)}
-                                        alt="dust-level-icon"
-                                        width={80}
-                                        height={80}
-                                    />
-                                )}
-                                <div className={hs('home__ultra-dust--level')}>
-                                    {dust.pm25Level}/{dust.pm25Value}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={hs('home__links')}>
-                        <Link href={'/meal'}>
-                            <div>
-                                <div className={hs('home__link--title')}>식단</div>
-                                <div className={hs('home__link--text')}>구내식당 메뉴</div>
-                            </div>
-                            <div style={{ position: 'relative', width: '100%', height: '80px', marginTop: '20px' }}>
-                                <Image
-                                    className="home__link--image"
-                                    src="/icon/home-meal-button.webp"
-                                    alt="today meal"
-                                    layout="fill"
-                                    objectFit="contain"
-                                />
-                            </div>
-                        </Link>
-                        {company === Company.KANGCHON && (
-                            <>
-                                <button className={hs('home__link--bread')} onClick={() => setBreadPopUp(true)}>
-                                    <div>
-                                        <div className={hs('home__link--title')}>ORIGINAL</div>
-                                        <div className={hs('home__link--text')}>오늘의 빵</div>
-                                    </div>
-                                    <div
-                                        style={{
-                                            position: 'relative',
-                                            width: '100%',
-                                            height: '80px'
-                                        }}
-                                    >
-                                        <Image
-                                            className={hs('home__link--image', '빵')}
-                                            src="/icon/home-bread-button.webp"
-                                            alt="today bread"
-                                            layout="fill"
-                                            objectFit="contain"
+                        </MainBoxImg>
+                    </MainBox>
+
+                    {company === Company.KANGCHON && (
+                        <MainBox color={'#5c3d2e'} mobileOrder={4} onClick={() => setBreadPopUp(true)} button>
+                            <MainBoxTitle>오늘의 빵</MainBoxTitle>
+                            {isDesktop ? (
+                                <>
+                                    <MainBread>
+                                        <img
+                                            src={
+                                                bread?.img
+                                                    ? `https://babkaotalk.herokuapp.com${bread?.img}`
+                                                    : '/icon/home-bread.webp'
+                                            }
+                                            alt={'오늘의 빵 이미지'}
                                         />
-                                    </div>
-                                </button>
-                                <Link href={'/bus'}>
-                                    <div>
-                                        <div className={hs('home__link--title')}>버스</div>
-                                        <div className={hs('home__link--text')}>퇴근 버스 정보</div>
-                                    </div>
-                                    <div
-                                        style={{
-                                            position: 'relative',
-                                            width: '100%',
-                                            height: '80px'
-                                        }}
-                                    >
-                                        <Image
-                                            className={hs('home__link--image', '버스')}
-                                            src="/icon/home-bus-button.webp"
-                                            alt="today bus"
-                                            layout="fill"
-                                            objectFit="contain"
-                                        />
-                                    </div>
-                                </Link>
-                            </>
-                        )}
-                        <Link href={'/cafe/menu'}>
-                            <div>
-                                <div className={hs('home__link--title')}>카페</div>
-                                {/*<div className={hs('home__link--text')}>-서비스 준비중-</div>*/}
-                            </div>
-                            <div style={{ position: 'relative', width: '100%', height: '80px' }}>
+                                    </MainBread>
+                                    <BreadText>{bread?.name ?? '🥨🍞빵정보 배송중🍰🍩'}</BreadText>
+                                </>
+                            ) : (
+                                <MainBoxImg>
+                                    <Image
+                                        src={'/images/main/bread.png'}
+                                        alt={'bread icon from Flaticon'}
+                                        width={512}
+                                        height={512}
+                                    />
+                                </MainBoxImg>
+                            )}
+                        </MainBox>
+                    )}
+
+                    <MainBox color={getDustColor(dust.pm10Level)} mobileOrder={1}>
+                        <MainBoxTitle>미세먼지</MainBoxTitle>
+                        <DustWrap company={company === Company.EULJI ? 'EULJI' : 'KANGCHON'}>
+                            {dust.pm10Level !== '통신장애' && (
                                 <Image
-                                    className={hs('home__link--image')}
-                                    src="/icon/home-caffe-button.webp"
-                                    alt="today cafe"
-                                    layout="fill"
-                                    objectFit="contain"
+                                    src={imageReturn(dust.pm10Level)}
+                                    alt="dust-level-icon"
+                                    width={100}
+                                    height={100}
                                 />
-                            </div>
-                        </Link>
-                        <Link href={'/omakase'}>
-                            <div>
-                                <div className={hs('home__link--title')} aria-hidden="true" role="presentation">
-                                    빵돌이 오마카세
-                                </div>
-                                <div className={hs('home__link--text')}>-서비스 준비중-</div>
-                            </div>
-                            <div style={{ position: 'relative', width: '100%', height: '80px' }}>
+                            )}
+                            <DustLevel>
+                                {dust.pm10Level}/{dust.pm10Value}
+                            </DustLevel>
+                        </DustWrap>
+                    </MainBox>
+
+                    <MainBox color={getDustColor(dust.pm25Level)} mobileOrder={2}>
+                        <MainBoxTitle>초미세먼지</MainBoxTitle>
+                        <DustWrap company={company === Company.EULJI ? 'EULJI' : 'KANGCHON'}>
+                            {dust.pm25Level !== '통신장애' && (
                                 <Image
-                                    className={hs('home__link--image', 'omakase')}
-                                    src="/icon/home-omakase-button.webp"
-                                    alt="today omakase"
-                                    layout="fill"
-                                    objectFit="contain"
+                                    src={imageReturn(dust.pm25Level)}
+                                    alt="dust-level-icon"
+                                    width={100}
+                                    height={100}
                                 />
-                            </div>
-                        </Link>
-                    </div>
-                </div>
-                {company === 'KANGCHON' && (
-                    <div className={hs('home__body-sec')}>
-                        <div className={hs('home__body-sec--bread')}>
-                            <div className={hs('body-sec__bread--title')}>오늘의 빵</div>
-                            <div className={hs('body-sec__bread--img--wrap')}>
+                            )}
+                            <DustLevel>
+                                {dust.pm25Level}/{dust.pm25Value}
+                            </DustLevel>
+                        </DustWrap>
+                    </MainBox>
+
+                    <MainBox color={'#2b4e70'} mobileOrder={5} mobile onClick={() => router.push('/cafe/menu')} button>
+                        <MainBoxTitle>카페</MainBoxTitle>
+                        <MainBoxImg type={'cafe'}>
+                            <Image
+                                src={'/images/main/coffee.png'}
+                                alt={'coffee icon from Flaticon'}
+                                width={512}
+                                height={512}
+                            />
+                        </MainBoxImg>
+                    </MainBox>
+
+                    {company === Company.KANGCHON && (
+                        <MainBox color={'#3e5151'} mobileOrder={6} mobile onClick={() => router.push('/bus')} button>
+                            <MainBoxTitle>버스</MainBoxTitle>
+                            <MainBoxImg type={'bus'}>
                                 <Image
-                                    className={hs('body-sec__bread--img')}
+                                    src={'/images/main/bus.png'}
+                                    alt={'bus icon from Flaticon'}
+                                    width={512}
+                                    height={512}
+                                />
+                            </MainBoxImg>
+                        </MainBox>
+                    )}
+                </MainBoxList>
+            </MainWrap>
+
+            {breadPopUp && (
+                <CommonModal
+                    open={true}
+                    modalType={'alert'}
+                    onClose={() => setBreadPopUp(false)}
+                    title={'오늘의 빵'}
+                    content={
+                        <BreadImgWrap>
+                            <div>
+                                <img
                                     src={
                                         bread?.img
                                             ? `https://babkaotalk.herokuapp.com${bread?.img}`
                                             : '/icon/home-bread.webp'
                                     }
-                                    alt="todays bread"
-                                    width={100}
-                                    height={79}
+                                    alt={'오늘의 빵 이미지'}
                                 />
                             </div>
-                            <div className={hs('body-sec__bread--text')}>{bread?.name ?? '정보가 없습니다.'}</div>
-                        </div>
-                        <div className={hs('home__dust', dust.pm10Level === '---' ? '조회중' : dust.pm10Level)}>
-                            <div className={hs('home__dust--title')}>
-                                <span>미세먼지</span>
-                            </div>
-                            <div className={hs('home__dust--img-letter-wrapper')}>
-                                {dust.pm10Level !== '통신장애' && (
-                                    <Image
-                                        className={hs('home__dust--img')}
-                                        src={imageReturn(dust.pm10Level)}
-                                        alt="dust-level-icon"
-                                        width={80}
-                                        height={80}
-                                    />
-                                )}
-                                <div className={hs('home__dust--level')}>
-                                    {dust.pm10Level}/{dust.pm10Value}
-                                </div>
-                            </div>
-                        </div>
-                        <div className={hs('home__ultra-dust', dust.pm25Level === '---' ? '조회중' : dust.pm25Level)}>
-                            <div className={hs('home__ultra-dust--title')}>
-                                <span>초미세먼지</span>
-                            </div>
-                            <div className={hs('home__ultra-dust--img-letter-wrapper')}>
-                                {dust.pm25Level !== '통신장애' && (
-                                    <Image
-                                        className={hs('home__ultra-dust--img')}
-                                        src={imageReturn(dust.pm25Level)}
-                                        alt="dust-level-icon"
-                                        width={80}
-                                        height={80}
-                                    />
-                                )}
-                                <div className={hs('home__ultra-dust--level')}>
-                                    {dust.pm25Level}/{dust.pm25Value}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-            {breadPopUp && (
-                <div className={hs('home__pop-up-bread')}>
-                    <div className={hs('home__pop-up-bread--mask')} onClick={() => setBreadPopUp(false)} />
-                    <div className={hs('home__pop-up-bread--wrapper')}>
-                        <img //Image width랑 height가 없어서 일단 기본 img 태그로 변경해두었습니다..!
-                            className={hs('home__pop-up-bread--img')}
-                            src={bread?.img ? `https://babkaotalk.herokuapp.com${bread?.img}` : '/icon/home-bread.webp'}
-                            alt="todays bread"
-                        />
-                        <div className={hs('home__pop-up-bread--text')}>
-                            {bread?.name ?? '오늘의 빵 정보가 없습니다.'}
-                        </div>
-                        <span className={hs('home__pop-up-bread--close')} onClick={() => setBreadPopUp(false)}>
-                            닫기
-                        </span>
-                    </div>
-                </div>
+                        </BreadImgWrap>
+                    }
+                />
             )}
             {notification && <NotificationBox firstText={'기상상태 분석 중...'} secText={'잠시만 기다려 주세요.'} />}
         </>

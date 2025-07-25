@@ -34,12 +34,14 @@ import {
     MainWrap,
     WeatherBox,
     WeatherLeft,
+    WeatherRefresh,
     WeatherRight,
     WeatherText,
     WeatherTime,
     WeatherWrap
 } from '@/styles/main.styles';
 import { useRouter } from 'next/navigation';
+import { css } from '@emotion/react';
 
 const hs = classNames.bind(styles);
 
@@ -254,7 +256,21 @@ export default function Home() {
                 </Box>
 
                 <MainBox color={'#343a40'}>
-                    <WeatherWrap>
+                    <WeatherWrap mobile={isMobile}>
+                        {isMobile && (
+                            <WeatherRefresh
+                                onClick={() => {
+                                    reFreshButtonClick();
+                                }}
+                            >
+                                <Image
+                                    src={'/icon/bus-refresh-button.webp'}
+                                    alt={'refresh-button'}
+                                    width={35}
+                                    height={35}
+                                />
+                            </WeatherRefresh>
+                        )}
                         <WeatherLeft>
                             <h4>오늘의 날씨</h4>
                             <div>

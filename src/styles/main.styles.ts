@@ -102,7 +102,7 @@ export const BreadText = styled.div`
     font-size: 20px;
 `;
 
-export const WeatherWrap = styled.div`
+export const WeatherWrap = styled.div<{ mobile?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -111,6 +111,19 @@ export const WeatherWrap = styled.div`
     ${({ theme }) => theme.breakpoints.down('lg')} {
         flex-direction: column;
     }
+
+    ${({ mobile }) =>
+        mobile &&
+        css`
+            position: relative;
+        `}
+`;
+
+export const WeatherRefresh = styled.button`
+    position: absolute;
+    top: 35px;
+    right: -3%;
+    opacity: 0.8;
 `;
 
 export const WeatherLeft = styled.div`

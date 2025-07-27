@@ -450,15 +450,16 @@ export default function Home() {
                     title={'오늘의 빵'}
                     content={
                         <BreadImgWrap>
-                            <div>
+                            <div className={bread?.img ? '' : 'no-img'}>
                                 <img
                                     src={
                                         bread?.img
                                             ? `https://babkaotalk.herokuapp.com${bread?.img}`
-                                            : '/icon/home-bread.webp'
+                                            : '/images/main/bread.png'
                                     }
-                                    alt={'오늘의 빵 이미지'}
+                                    alt={bread?.img ? '오늘의 빵 이미지' : 'bread icon from Flaticon'}
                                 />
+                                {bread?.img ? <></> : <p>🥨🍞빵정보 배송중🍰🍩</p>}
                             </div>
                         </BreadImgWrap>
                     }

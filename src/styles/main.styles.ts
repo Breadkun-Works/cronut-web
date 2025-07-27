@@ -244,6 +244,19 @@ export const BreadImgWrap = styled.div`
         img {
             width: 70%;
         }
+
+        &.no-img {
+            flex-direction: column;
+            aspect-ratio: 10/5;
+
+            img {
+                width: 30%;
+            }
+
+            p {
+                color: #222;
+            }
+        }
     }
 `;
 

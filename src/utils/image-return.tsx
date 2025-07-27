@@ -1,16 +1,16 @@
 export const imageReturn = (pmText: string): string => {
-    const baseImageUrl = '/icon/home/dust';
+    const baseImageUrl = '/images/main/dust';
     switch (pmText) {
         case '좋음':
-            return `${baseImageUrl}/good.webp`;
+            return `${baseImageUrl}/good.svg`;
         case '보통':
-            return `${baseImageUrl}/normal.webp`;
+            return `${baseImageUrl}/normal.svg`;
         case '나쁨':
-            return `${baseImageUrl}/bad.webp`;
+            return `${baseImageUrl}/bad.svg`;
         case '최악':
-            return `${baseImageUrl}/fuckingbad.webp`;
+            return `${baseImageUrl}/veryBad.svg`;
         default:
-            return `${baseImageUrl}/normal.webp`;
+            return `${baseImageUrl}/default.svg`;
     }
 };
 

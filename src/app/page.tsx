@@ -41,7 +41,6 @@ import {
     WeatherWrap
 } from '@/styles/main.styles';
 import { useRouter } from 'next/navigation';
-import { css } from '@emotion/react';
 
 const hs = classNames.bind(styles);
 
@@ -233,13 +232,13 @@ export default function Home() {
     const getDustColor = (level: string) => {
         switch (level) {
             case '좋음':
-                return '#30475e';
+                return '#2d3f62';
             case '보통':
                 return '#2e4f4f';
             case '나쁨':
-                return '#cf7500';
+                return '#ba6d31';
             case '최악':
-                return '#a80038';
+                return '#af4339';
             case '---':
             case '통신장애':
             default:

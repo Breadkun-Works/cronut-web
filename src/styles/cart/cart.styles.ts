@@ -29,6 +29,16 @@ const slideMarquee = keyframes`
     }
 `;
 
+const BadgeLine = css`
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 17px;
+    background-color: rgba(255, 255, 255, 0.5);
+`;
+
 export const PageWrapper = styled.div`
     ${inner};
 
@@ -294,30 +304,74 @@ export const StyledCartHeaderTitle = styled(Typography, {
     }
 }));
 
-export const HeaderContent = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column', // 기본적으로 두 줄 (모바일)
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
-    textAlign: 'center',
-    overflow: 'hidden',
-    fontWeight: 'bold',
-    fontSize: '1.3rem',
+export const CafeMenuTitleWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+`;
 
-    [theme.breakpoints.up('sm')]: {
-        fontWeight: 'bold',
-        fontSize: '1.3rem',
-        flexDirection: 'row', // PC에서는 한 줄
-        whiteSpace: 'nowrap',
-        alignItems: 'center',
-        textAlign: 'center',
-        justifyContent: 'center',
-        gap: '4px',
-        overflow: 'hidden'
+export const CafeStateBadge = styled.div<{ open?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 35px;
+    padding: 0 10px;
+    background-color: ${({ open }) => (open ? '#df681b' : '#555')};
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 35px;
+    cursor: pointer;
+    color: ${({ open }) => (open ? '#fff' : 'rgba(255,255,255,.7)')};
+    transform: ${({ open }) => (open ? 'rotate(0)' : 'rotate(-10deg)')};
+    transition: all 1s;
+
+    &:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        width: calc(100% - 6px);
+        height: calc(100% - 6px);
+        border: ${({ open }) => (open ? '1px solid #fff' : '1px solid rgba(255,255,255,.5)')};
+        border-radius: 8px;
     }
-}));
+`;
+
+export const CafeStateBadgeLabel = styled.div`
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    span {
+        display: inline-block;
+        position: relative;
+        width: 5px;
+        height: 5px;
+        background-color: #c8c8c8;
+        border-radius: 50%;
+
+        &:after {
+            ${BadgeLine};
+
+            left: 9px;
+            transform: rotate(-50deg);
+        }
+
+        &:before {
+            ${BadgeLine};
+
+            right: 9px;
+            transform: rotate(50deg);
+        }
+    }
+`;
+
+export const CafeMenuTitle = styled.h4`
+    font-size: 24px;
+`;
 
 export const ScrollableContent = styled(Box)`
     flex: 1;

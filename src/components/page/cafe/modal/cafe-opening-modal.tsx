@@ -11,7 +11,12 @@ import { Company } from '@/types/common';
 import { useAtom } from 'jotai/index';
 import { companyAtom } from '@/atom/common-atom';
 
-export const CafeOpeningModal = ({ open, onClose }) => {
+type CafeOpeningModalProps = {
+    open: boolean;
+    onClose: () => void;
+};
+
+export const CafeOpeningModal = ({ open, onClose }: CafeOpeningModalProps) => {
     const [company] = useAtom(companyAtom);
 
     return (

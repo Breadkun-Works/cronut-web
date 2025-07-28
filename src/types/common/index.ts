@@ -99,7 +99,7 @@ export interface ICommonModalTypes {
     open: boolean;
     onClose?(): void;
     content?: string | ReactNode;
-    title?: string;
+    title?: string | ReactNode;
     onConfirm?(): void;
     confirmText?: string;
     width?: string | number;

@@ -1,16 +1,18 @@
 'use client';
 
-import { Badge, Box, IconButton, ToggleButtonGroup, Typography, useTheme } from '@mui/material';
+import { Badge, Box, IconButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { getInitialCartItems, useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
-import { DrinkCategory, DrinkTemperature } from '@/types/common';
+import { Company, DrinkCategory, DrinkTemperature } from '@/types/common';
 import {
-    HeaderContent,
+    CafeMenuTitle,
+    CafeMenuTitleWrap,
+    CafeStateBadge,
+    CafeStateBadgeLabel,
     MenuCardMedia,
     PageContainer,
     ScrollableContent,
-    StyledMenuTitle,
     StyledMenuTitleWithName
 } from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
@@ -47,6 +49,8 @@ import { cartItemsAtom, cartItemsCountAtom } from '@/atom/cart-atom';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { getCookie, setCookie } from '@/utils/cookie';
 import { getDefaultDrinkTemperatureBySeason } from '@/utils/dates';
+import { isMobileDevice } from '@/utils/util';
+import CafeOpeningModal from '@/components/page/cafe/modal/cafe-opening-modal';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -423,6 +427,44 @@ const CafeMenu = ({
         return entry === 'menu' ? content : <Box onClick={onClick}>{content}</Box>;
     };
 
+    // 운영시간 팝업
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleModal = () => {
+        setIsModalOpen(prev => !prev);
+    };
+
+    // 카페 운영 상태
+    let openingTimes: [string, string][];
+    if (company === Company.KANGCHON) {
+        openingTimes = [
+            ['08:20', '08:35'],
+            ['10:10', '11:20'],
+            ['12:00', '12:40'],
+            ['14:00', '17:30']
+        ];
+    } else if (company === Company.EULJI) {
+        openingTimes = [
+            ['08:20', '08:50'],
+            ['09:30', '12:50'],
+            ['13:30', '17:00']
+        ];
+    }
+    const isNowInRange = (start: string, end: string): boolean => {
+        const now = new Date();
+
+        const [startHour, startMinute] = start.split(':').map(Number);
+        const [endHour, endMinute] = end.split(':').map(Number);
+
+        const startDate = new Date(now);
+        startDate.setHours(startHour, startMinute, 0, 0);
+
+        const endDate = new Date(now);
+        endDate.setHours(endHour, endMinute, 0, 0);
+
+        return now >= startDate && now <= endDate;
+    };
+    const isOpen = openingTimes.some(([start, end]) => isNowInRange(start, end));
+
     return (
         <>
             <PageContainer ref={containerRef} maxWidth={false} disableGutters>
@@ -550,6 +592,7 @@ const CafeMenu = ({
                         </IconButton>
                     </Box>
                 </Box>
+
                 <Box>
                     {entry === 'personalCart' ? (
                         <StyledMenuTitleWithName>
@@ -595,11 +638,31 @@ const CafeMenu = ({
                             </Typography>
                         </StyledMenuTitleWithName>
                     ) : (
-                        <HeaderContent>
-                            <StyledMenuTitle>{title}</StyledMenuTitle>
-                        </HeaderContent>
+                        <>
+                            <CafeMenuTitleWrap>
+                                {!isMobileDevice() && !isMobile ? (
+                                    <Tooltip title={'운영시간 자세히보기'} placement="top" arrow>
+                                        <CafeStateBadge open={isOpen} onClick={handleModal}>
+                                            <CafeStateBadgeLabel aria-hidden={'true'}>
+                                                <span />
+                                            </CafeStateBadgeLabel>
+                                            {isOpen ? 'Open' : 'Close'}
+                                        </CafeStateBadge>
+                                    </Tooltip>
+                                ) : (
+                                    <CafeStateBadge open={isOpen} onClick={handleModal}>
+                                        <CafeStateBadgeLabel aria-hidden={'true'}>
+                                            <span />
+                                        </CafeStateBadgeLabel>
+                                        {isOpen ? 'Open' : 'Close'}
+                                    </CafeStateBadge>
+                                )}
+                                <CafeMenuTitle>{title}</CafeMenuTitle>
+                            </CafeMenuTitleWrap>
+                        </>
                     )}
                 </Box>
+
                 <TabSearchWrapper>
                     {showSearch ? (
                         <SearchBar
@@ -620,7 +683,6 @@ const CafeMenu = ({
                         </CategoryTabs>
                     )}
                 </TabSearchWrapper>
-
                 <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
                     {cafeMenuData.map(cafeMenu => (
                         <CafeMenuTabPanel
@@ -725,6 +787,9 @@ const CafeMenu = ({
                     ))}
                 </ScrollableContent>
             </PageContainer>
+
+            {/*팝업 - 운영시간 자세히보기*/}
+            <CafeOpeningModal open={isModalOpen} onClose={handleModal} />
         </>
     );
 };

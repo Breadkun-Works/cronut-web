@@ -434,7 +434,7 @@ const CafeMenu = ({
     };
 
     // 카페 운영 상태
-    let openingTimes: [string, string][];
+    let openingTimes: [string, string][] = [];
     if (company === Company.KANGCHON) {
         openingTimes = [
             ['08:20', '08:35'],

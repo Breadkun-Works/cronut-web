@@ -387,8 +387,8 @@ export default function Home() {
                                 <Image
                                     src={imageReturn(dust.pm10Level)}
                                     alt="dust-level-icon"
-                                    width={100}
-                                    height={100}
+                                    width={130}
+                                    height={130}
                                 />
                             )}
                             <DustLevel>
@@ -404,8 +404,8 @@ export default function Home() {
                                 <Image
                                     src={imageReturn(dust.pm25Level)}
                                     alt="dust-level-icon"
-                                    width={100}
-                                    height={100}
+                                    width={130}
+                                    height={130}
                                 />
                             )}
                             <DustLevel>

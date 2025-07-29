@@ -88,12 +88,14 @@ export const MainBread = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     min-height: 180px;
     background-color: #fff;
     cursor: pointer;
 
     img {
-        width: 80%;
+        position: absolute;
+        width: 100%;
     }
 
     &.no-img {
@@ -284,12 +286,11 @@ export const DustWrap = styled.div<{ company?: string }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 30px;
+    gap: 40px;
     height: 100%;
 
     img {
-        margin-top: ${({ company }) => (company === 'EULJI' ? '0' : '30px')};
+        margin-top: ${({ company }) => (company === 'EULJI' ? '0' : '20px')};
     }
 
     ${({ theme }) => theme.breakpoints.down('xl')} {

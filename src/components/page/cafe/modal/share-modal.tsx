@@ -21,7 +21,7 @@ export function ShareCartDialog({
 }>) {
     const { isSmall } = useResponsive();
 
-    const iconSize = isSmall ? 24 : 28;
+    const iconSize = isSmall ? 24 : 26;
     const fontSize = isSmall ? 12 : 14;
     const paddingY = isSmall ? 1.5 : 2;
     const gap = isSmall ? 1.5 : 2;

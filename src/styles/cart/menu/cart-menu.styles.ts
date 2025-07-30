@@ -3,7 +3,7 @@ import { Box, Card, CardContent, Chip, IconButton, Tab, Tabs, ToggleButton, Togg
 import { COLORS_DARK } from '@/data';
 import { DrinkTemperature } from '@/types/common';
 import { TemperatureBadgeProps } from '@/types/cart';
-import { keyframes } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import { ShoppingCart } from 'lucide-react';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 
@@ -269,9 +269,8 @@ export const GlowContainer = styled.div`
     }
 `;
 
-export const GlowingIcon = styled(ShoppingCart)`
+export const GlowingIcon = styled(ShoppingCart)<{ active?: boolean }>`
     color: white;
-    animation: ${pulseGlow} 2s infinite ease-in-out;
 
     & path,
     & circle,
@@ -281,6 +280,11 @@ export const GlowingIcon = styled(ShoppingCart)`
         stroke-linecap: round;
         stroke-linejoin: round;
     }
+    ${({ active }) =>
+        active &&
+        css`
+            animation: ${pulseGlow} 2s infinite ease-in-out;
+        `}
 `;
 
 export const AnimatedReceiptIcon = styled(ReceiptLongOutlinedIcon)`
@@ -331,3 +335,45 @@ export const TabSearchWrapper = styled(Box)(({ theme }) => ({
         padding: '14px 8px 16px 8px'
     }
 }));
+
+export const CartIconWrap = styled.div`
+    position: relative;
+`;
+
+export const CartNumber = styled.div<{ active?: boolean; wide?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -5px;
+    left: ${({ wide }) => (wide ? '10px' : '16px')};
+    min-width: ${({ wide }) => (wide ? 'auto' : '15px')};
+    padding: 2px 4px;
+    background-color: ${({ active }) => (active ? '#db661b' : '#6b6b6b')};
+    color: #fff;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 1;
+
+    ${({ wide }) =>
+        wide &&
+        css`
+            padding: 2px 4px;
+        `}
+`;
+
+export const MenuContentArea = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 400px);
+`;
+
+export const MenuTextBox = styled.div`
+    text-align: center;
+
+    strong {
+        font-size: inherit;
+        color: #ff6b6b;
+    }
+`;

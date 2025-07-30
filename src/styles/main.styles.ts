@@ -237,14 +237,21 @@ export const BreadImgWrap = styled.div`
     & > div {
         ${MainRadius};
 
+        overflow: hidden;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        width: 300px;
         background-color: #fff;
         aspect-ratio: 10 / 8;
 
         img {
-            width: 70%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            transform: translate(-50%, -50%);
         }
 
         &.no-img {
@@ -252,7 +259,7 @@ export const BreadImgWrap = styled.div`
             aspect-ratio: 10/5;
 
             img {
-                width: 30%;
+                width: 48%;
             }
 
             p {
@@ -294,6 +301,8 @@ export const DustWrap = styled.div<{ company?: string }>`
     }
 
     ${({ theme }) => theme.breakpoints.down('xl')} {
+        justify-content: center;
+
         img {
             margin-top: 0;
         }

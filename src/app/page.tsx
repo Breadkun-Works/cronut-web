@@ -351,7 +351,16 @@ export default function Home() {
                     </MainBox>
 
                     {company === Company.KANGCHON && (
-                        <MainBox color={'#5c3d2e'} mobileOrder={4} onClick={() => setBreadPopUp(true)} button>
+                        <MainBox
+                            color={'#5c3d2e'}
+                            mobileOrder={4}
+                            onClick={() => {
+                                if (bread?.img) {
+                                    setBreadPopUp(true);
+                                }
+                            }}
+                            button={!!bread?.img}
+                        >
                             <MainBoxTitle>오늘의 빵</MainBoxTitle>
                             {isDesktop ? (
                                 <>
@@ -442,7 +451,7 @@ export default function Home() {
                 </MainBoxList>
             </MainWrap>
 
-            {breadPopUp && (
+            {breadPopUp && bread?.img && (
                 <CommonModal
                     open={true}
                     modalType={'alert'}
@@ -450,16 +459,8 @@ export default function Home() {
                     title={'오늘의 빵'}
                     content={
                         <BreadImgWrap>
-                            <div className={bread?.img ? '' : 'no-img'}>
-                                <img
-                                    src={
-                                        bread?.img
-                                            ? `https://babkaotalk.herokuapp.com${bread?.img}`
-                                            : '/images/main/bread.png'
-                                    }
-                                    alt={bread?.img ? '오늘의 빵 이미지' : 'bread icon from Flaticon'}
-                                />
-                                {bread?.img ? <></> : <p>🥨🍞빵정보 배송중🍰🍩</p>}
+                            <div>
+                                <img src={`https://babkaotalk.herokuapp.com${bread?.img}`} alt={'오늘의 빵 이미지'} />
                             </div>
                         </BreadImgWrap>
                     }

@@ -10,6 +10,10 @@ export const ButtonWrap = styled.button<ButtonTypes>`
     background-color: ${({ bgColor }) => (bgColor ? bgColor : 'transparent')};
     cursor: pointer;
 
+    &:hover {
+        filter: brightness(0.8);
+    }
+
     ${({ variant, color, bgColor, textColor }) =>
         variant === 'line'
             ? css`

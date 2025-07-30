@@ -97,6 +97,7 @@ export const MenuItemCard = styled(Card, {
     flexDirection: 'column',
     overflow: 'hidden',
     transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+    cursor: 'pointer',
     // isMenu가 true가 아닐 때만 hover 효과 적용
     ...(!isMenu && {
         '&:hover': {

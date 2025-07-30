@@ -708,29 +708,24 @@ const CafeMenu = ({
 
                                 {!hasNextPage &&
                                     isFetched &&
-                                    ((data?.pages?.[0]?.records?.length ?? 0) === 0 ? (
-                                        query.name !== '' ? (
-                                            <MenuTextBox>
-                                                <p>
-                                                    이런! 🫢
-                                                    <br />
-                                                    <strong>{query.name}</strong> 메뉴는 아직 없어요.
-                                                    <br />
-                                                    다른 키워드로 다시 한번 검색해볼까요? 🔍
-                                                </p>
-                                            </MenuTextBox>
-                                        ) : (
-                                            <MenuTextBox>
-                                                <p>
-                                                    아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올
-                                                    예정이에요 ☕️🍰
-                                                </p>
-                                            </MenuTextBox>
-                                        )
+                                    (data?.pages?.[0]?.records?.length ?? 0) === 0 &&
+                                    (query.name !== '' ? (
+                                        <MenuTextBox>
+                                            <p>
+                                                이런! 🫢
+                                                <br />
+                                                <strong>{query.name}</strong> 메뉴는 아직 없어요.
+                                                <br />
+                                                다른 키워드로 다시 한번 검색해볼까요? 🔍
+                                            </p>
+                                        </MenuTextBox>
                                     ) : (
-                                        <Box display="flex" justifyContent="center" mt={3}>
-                                            <Typography variant="body2">끝~</Typography>
-                                        </Box>
+                                        <MenuTextBox>
+                                            <p>
+                                                아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올 예정이에요
+                                                ☕️🍰
+                                            </p>
+                                        </MenuTextBox>
                                     ))}
                             </MenuContentArea>
                         </CafeMenuTabPanel>

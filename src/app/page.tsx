@@ -458,11 +458,18 @@ export default function Home() {
                     onClose={() => setBreadPopUp(false)}
                     title={'오늘의 빵'}
                     content={
-                        <BreadImgWrap>
-                            <div>
-                                <img src={`https://babkaotalk.herokuapp.com${bread?.img}`} alt={'오늘의 빵 이미지'} />
-                            </div>
-                        </BreadImgWrap>
+                        <>
+                            <BreadImgWrap>
+                                <div>
+                                    <img
+                                        src={`https://babkaotalk.herokuapp.com${bread?.img}`}
+                                        alt={'오늘의 빵 이미지'}
+                                    />
+                                </div>
+
+                                <p>{bread?.name}</p>
+                            </BreadImgWrap>
+                        </>
                     }
                 />
             )}

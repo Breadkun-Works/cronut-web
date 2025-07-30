@@ -718,23 +718,14 @@ const CafeMenu = ({
 
                                 {moveToConfirm && (
                                     <CommonModal
-                                        width={isMobile ? '90%' : '70%'}
+                                        width={isMobile ? '90%' : '300px'}
                                         open={moveToConfirm}
                                         content={
-                                            <Box>
-                                                <Typography
-                                                    sx={{
-                                                        whiteSpace: 'pre-line',
-                                                        textAlign: 'center',
-                                                        fontSize: '1rem',
-                                                        lineHeight: 1.5,
-                                                        maxWidth: '280px',
-                                                        wordBreak: 'keep-all'
-                                                    }}
-                                                >
-                                                    {'상품을 장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?'}
-                                                </Typography>
-                                            </Box>
+                                            <p align={'center'}>
+                                                상품을 장바구니에 담았습니다.
+                                                <br />
+                                                장바구니로 이동하시겠습니까?
+                                            </p>
                                         }
                                         onClose={() => setMoveToConfirm(false)}
                                         onConfirm={() => router.push(`/cafe/cart/${cartId}?${searchParams}`)}

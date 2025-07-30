@@ -308,9 +308,9 @@ const CafeMenu = ({
     }) => {
         const tempType = getTempType(options);
 
-        if (tempType === 'ICE_ONLY') return <TemperatureBadge type="ICED" label="ICE ONLY" size="small" />;
+        if (tempType === 'ICE_ONLY') return <TemperatureBadge type={'ICED'}>ICE ONLY</TemperatureBadge>;
 
-        if (tempType === 'HOT_ONLY') return <TemperatureBadge type="HOT" label="HOT ONLY" size="small" />;
+        if (tempType === 'HOT_ONLY') return <TemperatureBadge type={'HOT'}>HOT ONLY</TemperatureBadge>;
 
         if (tempType === 'BOTH') {
             return (
@@ -507,6 +507,7 @@ const CafeMenu = ({
                             sx={{
                                 color: 'white',
                                 padding: 0,
+                                marginBottom: '8px',
                                 width: { xs: 24, sm: 28, lg: 32 },
                                 height: { xs: 24, sm: 28, lg: 32 },
                                 '&:hover': {
@@ -517,26 +518,57 @@ const CafeMenu = ({
                             {showSearch ? <X size={iconSize} /> : <Search size={iconSize} />}
                         </SearchIconButton>
 
-                        <CartIconWrap
-                            onClick={() =>
-                                router.push(
-                                    entry === 'personalCart' ? `/cafe/cart/${cartId}?${searchParams}` : '/cafe/cart'
-                                )
-                            }
-                        >
-                            {entry === 'personalCart' ? (
-                                <ShoppingCart size={iconSize} />
-                            ) : (
-                                <GlowContainer>
-                                    <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
-                                </GlowContainer>
-                            )}
-                            <CartNumber active={isOpen} wide={cartItemsCount > 10}>
-                                {entry === 'personalCart'
-                                    ? cartItemsCount > 0 && <>{cartItemsCount > 99 ? '99+' : cartItemsCount}</>
-                                    : '+'}
-                            </CartNumber>
-                        </CartIconWrap>
+                        {!isMobileDevice() && !isMobile ? (
+                            <Tooltip title={'공유 장바구니 만들기'} placement="top" arrow>
+                                <CartIconWrap
+                                    onClick={() =>
+                                        router.push(
+                                            entry === 'personalCart'
+                                                ? `/cafe/cart/${cartId}?${searchParams}`
+                                                : '/cafe/cart'
+                                        )
+                                    }
+                                >
+                                    {entry === 'personalCart' ? (
+                                        <ShoppingCart size={iconSize} />
+                                    ) : (
+                                        <GlowContainer>
+                                            <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
+                                        </GlowContainer>
+                                    )}
+                                    <CartNumber active={isOpen} wide={cartItemsCount > 10}>
+                                        {entry === 'personalCart'
+                                            ? cartItemsCount > 0 && <>{cartItemsCount > 99 ? '99+' : cartItemsCount}</>
+                                            : '+'}
+                                    </CartNumber>
+                                </CartIconWrap>
+                            </Tooltip>
+                        ) : (
+                            <>
+                                <CartIconWrap
+                                    onClick={() =>
+                                        router.push(
+                                            entry === 'personalCart'
+                                                ? `/cafe/cart/${cartId}?${searchParams}`
+                                                : '/cafe/cart'
+                                        )
+                                    }
+                                >
+                                    {entry === 'personalCart' ? (
+                                        <ShoppingCart size={iconSize} />
+                                    ) : (
+                                        <GlowContainer>
+                                            <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
+                                        </GlowContainer>
+                                    )}
+                                    <CartNumber active={isOpen} wide={cartItemsCount > 10}>
+                                        {entry === 'personalCart'
+                                            ? cartItemsCount > 0 && <>{cartItemsCount > 99 ? '99+' : cartItemsCount}</>
+                                            : '+'}
+                                    </CartNumber>
+                                </CartIconWrap>
+                            </>
+                        )}
                     </Box>
                 </Box>
 
@@ -638,7 +670,10 @@ const CafeMenu = ({
                             index={cafeMenu.index}
                             isMobile={!isDesktop}
                         >
-                            <MenuContentArea ref={loadMoreRef}>
+                            <MenuContentArea
+                                ref={loadMoreRef}
+                                onlyText={(data?.pages?.[0]?.records?.length ?? 0) === 0}
+                            >
                                 {data?.pages && (
                                     <MenuGrid>
                                         {data?.pages?.map(page =>

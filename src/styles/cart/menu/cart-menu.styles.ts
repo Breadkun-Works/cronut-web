@@ -74,15 +74,20 @@ export const MenuImage = styled(Box)({
     marginBottom: 8
 });
 
-export const MenuGrid = styled(Box)({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)', // 기본 3개씩 표시 (웹)
-    gap: 16,
-    width: '100%',
-    '@media (max-width: 599px)': {
-        gridTemplateColumns: 'repeat(2, 1fr)' // 모바일에서는 2개씩 표시
+export const MenuGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        grid-template-columns: repeat(3, 1fr);
     }
-});
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        grid-template-columns: repeat(2, 1fr);
+    }
+`;
 
 export const MenuItemCard = styled(Card, {
     shouldForwardProp: prop => prop !== 'isMenu'
@@ -175,34 +180,21 @@ export const IcedToggleButton = styled(StyledToggleButton)(() => ({
     }
 }));
 
-export const TemperatureBadge = styled(Chip)<TemperatureBadgeProps>(({ type }) => ({
-    height: 22,
-    borderRadius: 4,
-    fontWeight: 600,
-    fontSize: '0.75rem',
-    padding: '0 6px',
-    backgroundColor: type === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot,
-    color: '#fff',
-    boxShadow: type === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)',
-    display: 'inline-flex',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    zIndex: 2,
-
-    '& .MuiChip-label': {
-        padding: 0,
-        display: 'inline-block',
-        lineHeight: 1
-    },
-
-    '@media (max-width: 400px)': {
-        fontSize: '0.6875rem',
-        height: 20,
-        padding: '0 5px'
-    }
-}));
+export const TemperatureBadge = styled.div<{ type?: string }>`
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background-color: ${({ type }) => (type === 'ICED' ? COLORS_DARK.badge.ice : COLORS_DARK.badge.hot)};
+    box-shadow: ${({ type }) =>
+        type === 'ICED' ? '0 1px 4px rgba(77, 171, 247, 0.4)' : '0 1px 4px rgba(255, 107, 107, 0.4)'};
+    color: #fff;
+    font-size: 12px;
+    line-height: 21px;
+    z-index: 1;
+`;
 
 export const TempToggleButton = styled(ToggleButton, {
     shouldForwardProp: prop => prop !== 'selectedValue' && prop !== 'valueType'
@@ -338,6 +330,7 @@ export const TabSearchWrapper = styled(Box)(({ theme }) => ({
 
 export const CartIconWrap = styled.div`
     position: relative;
+    cursor: pointer;
 `;
 
 export const CartNumber = styled.div<{ active?: boolean; wide?: boolean }>`
@@ -362,11 +355,17 @@ export const CartNumber = styled.div<{ active?: boolean; wide?: boolean }>`
         `}
 `;
 
-export const MenuContentArea = styled.div`
+export const MenuContentArea = styled.div<{ onlyText?: boolean }>`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 400px);
+
+    ${({ onlyText }) =>
+        onlyText &&
+        css`
+            height: calc(100vh - 400px);
+        `}
 `;
 
 export const MenuTextBox = styled.div`

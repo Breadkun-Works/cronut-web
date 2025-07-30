@@ -721,7 +721,7 @@ const CafeMenu = ({
                                         width={isMobile ? '90%' : '300px'}
                                         open={moveToConfirm}
                                         content={
-                                            <p style={{ textAlign: center }}>
+                                            <p style={{ textAlign: 'center' }}>
                                                 상품을 장바구니에 담았습니다.
                                                 <br />
                                                 장바구니로 이동하시겠습니까?

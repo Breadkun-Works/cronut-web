@@ -88,12 +88,14 @@ export const MainBread = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     min-height: 180px;
     background-color: #fff;
     cursor: pointer;
 
     img {
-        width: 80%;
+        position: absolute;
+        width: 100%;
     }
 
     &.no-img {
@@ -235,14 +237,21 @@ export const BreadImgWrap = styled.div`
     & > div {
         ${MainRadius};
 
+        overflow: hidden;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        width: 300px;
         background-color: #fff;
         aspect-ratio: 10 / 8;
 
         img {
-            width: 70%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            transform: translate(-50%, -50%);
         }
 
         &.no-img {
@@ -250,7 +259,7 @@ export const BreadImgWrap = styled.div`
             aspect-ratio: 10/5;
 
             img {
-                width: 30%;
+                width: 48%;
             }
 
             p {
@@ -284,15 +293,16 @@ export const DustWrap = styled.div<{ company?: string }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 30px;
+    gap: 40px;
     height: 100%;
 
     img {
-        margin-top: ${({ company }) => (company === 'EULJI' ? '0' : '30px')};
+        margin-top: ${({ company }) => (company === 'EULJI' ? '0' : '20px')};
     }
 
     ${({ theme }) => theme.breakpoints.down('xl')} {
+        justify-content: center;
+
         img {
             margin-top: 0;
         }

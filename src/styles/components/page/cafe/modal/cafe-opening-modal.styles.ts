@@ -17,6 +17,42 @@ const openingDash = css`
     }
 `;
 
+const OpeningModalContent = css`
+    h4 {
+        display: inline-block;
+        position: relative;
+        padding: 0 10px;
+        margin-left: 20px;
+        font-size: 20px;
+        background-color: #fff;
+        border-radius: 7px;
+        color: #212529;
+        z-index: 1;
+    }
+
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        top: -15px;
+        width: 100%;
+        padding: 20px 40px 10px 40px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 7px;
+
+        li {
+            ${openingDash};
+        }
+    }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        h4 {
+            font-size: 16px;
+        }
+    }
+`;
+
 export const OpeningWrap = styled.div<{ EULJI?: boolean }>`
     display: flex;
     padding: 20px 0 0 0;
@@ -70,35 +106,43 @@ export const CafeModalTitle = styled.div`
     }
 `;
 
-export const BreakTimeWrap = styled.div`
+export const TimeWrap = styled.div`
+    ${OpeningModalContent};
+
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 20px;
     width: 100%;
-    padding: 0 30px;
+    margin-bottom: -15px;
 
     h4 {
-        display: inline-block;
-        padding: 0 10px;
-        margin-left: 20px;
-        font-size: 20px;
-        background-color: #fff;
-        border-radius: 7px;
-        color: #212529;
+        font-size: 16px;
     }
 
     ul {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        top: -15px;
-        width: 100%;
-        padding: 20px 40px 10px 40px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 7px;
+        gap: 10px;
+        padding: 20px 20px 10px 20px;
+    }
 
-        li {
-            ${openingDash};
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        flex-direction: column;
+        gap: 10px;
+
+        ul {
+            flex-wrap: wrap;
+            column-gap: 20px;
+            row-gap: 0;
+            justify-content: flex-start;
         }
     }
+`;
+
+export const BreakTimeWrap = styled.div`
+    ${OpeningModalContent};
+
+    width: 100%;
+    padding: 0 30px;
 
     p {
         ${openingDash};
@@ -111,10 +155,6 @@ export const BreakTimeWrap = styled.div`
 
     ${({ theme }) => theme.breakpoints.down('md')} {
         padding: 0;
-
-        h4 {
-            font-size: 16px;
-        }
 
         ul {
             padding: 20px 30px 10px 30px;

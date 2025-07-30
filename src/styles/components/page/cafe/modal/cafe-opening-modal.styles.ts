@@ -45,12 +45,6 @@ const OpeningModalContent = css`
             ${openingDash};
         }
     }
-
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        h4 {
-            font-size: 16px;
-        }
-    }
 `;
 
 export const OpeningWrap = styled.div<{ EULJI?: boolean }>`
@@ -155,6 +149,10 @@ export const BreakTimeWrap = styled.div`
 
     ${({ theme }) => theme.breakpoints.down('md')} {
         padding: 0;
+
+        h4 {
+            font-size: 16px;
+        }
 
         ul {
             padding: 20px 30px 10px 30px;

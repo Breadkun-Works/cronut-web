@@ -267,6 +267,14 @@ export const BreadImgWrap = styled.div`
             }
         }
     }
+
+    & > p {
+        max-width: 300px;
+        margin: 10px auto 0 auto;
+        font-size: 18px;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+    }
 `;
 
 export const MainBoxList = styled.div<{ company?: string }>`

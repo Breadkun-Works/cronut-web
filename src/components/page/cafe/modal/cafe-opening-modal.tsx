@@ -5,7 +5,8 @@ import {
     BreakTimeWrap,
     CafeModalTitle,
     OpeningUl,
-    OpeningWrap
+    OpeningWrap,
+    TimeWrap
 } from '@/styles/components/page/cafe/modal/cafe-opening-modal.styles';
 import { Company } from '@/types/common';
 import { useAtom } from 'jotai/index';
@@ -54,12 +55,24 @@ export const CafeOpeningModal = ({ open, onClose }: CafeOpeningModalProps) => {
                     <>
                         <OpeningWrap EULJI={company === Company.EULJI}>
                             {company === Company.KANGCHON && (
-                                <OpeningUl>
-                                    <li>08:20 ~ 08:35</li>
-                                    <li>10:10 ~ 11:20</li>
-                                    <li>12:00 ~ 12:40</li>
-                                    <li>14:00 ~ 17:30</li>
-                                </OpeningUl>
+                                <>
+                                    <TimeWrap>
+                                        <div>
+                                            <h4>오전</h4>
+                                            <ul>
+                                                <li>08:20 ~ 08:35</li>
+                                                <li>10:10 ~ 11:20</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4>오후</h4>
+                                            <ul>
+                                                <li>12:00 ~ 12:40</li>
+                                                <li>14:00 ~ 17:30</li>
+                                            </ul>
+                                        </div>
+                                    </TimeWrap>
+                                </>
                             )}
                             {company === Company.EULJI && (
                                 <Stack direction={'column'} align={'center'} justify={'center'}>
@@ -77,7 +90,7 @@ export const CafeOpeningModal = ({ open, onClose }: CafeOpeningModalProps) => {
                         </OpeningWrap>
                     </>
                 }
-                width={company === Company.EULJI ? 500 : 400}
+                width={company === Company.EULJI ? 500 : 700}
             />
         </>
     );

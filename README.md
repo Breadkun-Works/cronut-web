@@ -120,7 +120,8 @@
 
 
 # Icon Attribution
-This project uses icons from [Flaticon](https://www.flaticon.com), licensed under the [Flaticon Basic License](https://www.flaticon.com/license).
+- This project uses icons from [Flaticon](https://www.flaticon.com), licensed under the [Flaticon Basic License](https://www.flaticon.com/license).
+- This project also uses icons from [Lucide](https://lucide.dev), licensed under the [MIT License](https://github.com/lucide-icons/lucide/blob/main/LICENSE).
 
 ## Used Icons :
 ### Main

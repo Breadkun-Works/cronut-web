@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, IconButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { getInitialCartItems, useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';

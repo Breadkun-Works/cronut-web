@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Ellipsis, Headset } from 'lucide-react';
+import { Ellipsis, Headset, MenuIcon } from 'lucide-react';
 import { inner } from '@/styles/common.styles';
 import { css } from '@emotion/react';
 
@@ -82,7 +82,7 @@ export const MobileMenuButton = styled.button`
     padding: 0;
 
     &:not(:last-of-type) {
-        margin-right: 5px;
+        margin-right: 7px;
     }
 
     ${({ theme }) => theme.breakpoints.down('lg')} {
@@ -90,31 +90,12 @@ export const MobileMenuButton = styled.button`
     }
 `;
 
-export const StyledEllipsis = styled(Ellipsis)(({ theme }) => ({
-    width: '3rem',
-    height: '3rem',
-
-    [theme.breakpoints.down('md')]: {
-        width: '2.5rem',
-        height: '2.5rem'
-    },
-
-    [theme.breakpoints.down('sm')]: {
-        width: '2.2rem',
-        height: '2.2rem'
-    }
-}));
+export const StyledMenu = styled(MenuIcon)({
+    width: '35px',
+    height: '35px'
+});
 
 export const StyledHeadset = styled(Headset)(({ theme }) => ({
-    width: '2.2rem',
-    height: '2.2rem',
-    marginLeft: '0.4rem',
-    marginRight: '0.4rem',
-
-    [theme.breakpoints.down('md')]: {
-        width: '1.8rem',
-        height: '1.8rem',
-        marginLeft: '0.3rem',
-        marginRight: '0.3rem'
-    }
+    width: '30px',
+    height: '30px'
 }));

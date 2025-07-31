@@ -336,16 +336,16 @@ export const CartIconWrap = styled.div`
     cursor: pointer;
 `;
 
-export const CartNumber = styled.div<{ active?: boolean; wide?: boolean }>`
+export const CartNumber = styled.div<{ wide?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
     top: -5px;
-    left: ${({ wide }) => (wide ? '10px' : '16px')};
+    left: ${({ wide }) => (wide ? '10px' : '18px')};
     min-width: ${({ wide }) => (wide ? 'auto' : '15px')};
     padding: 2px 4px;
-    background-color: ${({ active }) => (active ? '#db661b' : '#6b6b6b')};
+    background-color: #db661b;
     color: #fff;
     border-radius: 10px;
     font-size: 15px;

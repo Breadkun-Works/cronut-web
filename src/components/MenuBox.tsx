@@ -1,17 +1,13 @@
 'use client';
-import React, { useEffect } from 'react';
-import styles from '../styles/MenuBox.module.scss';
-import classNames from 'classnames/bind';
-import Link from 'next/link';
-import { InquiryModal } from '@/components/InquiryModal';
-import { usePathname } from 'next/navigation';
-import { useModal } from '@/atom/common-atom';
 
-const ms = classNames.bind(styles);
+import React, { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { MobileNav, MenuBoxWrap, MenuItem, MenuCloseButton } from '@/styles/components/MenuBox.styles';
+import { Close } from '@mui/icons-material';
 
 function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateAction<boolean>> }) {
     const router = usePathname();
-    const { openModal, closeModal, modal } = useModal('inquiryModal');
+    const activePaths = ['/cafe/menu', '/cafe/cart/menu'];
     useEffect(() => {
         const handleTouchMove = (e: TouchEvent) => e.preventDefault();
         const handleKeyUp = (e: KeyboardEvent) => {
@@ -32,44 +28,41 @@ function MenuBox({ setMenuBox }: { setMenuBox: React.Dispatch<React.SetStateActi
     }, [setMenuBox]);
 
     return (
-        <div className={ms('menu-box')}>
-            <div className={ms('menu-box__mask')} onClick={() => setMenuBox(false)} />
-            <nav className={ms('menu-box__menus')}>
-                <Link
-                    className={router === '/' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    href={'/'}
-                    onClick={() => setMenuBox(false)}
-                >
-                    HOME
-                </Link>
-                <Link
-                    className={router === '/meal' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    href={'/meal'}
-                    onClick={() => setMenuBox(false)}
-                >
-                    MEAL
-                </Link>
-                <Link
-                    className={router === '/bus' ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    // className={({ isActive }) => (isActive ? ms('menu-box__menu-active') : ms('menu-box__menu'))}
-                    href={'/bus'}
-                    onClick={() => setMenuBox(false)}
-                >
-                    BUS
-                </Link>
-                <Link
-                    className={router.startsWith('/cafe') ? ms('menu-box__menu-active') : ms('menu-box__menu')}
-                    href={'/cafe/menu'}
-                    onClick={() => setMenuBox(false)}
-                >
-                    CAFE
-                </Link>
-                <button className={ms('menu-box__exit')} onClick={() => setMenuBox(false)}>
-                    닫기
-                </button>
-                <InquiryModal isOpen={modal.isOpen} onClose={closeModal} />
-            </nav>
-        </div>
+        <>
+            <MenuBoxWrap onClick={() => setMenuBox(false)}>
+                <MenuCloseButton onClick={() => setMenuBox(false)}>
+                    <Close />
+                </MenuCloseButton>
+                <MobileNav>
+                    <ul>
+                        <li>
+                            <MenuItem href={'/'} onClick={() => setMenuBox(false)} active={router === '/'}>
+                                HOME
+                            </MenuItem>
+                        </li>
+                        <li>
+                            <MenuItem href={'/meal'} onClick={() => setMenuBox(false)} active={router === '/meal'}>
+                                MEAL
+                            </MenuItem>
+                        </li>
+                        <li>
+                            <MenuItem href={'/bus'} onClick={() => setMenuBox(false)} active={router === '/bus'}>
+                                BUS
+                            </MenuItem>
+                        </li>
+                        <li>
+                            <MenuItem
+                                href={'/cafe/menu'}
+                                onClick={() => setMenuBox(false)}
+                                active={activePaths.some(path => router.startsWith(path))}
+                            >
+                                CAFE
+                            </MenuItem>
+                        </li>
+                    </ul>
+                </MobileNav>
+            </MenuBoxWrap>
+        </>
     );
 }
 

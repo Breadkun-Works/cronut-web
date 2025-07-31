@@ -560,7 +560,7 @@ const CafeMenu = ({
                                         <ShoppingCart size={iconSize} />
                                     ) : (
                                         <GlowContainer>
-                                            <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
+                                            <GlowingIcon active={isOpen} />
                                         </GlowContainer>
                                     )}
                                     <CartNumber wide={cartItemsCount > 10}>

@@ -202,13 +202,15 @@ const Meal = () => {
                     )}
             </DaysTab>
 
-            <MealCategoryTab>
-                {mealMenu(company).mealTime.map((v, index) => (
-                    <MealCategoryItem onClick={() => setSelectedMealCategories(v)} key={index}>
-                        <MealCategoryText active={selectedMealCategories === v}>{v}</MealCategoryText>
-                    </MealCategoryItem>
-                ))}
-            </MealCategoryTab>
+            {!isEmpty && (
+                <MealCategoryTab>
+                    {mealMenu(company).mealTime.map((v, index) => (
+                        <MealCategoryItem onClick={() => setSelectedMealCategories(v)} key={index}>
+                            <MealCategoryText active={selectedMealCategories === v}>{v}</MealCategoryText>
+                        </MealCategoryItem>
+                    ))}
+                </MealCategoryTab>
+            )}
 
             <MealMenuList>
                 {isEmpty ? (

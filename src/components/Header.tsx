@@ -13,7 +13,7 @@ import {
     MenuItem,
     MenuWrap,
     MobileMenuButton,
-    StyledEllipsis,
+    StyledMenu,
     StyledHeadset
 } from '@/styles/components/header.styles';
 import { InquiryModal } from '@/components/InquiryModal';
@@ -64,7 +64,7 @@ function Header() {
                             <StyledHeadset />
                         </MobileMenuButton>
                         <MobileMenuButton onClick={() => setMenuBox(true)}>
-                            <StyledEllipsis />
+                            <StyledMenu />
                         </MobileMenuButton>
                     </MenuWrap>
                 </HeaderContent>

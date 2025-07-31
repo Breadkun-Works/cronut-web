@@ -563,7 +563,7 @@ const CafeMenu = ({
                                             <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
                                         </GlowContainer>
                                     )}
-                                    <CartNumber active={isOpen} wide={cartItemsCount > 10}>
+                                    <CartNumber wide={cartItemsCount > 10}>
                                         {entry === 'personalCart'
                                             ? cartItemsCount > 0 && <>{cartItemsCount > 99 ? '99+' : cartItemsCount}</>
                                             : '+'}

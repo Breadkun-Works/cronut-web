@@ -16,12 +16,13 @@ export const MenuBoxWrap = styled.div`
 
 export const MenuCloseButton = styled.button`
     position: fixed;
-    top: 10px;
-    right: 15px;
+    top: 13px;
+    right: 14px;
+    cursor: pointer;
 
     svg {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
     }
 `;
 

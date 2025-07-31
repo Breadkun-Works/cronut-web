@@ -536,10 +536,12 @@ const CafeMenu = ({
                                             <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
                                         </GlowContainer>
                                     )}
-                                    <CartNumber active={isOpen} wide={cartItemsCount > 10}>
-                                        {entry === 'personalCart'
-                                            ? cartItemsCount > 0 && <>{cartItemsCount > 99 ? '99+' : cartItemsCount}</>
-                                            : '+'}
+                                    <CartNumber wide={cartItemsCount > 10}>
+                                        {entry === 'personalCart' ? (
+                                            <>{(cartItemsCount ?? 0) > 99 ? '99+' : (cartItemsCount ?? 0)}</>
+                                        ) : (
+                                            '+'
+                                        )}
                                     </CartNumber>
                                 </CartIconWrap>
                             </Tooltip>

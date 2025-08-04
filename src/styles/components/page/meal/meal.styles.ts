@@ -271,7 +271,7 @@ export const MealEmpty = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 300px;
+    min-height: 450px;
     text-align: center;
 
     & > div {

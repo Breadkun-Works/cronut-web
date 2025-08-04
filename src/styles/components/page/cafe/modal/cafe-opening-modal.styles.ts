@@ -63,32 +63,6 @@ export const OpeningWrap = styled.div<{ EULJI?: boolean }>`
         `}
 `;
 
-export const OpeningUl = styled.ul<{ EULJI?: boolean }>`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    padding: ${({ EULJI }) => (EULJI ? '0' : '0 30px')};
-
-    li {
-        ${openingDash};
-
-        width: auto;
-    }
-
-    ${({ EULJI }) =>
-        EULJI &&
-        css`
-            justify-content: center;
-            gap: 20px;
-            width: 100%;
-        `}
-
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        padding: 0;
-    }
-`;
-
 export const CafeModalTitle = styled.div`
     display: flex;
     align-items: center;
@@ -108,7 +82,6 @@ export const TimeWrap = styled.div`
     justify-content: center;
     gap: 20px;
     width: 100%;
-    margin-bottom: -15px;
 
     h4 {
         font-size: 16px;

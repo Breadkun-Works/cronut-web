@@ -4,7 +4,6 @@ import Image from 'next/image';
 import {
     BreakTimeWrap,
     CafeModalTitle,
-    OpeningUl,
     OpeningWrap,
     TimeWrap
 } from '@/styles/components/page/cafe/modal/cafe-opening-modal.styles';

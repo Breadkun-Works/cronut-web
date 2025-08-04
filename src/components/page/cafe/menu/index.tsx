@@ -467,7 +467,14 @@ const CafeMenu = ({
 
         return now >= startDate && now <= endDate;
     };
-    const isOpen = openingTimes.some(([start, end]) => isNowInRange(start, end));
+
+    const isWeekend = (): boolean => {
+        const today = new Date();
+        const day = today.getDay(); // 0: 일요일, 6: 토요일
+        return day === 0 || day === 6;
+    };
+
+    const isOpen = !isWeekend() && openingTimes.some(([start, end]) => isNowInRange(start, end));
 
     return (
         <>
@@ -533,7 +540,7 @@ const CafeMenu = ({
                                         <ShoppingCart size={iconSize} />
                                     ) : (
                                         <GlowContainer>
-                                            <GlowingIcon size={iconSize} color={'white'} active={isOpen} />
+                                            <GlowingIcon active={isOpen} />
                                         </GlowContainer>
                                     )}
                                     <CartNumber wide={cartItemsCount > 10}>

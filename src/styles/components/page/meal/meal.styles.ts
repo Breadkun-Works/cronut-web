@@ -254,10 +254,6 @@ export const MealDetail = styled.div<{ eulji?: boolean }>`
         word-break: break-all;
     }
 
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        word-break: keep-all;
-    }
-
     ${({ eulji }) =>
         eulji &&
         css`

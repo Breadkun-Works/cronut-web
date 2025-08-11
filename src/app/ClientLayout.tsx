@@ -16,6 +16,7 @@ import { Company } from '@/types/common';
 import InquiryDial from './InquiryDial';
 import { usePathname } from 'next/navigation';
 import { pageview } from '@/lib/gtag';
+import { ContentWrap } from '@/styles/common.styles';
 export default function ClientLayout({
     children,
     dehydratedState
@@ -50,11 +51,11 @@ export default function ClientLayout({
                         <JotaiProvider>
                             <CookiesProvider>
                                 <Header />
-                                <section style={{ maxWidth: '950px', margin: '0 auto', paddingBottom: '60px' }}>
+                                <ContentWrap>
                                     <InitializeCompany />
                                     {children}
                                     <Snackbar />
-                                </section>
+                                </ContentWrap>
                                 <InquiryDial />
                             </CookiesProvider>
                         </JotaiProvider>

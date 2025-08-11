@@ -7,16 +7,13 @@ import {
     Card,
     CardContent,
     CardMedia,
-    Chip,
     Container,
     DialogContent,
     Typography
 } from '@mui/material';
 import { COLORS_DARK } from '@/data';
-import { TemperatureBadgeProps } from '@/types/cart';
 import { ShoppingCart } from 'lucide-react';
-import { keyframes } from '@emotion/react';
-import isPropValid from '@emotion/is-prop-valid';
+import { css, keyframes } from '@emotion/react';
 import { inner } from '@/styles/common.styles';
 
 interface ConfirmHeaderProps {
@@ -30,6 +27,16 @@ const slideMarquee = keyframes`
     100% {
         transform: translateX(-50%);
     }
+`;
+
+const BadgeLine = css`
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 17px;
+    background-color: rgba(255, 255, 255, 0.5);
 `;
 
 export const PageWrapper = styled.div`
@@ -134,12 +141,6 @@ export const StyledMenuTempBox = styled.div`
     justify-content: flex-start;
 `;
 
-export const TabIcon = styled(StyledMenuTempBox)`
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: center;
-`;
-
 export const MenuCardMedia = styled(CardMedia, {
     shouldForwardProp: prop => prop !== 'isMenu'
 })<{ isMenu: boolean }>(({ isMenu }) => ({
@@ -170,6 +171,85 @@ export const PageContainer = styled(Container)(({ theme }) => ({
 interface ConfirmHeaderProps {
     isMobile: boolean;
 }
+
+export const CartHeaderWrap = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 80px;
+    padding: 20px 12px;
+    border-bottom: 1px solid ${COLORS_DARK.border.default};
+    background-color: #212529;
+    z-index: 1;
+
+    & > div {
+        font-size: 22px;
+    }
+
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        padding: 15px 0;
+        top: 60px;
+
+        button {
+            padding: 0;
+        }
+    }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        & > div {
+            font-size: 20px;
+        }
+    }
+
+    ${({ theme }) => theme.breakpoints.up('lg')} {
+        &.round {
+            overflow: hidden;
+            padding: 20px 25px;
+            border-radius: 0 0 25px 25px;
+            border-bottom: 0;
+            transition: all 0.5s;
+            background-color: transparent;
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                backdrop-filter: blur(13px);
+                z-index: -1;
+            }
+        }
+    }
+`;
+
+export const CartHeaderTitle = styled.div`
+    font-size: 22px;
+`;
+
+export const CartHeaderBtn = styled.div`
+    display: flex;
+    gap: 10px;
+
+    svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        svg {
+            width: 25px;
+            height: 25px;
+        }
+    }
+
+    ${({ theme }) => theme.breakpoints.up('md')} {
+        button {
+            padding: 0;
+        }
+    }
+`;
 
 // styled 컴포넌트 정의
 export const StyledCartHeader = styled(Box, {
@@ -224,30 +304,74 @@ export const StyledCartHeaderTitle = styled(Typography, {
     }
 }));
 
-export const HeaderContent = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column', // 기본적으로 두 줄 (모바일)
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
-    textAlign: 'center',
-    overflow: 'hidden',
-    fontWeight: 'bold',
-    fontSize: '1.3rem',
+export const CafeMenuTitleWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+`;
 
-    [theme.breakpoints.up('sm')]: {
-        fontWeight: 'bold',
-        fontSize: '1.3rem',
-        flexDirection: 'row', // PC에서는 한 줄
-        whiteSpace: 'nowrap',
-        alignItems: 'center',
-        textAlign: 'center',
-        justifyContent: 'center',
-        gap: '4px',
-        overflow: 'hidden'
+export const CafeStateBadge = styled.div<{ open?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 35px;
+    padding: 0 10px;
+    background-color: ${({ open }) => (open ? '#df681b' : '#555')};
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 35px;
+    cursor: pointer;
+    color: ${({ open }) => (open ? '#fff' : 'rgba(255,255,255,.7)')};
+    transform: ${({ open }) => (open ? 'rotate(0)' : 'rotate(-10deg)')};
+    transition: all 1s;
+
+    &:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        width: calc(100% - 6px);
+        height: calc(100% - 6px);
+        border: ${({ open }) => (open ? '1px solid #fff' : '1px solid rgba(255,255,255,.5)')};
+        border-radius: 8px;
     }
-}));
+`;
+
+export const CafeStateBadgeLabel = styled.div`
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    span {
+        display: inline-block;
+        position: relative;
+        width: 5px;
+        height: 5px;
+        background-color: #c8c8c8;
+        border-radius: 50%;
+
+        &:after {
+            ${BadgeLine};
+
+            left: 9px;
+            transform: rotate(-50deg);
+        }
+
+        &:before {
+            ${BadgeLine};
+
+            right: 9px;
+            transform: rotate(50deg);
+        }
+    }
+`;
+
+export const CafeMenuTitle = styled.h4`
+    font-size: 24px;
+`;
 
 export const ScrollableContent = styled(Box)`
     flex: 1;
@@ -262,8 +386,9 @@ export const LinkShareCard = styled(Card)({
     overflow: 'hidden',
     backgroundColor: COLORS_DARK.theme.blue,
     border: `1px solid ${COLORS_DARK.background.lighter}`,
-    borderRadius: '20px',
-    marginBottom: '16px'
+    borderRadius: '12px',
+    marginTop: '25px',
+    marginBottom: '25px'
 });
 
 export const LinkShareContent = styled(CardContent)({
@@ -514,23 +639,31 @@ export const UserAvatar = styled(Avatar)(({ theme }) => ({
     }
 }));
 
-export const CafeMenuBadge = styled(Chip)<TemperatureBadgeProps>(({ theme, type, height }) => ({
-    height: height,
-    borderRadius: 4,
-    fontWeight: 600,
-    fontSize: '0.65rem',
-    backgroundColor:
-        type === 'ICED' ? COLORS_DARK.badge.ice : type === 'SEASON' ? COLORS_DARK.badge.season : COLORS_DARK.badge.hot,
-    color: '#fff',
-    marginTop: -1,
-    boxShadow: 'none',
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '0.6rem'
-    },
-    [theme.breakpoints.up('md')]: {
-        fontSize: '0.75rem'
+export const CafeMenuBadge = styled.span<{ type?: string; modal?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 47px;
+    height: 17px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 17px;
+
+    ${({ type }) => {
+        if (type === 'HOT') {
+            return `
+              background-color: #FF6B6B;
+            `;
+        }
+        return `
+            background-color: #4DABF7;
+        `;
+    }}
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        font-size: 10px;
     }
-}));
+`;
 
 export const StyledScrollableCartList = styled(Box, {
     shouldForwardProp: prop =>
@@ -586,45 +719,54 @@ export const ShoppingCartIcon = styled(ShoppingCart)(({ theme }) => ({
     }
 }));
 
-export const CartWarningWrapper = styled(Box)(({ theme }) => ({
-    width: '100%',
-    maxWidth: 902,
-    overflow: 'hidden',
-    padding: '10px',
-    borderRadius: '12px',
-    border: '1px solid #ff6b6b',
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
-    textAlign: 'center',
-    position: 'relative',
-    marginTop: '12px',
-    [theme.breakpoints.down('md')]: {
-        marginTop: '8px',
-        padding: '8px'
-    }
-}));
+export const CartWarningWrap = styled.div`
+    overflow: hidden;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 107, 107, 0.1);
+    border: 1px solid #ff6b6b;
+    border-radius: 12px;
 
-export const CartWarningText = styled('div', {
-    shouldForwardProp: prop => isPropValid(prop) && prop !== 'overflowed'
-})<{ overflowed: boolean }>(({ overflowed }) => ({
-    display: 'flex',
-    whiteSpace: 'nowrap',
-    fontWeight: 700,
-    color: '#ff6b6b',
-    alignItems: 'center',
-    justifyContent: overflowed ? 'unset' : 'center',
-    overflow: 'hidden',
-    position: 'relative',
-    '.marquee': {
-        display: 'flex',
-        whiteSpace: 'nowrap',
-        flexWrap: 'nowrap',
-        animation: overflowed ? `${slideMarquee} 25s linear infinite` : 'none'
-    },
-    '.marquee-content': {
-        display: 'inline-block',
-        whiteSpace: 'nowrap'
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        margin-bottom: 10px;
     }
-}));
+`;
+
+export const CartWarningTextArea = styled.div<{ overflowed?: boolean }>`
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    color: #ff6b6b;
+`;
+
+export const CartWarningTxt = styled.div<{ animate?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    p {
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    ${({ animate }) =>
+        animate &&
+        css`
+            p {
+                animation: ${slideMarquee} 25s linear infinite;
+
+                &:not(:last-of-type) {
+                    margin-right: 10px;
+                }
+            }
+        `}
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        font-size: 14px;
+    }
+`;
 
 export const OrderLabelTypography = styled(Typography)(({ theme }) => ({
     fontWeight: 700,
@@ -763,3 +905,35 @@ export const MenuCount = styled(Box, { shouldForwardProp: prop => prop !== 'inac
         }
     })
 );
+
+export const CartHeaderDesc = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin: 5px 0 0 0;
+
+    p {
+        position: relative;
+        margin: 0;
+        padding-left: 13px;
+
+        &:before {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            top: 8px;
+            left: 0;
+            width: 5px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+    }
+
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        display: none;
+    }
+
+    &.hide {
+        display: none;
+    }
+`;

@@ -1,4 +1,4 @@
-import { StyledCartHeader, StyledCartHeaderTitle } from '@/styles/cart/cart.styles';
+import { CartHeaderBtn, CartHeaderDesc, CartHeaderTitle, CartHeaderWrap } from '@/styles/cart/cart.styles';
 import { Box, IconButton, Snackbar, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useResponsive } from '@/utils/hook';
@@ -11,11 +11,15 @@ import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { COLORS_DARK } from '@/data';
 import { isMobileDevice } from '@/utils/util';
 import { AnimatedReceiptIcon } from '@/styles/cart/menu/cart-menu.styles';
+import { Stack } from '@/components/ui/Stack/Stack';
+import { CartWaring } from '@/components/page/cart/cart-warning';
 
 interface ICartHeaderProps {
     title: string;
+    description: string;
     cafeLocation: string;
     snackbar: { open: boolean; message?: string; variant?: 'success' | 'error'; device?: 'PC' | 'MOBILE' };
+    status?: 'ACTIVE' | 'INACTIVE';
     setSnackbar: (
         value: React.SetStateAction<{
             open: boolean;
@@ -25,7 +29,7 @@ interface ICartHeaderProps {
         }>
     ) => void;
 }
-export const CartHeader = ({ title, cafeLocation, snackbar, setSnackbar }: ICartHeaderProps) => {
+export const CartHeader = ({ title, description, cafeLocation, snackbar, setSnackbar, status }: ICartHeaderProps) => {
     const confirmHeaderRef = useRef<HTMLDivElement>(null);
     const { isMobile } = useResponsive();
     const [cartItems] = useAtom(cartItemsAtom);
@@ -61,62 +65,68 @@ export const CartHeader = ({ title, cafeLocation, snackbar, setSnackbar }: ICart
         return () => observer.disconnect();
     }, [title]);
 
+    const [isScrolled, setIsScrolled] = useState(false);
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 80);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // 초기값 반영
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const semiHeaderRef = useRef<HTMLDivElement>(null); // 세미 헤더 (있다면)
+    const isCartInactive = status === 'INACTIVE';
+
     return (
         <>
-            <StyledCartHeader isMobile={isMobile}>
-                <Box
-                    sx={{
-                        width: isMobile ? '80%' : '85%'
-                    }}
-                    ref={confirmHeaderRef}
-                >
-                    <EllipsisTooltip title={title} entry={'cartHeader'}>
-                        <StyledCartHeaderTitle isMobile={isMobile} maxWidth={headerWidth}>
-                            {title}
-                        </StyledCartHeaderTitle>
-                    </EllipsisTooltip>
+            <CartHeaderWrap className={isScrolled ? 'round' : ''}>
+                <Box ref={semiHeaderRef}>
+                    <CartWaring isCartInactive={isCartInactive} />
                 </Box>
-                <Box
-                    sx={{
-                        width: isMobile ? '20%' : '15%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'flex-end',
-                        gap: 0.5
-                    }}
-                >
-                    {!isMobileDevice() && !isMobile ? (
-                        <Tooltip title="요약 보기" placement="top" arrow>
-                            <IconButton
-                                disabled={cartItems.length === 0}
-                                onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
-                                sx={{ cursor: 'pointer' }}
-                            >
-                                <AnimatedReceiptIcon />
-                            </IconButton>
-                        </Tooltip>
-                    ) : (
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                            <IconButton
-                                disabled={cartItems.length === 0}
-                                onClick={() =>
-                                    cartItems.length > 0 && setHeaderModalOpen({ type: 'summary', open: true })
-                                }
-                                sx={{ cursor: 'pointer', padding: 0 }}
-                            >
-                                <AnimatedReceiptIcon />
-                            </IconButton>
-                            <IconButton
-                                sx={{ cursor: 'pointer', padding: 0 }}
-                                onClick={() => setHeaderModalOpen({ type: 'share', open: true })}
-                            >
-                                <Share2 />
-                            </IconButton>
-                        </Box>
-                    )}
-                </Box>
-                <StyledCartHeaderTitle isMobile={isMobile}></StyledCartHeaderTitle>
-            </StyledCartHeader>
+                <Stack direction={'row'} justify={'space-between'}>
+                    <Stack direction={'column'} align={'flex-start'} margin={'0 10px 0 0'}>
+                        <EllipsisTooltip title={title} entry={'cartHeader'}>
+                            <CartHeaderTitle>{title}</CartHeaderTitle>
+                        </EllipsisTooltip>
+                        {description && (
+                            <CartHeaderDesc className={isScrolled ? 'hide' : ''}>
+                                <p>{description}</p>
+                            </CartHeaderDesc>
+                        )}
+                    </Stack>
+                    <CartHeaderBtn>
+                        {!isMobileDevice() && !isMobile ? (
+                            <Tooltip title="요약 보기" placement="top" arrow>
+                                <IconButton
+                                    disabled={cartItems.length === 0}
+                                    onClick={() => setHeaderModalOpen({ type: 'summary', open: true })}
+                                >
+                                    <AnimatedReceiptIcon />
+                                </IconButton>
+                            </Tooltip>
+                        ) : (
+                            <>
+                                <IconButton
+                                    disabled={cartItems.length === 0}
+                                    onClick={() =>
+                                        cartItems.length > 0 && setHeaderModalOpen({ type: 'summary', open: true })
+                                    }
+                                >
+                                    <AnimatedReceiptIcon />
+                                </IconButton>
+                                <IconButton onClick={() => setHeaderModalOpen({ type: 'share', open: true })}>
+                                    <Share2 />
+                                </IconButton>
+                            </>
+                        )}
+                    </CartHeaderBtn>
+                </Stack>
+            </CartHeaderWrap>
+
             {headerModalOpen.open && headerModalOpen.type === 'share' && (
                 <ShareCartDialog
                     cartTitle={title as string}
@@ -127,6 +137,7 @@ export const CartHeader = ({ title, cafeLocation, snackbar, setSnackbar }: ICart
                     showToast={showSnackbar}
                 />
             )}
+
             {headerModalOpen.open && headerModalOpen.type === 'summary' && (
                 <CafeSummaryModal
                     cafeLocation={cafeLocation}

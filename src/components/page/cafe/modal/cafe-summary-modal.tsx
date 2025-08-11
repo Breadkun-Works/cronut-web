@@ -11,6 +11,7 @@ import { CommonModal } from '@/components/page/cafe/modal/common-modal';
 import { EllipsisTooltipWithChip } from '@/components/common/EllipsisTooltipWithChip';
 import { CardImage } from '@/components/common/CardImage';
 import { ExpandMore } from '@mui/icons-material';
+import { Stack } from '@/components/ui/Stack/Stack';
 
 interface CafeSummaryModalProps extends ICommonModalTypes {
     cartItems: CafeCartItem[];
@@ -158,6 +159,12 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                 disableGutters
                                 slotProps={{ heading: { component: 'div' } }}
                                 sx={{
+                                    '&:first-of-type': {
+                                        borderRadius: '12px 12px 0 0'
+                                    },
+                                    '&:last-of-type': {
+                                        borderRadius: '0 0 12px 12px'
+                                    },
                                     '&:last-of-type .MuiAccordionSummary-root::after': {
                                         display: 'none'
                                     }
@@ -178,29 +185,19 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                             height: '1px',
                                             backgroundColor: 'rgba(255, 255, 255, 0.12)'
                                         },
-                                        '& .MuiAccordionSummary-content.Mui-expanded': {
-                                            margin: '1rem 0 0 0'
-                                        },
                                         '&.Mui-expanded::after': {
                                             display: 'none'
                                         }
                                     }}
                                 >
-                                    <Box justifyContent={'left'} display={'flex'} alignItems={'center'} sx={{ mb: 1 }}>
-                                        <CafeMenuBadge
-                                            type={getTempAndCategory(title).temp as 'HOT' | 'ICED'}
-                                            label={
-                                                getTempAndCategory(title).temp === 'ICED'
-                                                    ? 'ICE'
-                                                    : getTempAndCategory(title).temp
-                                            }
-                                            height={isSmUp ? '1.3rem' : '1.2rem'}
-                                            sx={{ mr: '8px' }}
-                                        />
+                                    <Stack gap={5}>
+                                        <CafeMenuBadge type={getTempAndCategory(title).temp as 'HOT' | 'ICED'}>
+                                            {getTempAndCategory(title).temp as 'HOT' | 'ICED'}
+                                        </CafeMenuBadge>
                                         <Typography fontSize={isSmUp ? '1.15rem' : '1.05rem'}>
                                             {getTempAndCategory(title).category ?? ''}
                                         </Typography>
-                                    </Box>
+                                    </Stack>
                                 </AccordionSummary>
                                 <AccordionDetails
                                     sx={{
@@ -254,29 +251,6 @@ export function CafeSummaryModal({ open, cafeLocation, onClose, cartItems }: Caf
                                                         >
                                                             <>{group.drinkName}</>
                                                         </EllipsisTooltipWithChip>
-                                                        {/*<Box*/}
-                                                        {/*    component="span"*/}
-                                                        {/*    sx={{*/}
-                                                        {/*        display: 'inline-flex',*/}
-                                                        {/*        alignItems: 'center',*/}
-                                                        {/*        marginLeft: 0.5*/}
-                                                        {/*    }}*/}
-                                                        {/*>*/}
-                                                        {/*<Chip*/}
-                                                        {/*    label={group.drinkTemperature}*/}
-                                                        {/*    size="small"*/}
-                                                        {/*    sx={{*/}
-                                                        {/*        backgroundColor:*/}
-                                                        {/*            group.drinkTemperature === 'HOT'*/}
-                                                        {/*                ? '#F87171'*/}
-                                                        {/*                : '#60A5FA',*/}
-                                                        {/*        color: '#fff',*/}
-                                                        {/*        fontSize: '0.6rem',*/}
-                                                        {/*        height: fontSize,*/}
-                                                        {/*        borderRadius: '4px'*/}
-                                                        {/*    }}*/}
-                                                        {/*/>*/}
-                                                        {/*</Box>*/}
                                                     </Box>
                                                 </Box>
 

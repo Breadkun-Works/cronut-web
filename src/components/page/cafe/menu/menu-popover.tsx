@@ -530,8 +530,8 @@ export const MenuPopover = ({
                                         }
                                     }}
                                 >
+                                    <ShoppingCart size={20} style={{ marginRight: '8px' }} />
                                     장바구니에 담기
-                                    <ShoppingCart size={20} style={{ marginLeft: '8px' }} />
                                 </Button>
                             </Box>
                         </>

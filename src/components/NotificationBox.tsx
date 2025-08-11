@@ -1,16 +1,18 @@
 import React from 'react';
-import styles from '../styles/NotificationBox.module.scss';
-import classNames from 'classnames/bind';
+import {
+    NotificationBoxWrap,
+    NotificationSubTitle,
+    NotificationTitle
+} from '@/styles/components/NotificationBox.styles';
 
-const ns = classNames.bind(styles);
-
-function NotificationBox({ firstText, secText }: { firstText: string; secText: string }) {
+function NotificationBox({ firstText, secText, bgColor }: { firstText: string; secText: string; bgColor?: string }) {
     return (
-        <div className={ns('bus__notification-wrapper')}>
-            <div className={ns('bus__notification')}>
-                <div>{firstText}</div> <div>{secText}</div>
-            </div>
-        </div>
+        <>
+            <NotificationBoxWrap bgColor={bgColor}>
+                <NotificationTitle>{firstText}</NotificationTitle>
+                <NotificationSubTitle>{secText}</NotificationSubTitle>
+            </NotificationBoxWrap>
+        </>
     );
 }
 

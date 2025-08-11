@@ -120,9 +120,21 @@
 
 
 # Icon Attribution
-This project uses icons from [Flaticon](https://www.flaticon.com), licensed under the [Flaticon Basic License](https://www.flaticon.com/license).
+- This project uses icons from [Flaticon](https://www.flaticon.com), licensed under the [Flaticon Basic License](https://www.flaticon.com/license).
+- This project also uses icons from [Lucide](https://lucide.dev), licensed under the [MIT License](https://github.com/lucide-icons/lucide/blob/main/LICENSE).
 
 ## Used Icons :
+### Main
+- **fried rice icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/fried-rice_2515271
+- **coffee icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/coffee_4721026
+- **bus icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/bus_416739
+- **bread icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
+  https://www.flaticon.com/free-icon/bread_6978277
+
+### Meal
 - **Bibimbap icon** by [Freepik](https://www.flaticon.com/authors/freepik)  
   https://www.flaticon.com/free-icon/bibimbap_4480768
 - **Noodles icon** by [Freepik](https://www.flaticon.com/authors/freepik)  

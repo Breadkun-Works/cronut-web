@@ -1,9 +1,7 @@
-import { IconButton } from '@mui/material';
 import styled from '@emotion/styled';
-import { Ellipsis, Headset } from 'lucide-react';
+import { Ellipsis, Headset, MenuIcon } from 'lucide-react';
 import { inner } from '@/styles/common.styles';
 import { css } from '@emotion/react';
-import { MuiTheme } from '@/data';
 
 export const HeaderWrap = styled.div<{ bg?: string }>`
     display: flex;
@@ -16,11 +14,11 @@ export const HeaderWrap = styled.div<{ bg?: string }>`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     z-index: 11;
 
-    ${({ theme }) => MuiTheme.breakpoints.down('xl')} {
+    ${({ theme }) => theme.breakpoints.down('xl')} {
         padding: 0 15px;
     }
 
-    ${({ theme }) => MuiTheme.breakpoints.down('lg')} {
+    ${({ theme }) => theme.breakpoints.down('lg')} {
         height: 60px;
         border-radius: 0 0 20px 20px;
     }
@@ -44,7 +42,7 @@ export const HeaderLogo = styled.div`
         width: 130px;
     }
 
-    ${({ theme }) => MuiTheme.breakpoints.down('md')} {
+    ${({ theme }) => theme.breakpoints.down('md')} {
         img {
             width: 85px;
         }
@@ -62,7 +60,7 @@ export const Menu = styled.div`
     gap: 50px;
     font-size: 25px;
 
-    ${({ theme }) => MuiTheme.breakpoints.down('lg')} {
+    ${({ theme }) => theme.breakpoints.down('lg')} {
         display: none;
     }
 `;
@@ -79,39 +77,25 @@ export const MenuItem = styled.a<{ active?: boolean }>`
         `}
 `;
 
-export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
-    display: 'none',
+export const MobileMenuButton = styled.button`
+    display: none;
+    padding: 0;
 
-    [theme.breakpoints.down(768)]: {
-        display: 'flex'
+    &:not(:last-of-type) {
+        margin-right: 7px;
     }
-}));
 
-export const StyledEllipsis = styled(Ellipsis)(({ theme }) => ({
-    width: '3rem',
-    height: '3rem',
-
-    [theme.breakpoints.down('md')]: {
-        width: '2.5rem',
-        height: '2.5rem'
-    },
-
-    [theme.breakpoints.down('sm')]: {
-        width: '2.2rem',
-        height: '2.2rem'
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        display: flex;
     }
-}));
+`;
+
+export const StyledMenu = styled(MenuIcon)({
+    width: '35px',
+    height: '35px'
+});
 
 export const StyledHeadset = styled(Headset)(({ theme }) => ({
-    width: '2.2rem',
-    height: '2.2rem',
-    marginLeft: '0.4rem',
-    marginRight: '0.4rem',
-
-    [theme.breakpoints.down('md')]: {
-        width: '1.8rem',
-        height: '1.8rem',
-        marginLeft: '0.3rem',
-        marginRight: '0.3rem'
-    }
+    width: '30px',
+    height: '30px'
 }));

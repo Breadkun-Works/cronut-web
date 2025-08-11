@@ -1,16 +1,18 @@
 'use client';
 
-import { Badge, Box, IconButton, ToggleButtonGroup, Typography, useTheme } from '@mui/material';
+import { Box, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
 import { COLORS_DARK, responsiveConfig } from '@/data';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { getInitialCartItems, useGetCafeMenuInfinite } from '@/apis/cafe/cafe-api';
-import { DrinkCategory, DrinkTemperature } from '@/types/common';
+import { Company, DrinkCategory, DrinkTemperature } from '@/types/common';
 import {
-    HeaderContent,
+    CafeMenuTitle,
+    CafeMenuTitleWrap,
+    CafeStateBadge,
+    CafeStateBadgeLabel,
     MenuCardMedia,
     PageContainer,
     ScrollableContent,
-    StyledMenuTitle,
     StyledMenuTitleWithName
 } from '@/styles/cart/cart.styles';
 import { Leaf, MapPin, Search, ShoppingCart, Sparkles, Wine, X } from 'lucide-react';
@@ -24,14 +26,18 @@ import {
 import { MenuPopover } from '@/components/page/cafe/menu/menu-popover';
 import { useCafeMenuData, useCartSync, useCurrentBreakpoint, useDynamicTitle, useResponsive } from '@/utils/hook';
 import {
+    CartIconWrap,
+    CartNumber,
     CategoryTab,
     CategoryTabs,
     GlowContainer,
     GlowingIcon,
+    MenuContentArea,
     MenuGrid,
     MenuImage,
     MenuItemCard,
     MenuItemContent,
+    MenuTextBox,
     SearchIconButton,
     TabSearchWrapper,
     TemperatureBadge,
@@ -47,6 +53,8 @@ import { cartItemsAtom, cartItemsCountAtom } from '@/atom/cart-atom';
 import { EllipsisTooltip } from '@/components/common/EllipsisTooltip';
 import { getCookie, setCookie } from '@/utils/cookie';
 import { getDefaultDrinkTemperatureBySeason } from '@/utils/dates';
+import { isMobileDevice } from '@/utils/util';
+import CafeOpeningModal from '@/components/page/cafe/modal/cafe-opening-modal';
 
 const returnIcon = (cafeMenu: DrinkCategory) => {
     switch (cafeMenu) {
@@ -300,9 +308,9 @@ const CafeMenu = ({
     }) => {
         const tempType = getTempType(options);
 
-        if (tempType === 'ICE_ONLY') return <TemperatureBadge type="ICED" label="ICE ONLY" size="small" />;
+        if (tempType === 'ICE_ONLY') return <TemperatureBadge type={'ICED'}>ICE ONLY</TemperatureBadge>;
 
-        if (tempType === 'HOT_ONLY') return <TemperatureBadge type="HOT" label="HOT ONLY" size="small" />;
+        if (tempType === 'HOT_ONLY') return <TemperatureBadge type={'HOT'}>HOT ONLY</TemperatureBadge>;
 
         if (tempType === 'BOTH') {
             return (
@@ -423,6 +431,51 @@ const CafeMenu = ({
         return entry === 'menu' ? content : <Box onClick={onClick}>{content}</Box>;
     };
 
+    // 운영시간 팝업
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleModal = () => {
+        setIsModalOpen(prev => !prev);
+    };
+
+    // 카페 운영 상태
+    let openingTimes: [string, string][] = [];
+    if (company === Company.KANGCHON) {
+        openingTimes = [
+            ['08:20', '08:35'],
+            ['10:10', '11:20'],
+            ['12:00', '12:40'],
+            ['14:00', '17:30']
+        ];
+    } else if (company === Company.EULJI) {
+        openingTimes = [
+            ['08:20', '08:50'],
+            ['09:30', '12:50'],
+            ['13:30', '17:00']
+        ];
+    }
+    const isNowInRange = (start: string, end: string): boolean => {
+        const now = new Date();
+
+        const [startHour, startMinute] = start.split(':').map(Number);
+        const [endHour, endMinute] = end.split(':').map(Number);
+
+        const startDate = new Date(now);
+        startDate.setHours(startHour, startMinute, 0, 0);
+
+        const endDate = new Date(now);
+        endDate.setHours(endHour, endMinute, 0, 0);
+
+        return now >= startDate && now <= endDate;
+    };
+
+    const isWeekend = (): boolean => {
+        const today = new Date();
+        const day = today.getDay(); // 0: 일요일, 6: 토요일
+        return day === 0 || day === 6;
+    };
+
+    const isOpen = !isWeekend() && openingTimes.some(([start, end]) => isNowInRange(start, end));
+
     return (
         <>
             <PageContainer ref={containerRef} maxWidth={false} disableGutters>
@@ -461,6 +514,7 @@ const CafeMenu = ({
                             sx={{
                                 color: 'white',
                                 padding: 0,
+                                marginBottom: '8px',
                                 width: { xs: 24, sm: 28, lg: 32 },
                                 height: { xs: 24, sm: 28, lg: 32 },
                                 '&:hover': {
@@ -471,85 +525,62 @@ const CafeMenu = ({
                             {showSearch ? <X size={iconSize} /> : <Search size={iconSize} />}
                         </SearchIconButton>
 
-                        <IconButton
-                            sx={{
-                                borderRadius: 0,
-                                position: 'relative',
-                                width: { xs: 24, sm: 28, lg: 32 },
-                                height: { xs: 24, sm: 28, lg: 32 },
-                                padding: 0,
-                                '&:hover': {
-                                    backgroundColor: 'transparent'
-                                },
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}
-                            onClick={() =>
-                                router.push(
-                                    entry === 'personalCart' ? `/cafe/cart/${cartId}?${searchParams}` : '/cafe/cart'
-                                )
-                            }
-                        >
-                            <Badge
-                                overlap="circular"
-                                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                                badgeContent={
-                                    entry === 'personalCart' ? (
-                                        cartItemsCount > 0 && (
-                                            <Box
-                                                sx={{
-                                                    width:
-                                                        String(cartItemsCount).length >= 2
-                                                            ? cartItemsCount > 99
-                                                                ? 22
-                                                                : 20
-                                                            : 16,
-                                                    height: 16,
-                                                    borderRadius: '50%',
-                                                    backgroundColor: '#DB661B',
-                                                    color: '#fff',
-                                                    fontSize: String(cartItemsCount).length >= 2 ? '0.8rem' : '1rem',
-                                                    fontWeight: 'bold',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center'
-                                                }}
-                                            >
-                                                {cartItemsCount > 99 ? '99+' : cartItemsCount}
-                                            </Box>
+                        {!isMobileDevice() && !isMobile ? (
+                            <Tooltip title={'공유 장바구니 만들기'} placement="top" arrow>
+                                <CartIconWrap
+                                    onClick={() =>
+                                        router.push(
+                                            entry === 'personalCart'
+                                                ? `/cafe/cart/${cartId}?${searchParams}`
+                                                : '/cafe/cart'
                                         )
+                                    }
+                                >
+                                    {entry === 'personalCart' ? (
+                                        <ShoppingCart size={iconSize} />
                                     ) : (
-                                        <Box
-                                            sx={{
-                                                width: 14,
-                                                height: 14,
-                                                borderRadius: '50%',
-                                                backgroundColor: COLORS_DARK.accent.main,
-                                                color: '#fff',
-                                                fontSize: '1rem',
-                                                fontWeight: 'bold',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center'
-                                            }}
-                                        >
-                                            +
-                                        </Box>
-                                    )
-                                }
-                            >
-                                {entry === 'personalCart' ? (
-                                    <ShoppingCart size={iconSize} />
-                                ) : (
-                                    <GlowContainer>
-                                        <GlowingIcon size={iconSize} color="white" />
-                                    </GlowContainer>
-                                )}
-                            </Badge>
-                        </IconButton>
+                                        <GlowContainer>
+                                            <GlowingIcon active={isOpen} />
+                                        </GlowContainer>
+                                    )}
+                                    <CartNumber wide={cartItemsCount > 10}>
+                                        {entry === 'personalCart' ? (
+                                            <>{(cartItemsCount ?? 0) > 99 ? '99+' : (cartItemsCount ?? 0)}</>
+                                        ) : (
+                                            '+'
+                                        )}
+                                    </CartNumber>
+                                </CartIconWrap>
+                            </Tooltip>
+                        ) : (
+                            <>
+                                <CartIconWrap
+                                    onClick={() =>
+                                        router.push(
+                                            entry === 'personalCart'
+                                                ? `/cafe/cart/${cartId}?${searchParams}`
+                                                : '/cafe/cart'
+                                        )
+                                    }
+                                >
+                                    {entry === 'personalCart' ? (
+                                        <ShoppingCart size={iconSize} />
+                                    ) : (
+                                        <GlowContainer>
+                                            <GlowingIcon active={isOpen} />
+                                        </GlowContainer>
+                                    )}
+                                    <CartNumber wide={cartItemsCount > 10}>
+                                        {entry === 'personalCart'
+                                            ? cartItemsCount > 0 && <>{cartItemsCount > 99 ? '99+' : cartItemsCount}</>
+                                            : '+'}
+                                    </CartNumber>
+                                </CartIconWrap>
+                            </>
+                        )}
                     </Box>
                 </Box>
+
                 <Box>
                     {entry === 'personalCart' ? (
                         <StyledMenuTitleWithName>
@@ -595,11 +626,31 @@ const CafeMenu = ({
                             </Typography>
                         </StyledMenuTitleWithName>
                     ) : (
-                        <HeaderContent>
-                            <StyledMenuTitle>{title}</StyledMenuTitle>
-                        </HeaderContent>
+                        <>
+                            <CafeMenuTitleWrap>
+                                {!isMobileDevice() && !isMobile ? (
+                                    <Tooltip title={'운영시간 자세히보기'} placement="top" arrow>
+                                        <CafeStateBadge open={isOpen} onClick={handleModal}>
+                                            <CafeStateBadgeLabel aria-hidden={'true'}>
+                                                <span />
+                                            </CafeStateBadgeLabel>
+                                            {isOpen ? 'Open' : 'Close'}
+                                        </CafeStateBadge>
+                                    </Tooltip>
+                                ) : (
+                                    <CafeStateBadge open={isOpen} onClick={handleModal}>
+                                        <CafeStateBadgeLabel aria-hidden={'true'}>
+                                            <span />
+                                        </CafeStateBadgeLabel>
+                                        {isOpen ? 'Open' : 'Close'}
+                                    </CafeStateBadge>
+                                )}
+                                <CafeMenuTitle>{title}</CafeMenuTitle>
+                            </CafeMenuTitleWrap>
+                        </>
                     )}
                 </Box>
+
                 <TabSearchWrapper>
                     {showSearch ? (
                         <SearchBar
@@ -620,7 +671,6 @@ const CafeMenu = ({
                         </CategoryTabs>
                     )}
                 </TabSearchWrapper>
-
                 <ScrollableContent className={!isDesktop ? 'mobile' : ''}>
                     {cafeMenuData.map(cafeMenu => (
                         <CafeMenuTabPanel
@@ -629,64 +679,62 @@ const CafeMenu = ({
                             index={cafeMenu.index}
                             isMobile={!isDesktop}
                         >
-                            <Box ref={loadMoreRef} component="div">
-                                <MenuGrid>
-                                    {data?.pages?.map(page =>
-                                        page.records.map(record => {
-                                            return (
-                                                <React.Fragment key={`menu_${record.name}`}>
-                                                    <MenuItemCard isMenu={entry === 'menu'}>
-                                                        <MenuItem
-                                                            temp={menuTempMap[record.name]?.temp}
-                                                            record={record}
-                                                            onClick={() => handleCardClick(record.name)}
-                                                            entry={entry}
-                                                        />
-                                                    </MenuItemCard>
-                                                    {entry !== 'menu' && openDialog && selectedMenu === record.name && (
-                                                        <MenuPopover
-                                                            width={dialogWidth}
-                                                            open={openDialog}
-                                                            onClose={handleCloseDialog}
-                                                            handleChangeMenuData={setMenuTempMap}
-                                                            popoverProps={{
-                                                                menuTempMap,
-                                                                cartName: cartBasic?.title ?? '장바구니',
-                                                                temp: menuTempMap[record.name]?.temp,
-                                                                menuName: record.name,
-                                                                options: record.options
-                                                            }}
-                                                            cartId={cartId}
-                                                            onSuccess={() => {
-                                                                setMoveToConfirm(true);
-                                                            }}
-                                                        />
-                                                    )}
-                                                </React.Fragment>
-                                            );
-                                        })
-                                    )}
-                                </MenuGrid>
+                            <MenuContentArea
+                                ref={loadMoreRef}
+                                onlyText={(data?.pages?.[0]?.records?.length ?? 0) === 0}
+                            >
+                                {data?.pages && (
+                                    <MenuGrid>
+                                        {data?.pages?.map(page =>
+                                            page.records.map(record => {
+                                                return (
+                                                    <React.Fragment key={`menu_${record.name}`}>
+                                                        <MenuItemCard isMenu={entry === 'menu'}>
+                                                            <MenuItem
+                                                                temp={menuTempMap[record.name]?.temp}
+                                                                record={record}
+                                                                onClick={() => handleCardClick(record.name)}
+                                                                entry={entry}
+                                                            />
+                                                        </MenuItemCard>
+                                                        {entry !== 'menu' &&
+                                                            openDialog &&
+                                                            selectedMenu === record.name && (
+                                                                <MenuPopover
+                                                                    width={dialogWidth}
+                                                                    open={openDialog}
+                                                                    onClose={handleCloseDialog}
+                                                                    handleChangeMenuData={setMenuTempMap}
+                                                                    popoverProps={{
+                                                                        menuTempMap,
+                                                                        cartName: cartBasic?.title ?? '장바구니',
+                                                                        temp: menuTempMap[record.name]?.temp,
+                                                                        menuName: record.name,
+                                                                        options: record.options
+                                                                    }}
+                                                                    cartId={cartId}
+                                                                    onSuccess={() => {
+                                                                        setMoveToConfirm(true);
+                                                                    }}
+                                                                />
+                                                            )}
+                                                    </React.Fragment>
+                                                );
+                                            })
+                                        )}
+                                    </MenuGrid>
+                                )}
 
                                 {moveToConfirm && (
                                     <CommonModal
-                                        width={isMobile ? '90%' : '70%'}
+                                        width={isMobile ? '90%' : '300px'}
                                         open={moveToConfirm}
                                         content={
-                                            <Box>
-                                                <Typography
-                                                    sx={{
-                                                        whiteSpace: 'pre-line',
-                                                        textAlign: 'center',
-                                                        fontSize: '1rem',
-                                                        lineHeight: 1.5,
-                                                        maxWidth: '280px',
-                                                        wordBreak: 'keep-all'
-                                                    }}
-                                                >
-                                                    {'상품을 장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?'}
-                                                </Typography>
-                                            </Box>
+                                            <p style={{ textAlign: 'center' }}>
+                                                상품을 장바구니에 담았습니다.
+                                                <br />
+                                                장바구니로 이동하시겠습니까?
+                                            </p>
                                         }
                                         onClose={() => setMoveToConfirm(false)}
                                         onConfirm={() => router.push(`/cafe/cart/${cartId}?${searchParams}`)}
@@ -695,36 +743,33 @@ const CafeMenu = ({
 
                                 {!hasNextPage &&
                                     isFetched &&
-                                    ((data?.pages?.[0]?.records?.length ?? 0) === 0 ? (
-                                        query.name !== '' ? (
-                                            <Box display="flex" justifyContent="center" mt={30}>
-                                                <Typography variant="body2" fontSize="large" textAlign="center">
-                                                    이런! 🫢
-                                                    <br />
-                                                    <strong style={{ color: '#ff6b6b' }}>{query.name}</strong> 메뉴는
-                                                    아직 없어요.
-                                                    <br />
-                                                    다른 키워드로 다시 한번 검색해볼까요? 🔍
-                                                </Typography>
-                                            </Box>
-                                        ) : (
-                                            <Box display="flex" justifyContent="center" mt={30}>
-                                                <Typography variant="body2" fontSize="large" textAlign="center">
-                                                    아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올
-                                                    예정이에요 ☕️🍰
-                                                </Typography>
-                                            </Box>
-                                        )
+                                    (data?.pages?.[0]?.records?.length ?? 0) === 0 &&
+                                    (query.name !== '' ? (
+                                        <MenuTextBox>
+                                            <p>
+                                                이런! 🫢
+                                                <br />
+                                                <strong>{query.name}</strong> 메뉴는 아직 없어요.
+                                                <br />
+                                                다른 키워드로 다시 한번 검색해볼까요? 🔍
+                                            </p>
+                                        </MenuTextBox>
                                     ) : (
-                                        <Box display="flex" justifyContent="center" mt={3}>
-                                            <Typography variant="body2">끝~</Typography>
-                                        </Box>
+                                        <MenuTextBox>
+                                            <p>
+                                                아직 등록된 메뉴가 없어요. <br />곧 맛있는 메뉴들이 올라올 예정이에요
+                                                ☕️🍰
+                                            </p>
+                                        </MenuTextBox>
                                     ))}
-                            </Box>
+                            </MenuContentArea>
                         </CafeMenuTabPanel>
                     ))}
                 </ScrollableContent>
             </PageContainer>
+
+            {/*팝업 - 운영시간 자세히보기*/}
+            <CafeOpeningModal open={isModalOpen} onClose={handleModal} />
         </>
     );
 };

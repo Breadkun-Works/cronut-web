@@ -1,25 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import {
-    Box,
-    Modal,
-    Typography,
-    IconButton,
-    TextField,
-    Button,
-    MenuItem,
-    Select,
-    InputLabel,
-    FormControl
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { Send } from '@mui/icons-material';
 import ModalBase from '@/components/common/ModalBase';
 import { COLORS_DARK } from '@/data';
 import { useInquiryMutation } from '@/apis/contact/contact-api';
-import { InquiryModalProps, InquiryType, InquiryFormData, InquirySendForm } from '@/types/contact';
+import { InquiryModalProps, InquiryType, InquiryFormData } from '@/types/contact';
 import { snackBarAtom } from '@/atom/common-atom';
 import { useAtom } from 'jotai';
+import { FooterText } from '@/styles/components/InquiryModal.styles';
 
 export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps) {
     const [selectedInquiryType, setSelectedInquiryType] = useState<InquiryType>(inquiryType || 'bug-report');
@@ -172,7 +162,20 @@ export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps
                         required
                         multiline
                         rows={3}
-                        sx={{ mb: 3 }}
+                        sx={{
+                            mb: 3,
+                            position: 'relative',
+
+                            '.MuiInputBase-colorPrimary': {
+                                padding: '16px 14px 25px 14px'
+                            },
+                            '.MuiFormHelperText-root': {
+                                position: 'absolute',
+                                bottom: '5px',
+                                right: '14px',
+                                margin: '0'
+                            }
+                        }}
                         slotProps={{
                             input: {
                                 style: { color: 'white', fontSize: '16px' },
@@ -212,9 +215,10 @@ export function InquiryModal({ isOpen, onClose, inquiryType }: InquiryModalProps
                 </form>
             )}
 
-            <Typography variant="caption" color="#94a3b8" mt={3} display="block" textAlign="center">
-                문의해주신 내용은 빠른 시일 내에 검토 후 답변드리겠습니다.
-            </Typography>
+            <FooterText>
+                문의해주신 내용은 빠른 시일 내에 <br />
+                검토 후 답변드리겠습니다.
+            </FooterText>
         </ModalBase>
     );
 }

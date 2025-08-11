@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Box, IconButton, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import { Stack } from '@/components/ui/Stack/Stack';
 
 interface ModalBaseProps {
     open: boolean;
@@ -30,13 +31,13 @@ const ModalBase: React.FC<ModalBaseProps> = ({ open, onClose, children, maxWidth
                 }}
             >
                 <Box display="flex" alignItems="center" gap={1} mb={1} justifyContent="space-between">
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <img src="/logo/breadkunSpinLogo.webp" alt={title} width={24} height={24} />
-                        <Typography fontWeight="bold" color="#fb923c" fontSize={20}>
+                    <Stack gap={10} align={'center'}>
+                        <img src="/logo/breadkunSpinLogo.webp" alt={title} width={28} height={28} />
+                        <Typography fontWeight="bold" color="#fb923c" fontSize={24}>
                             {title}
                         </Typography>
-                    </Box>
-                    <IconButton onClick={onClose} sx={{ color: '#94a3b8' }}>
+                    </Stack>
+                    <IconButton onClick={onClose} sx={{ padding: '0', color: '#94a3b8' }}>
                         <Close />
                     </IconButton>
                 </Box>

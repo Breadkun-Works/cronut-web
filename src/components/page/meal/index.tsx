@@ -166,7 +166,7 @@ const Meal = () => {
                 <CompanySelect entry={'meal'} />
             </MealSelectWrap>
 
-            <DaysTab>
+            <DaysTab className="meal-days">
                 {company === Company.KANGCHON &&
                     days?.map((day, index) => (
                         <button
@@ -241,7 +241,7 @@ const Meal = () => {
                                                     ][menu.value]['메뉴']
                                                 )}
                                             >
-                                                <MealMenu>
+                                                <MealMenu className="meal-menu__name">
                                                     {menuNameEdit(
                                                         mealData[dayNumToSpell(selectedDay)][
                                                             mealCategoriesEdit(selectedMealCategories)

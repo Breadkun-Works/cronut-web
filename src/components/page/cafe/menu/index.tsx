@@ -371,7 +371,7 @@ const CafeMenu = ({
     }) => {
         // 공통 컨텐츠
         const content = (
-            <MenuItemContent>
+            <MenuItemContent className="cafe-menu-item-content">
                 <Box position="relative" width="100%">
                     <MenuImage>
                         <CafeMenuTempUI

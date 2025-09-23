@@ -10,7 +10,7 @@ import { Box, Typography } from '@mui/material';
 import { useCurrentBreakpoint, useResponsive } from '@/utils/hook';
 import { BusFront } from 'lucide-react';
 import { COLORS_DARK, DEFAULT_OG_IMAGE, responsiveConfig } from '@/data';
-import { BusRenewal } from '@/components/page/bus/BusRenewal';
+import BusRenewal from '@/components/page/bus/BusRenewal';
 export const generateMetadata = () => {
     return {
         title: '버스 - BBANGDORI',

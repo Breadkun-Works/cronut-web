@@ -68,3 +68,11 @@ export const ContentWrap = styled.div`
 
     padding-bottom: 50px;
 `;
+
+export const CompanySelectWrap = styled.div`
+    margin: 20px 0;
+
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        margin: 15px;
+    }
+`;

@@ -1,4 +1,4 @@
-import { ReactNode, HTMLAttributes } from 'react';
+import React, { ReactNode, HTMLAttributes } from 'react';
 import { SerializedStyles } from '@emotion/react';
 
 export interface StackTypes extends HTMLAttributes<HTMLDivElement> {
@@ -10,4 +10,5 @@ export interface StackTypes extends HTMLAttributes<HTMLDivElement> {
     css?: SerializedStyles;
     margin?: string;
     padding?: string;
+    style?: React.CSSProperties;
 }

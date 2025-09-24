@@ -111,6 +111,11 @@ export const BusBadge = styled.strong<{ color?: string }>`
     margin-right: 10px;
     z-index: 1;
     background-color: ${({ color }) => (color ? color : 'transparent')};
+
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        margin-right: 5px;
+        font-size: 16px;
+    }
 `;
 
 export const BusListItem = styled.a<{ color?: string }>`
@@ -294,7 +299,12 @@ export const BusBoxItem = styled.div<{ color?: string }>`
 
     ${({ theme }) => theme.breakpoints.down('lg')} {
         gap: 15px;
-        padding: 15px 20px;
+        padding: 10px 20px;
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
 
         dl {
             display: grid;
@@ -303,7 +313,7 @@ export const BusBoxItem = styled.div<{ color?: string }>`
 
             dt,
             dd {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             dt {
@@ -317,6 +327,10 @@ export const BusBoxItem = styled.div<{ color?: string }>`
                 &:nth-of-type(2) {
                     grid-column-start: 1;
                     grid-column-end: 3;
+                }
+
+                &.desc {
+                    font-size: 14px;
                 }
             }
         }
@@ -344,6 +358,39 @@ export const BusDetailBox = styled.div`
     ${({ theme }) => theme.breakpoints.down('lg')} {
         padding: 0 15px;
         background-color: transparent;
+    }
+`;
+
+export const BusTabMenu = styled.ul<{ color?: string }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    padding: 0 15px;
+    box-sizing: border-box;
+
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 40px;
+        margin-bottom: 20px;
+        font-size: 18px;
+        background-color: #656565;
+
+        &.active {
+            background-color: ${({ color }) => (color ? color : '#656565')};
+        }
+
+        &:first-of-type {
+            border-radius: 6px 0 0 6px;
+        }
+
+        &:last-of-type {
+            border-radius: 0 6px 6px 0;
+        }
     }
 `;
 

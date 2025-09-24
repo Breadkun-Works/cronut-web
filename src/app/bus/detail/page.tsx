@@ -19,7 +19,8 @@ import {
     BusIconList,
     TitleText,
     SubText,
-    SelectText
+    SelectText,
+    BusTabMenu
 } from '@/styles/bus/detail/page.styles';
 import React, { useEffect, useState } from 'react';
 import { AlarmClock, Bus, CalendarCheck, Clock4, Hourglass, MapPinned, Pin } from 'lucide-react';
@@ -46,6 +47,7 @@ const BusDetailPage = () => {
         width: 'auto',
         maxWidth: 'auto',
         border: 'none',
+        fontSize: '18px',
         '&:before': { borderBottom: 'none' },
         '&:after': { borderBottom: 'none' },
         '&:hover:not(.Mui-disabled):before': { borderBottom: 'none' }
@@ -101,53 +103,7 @@ const BusDetailPage = () => {
                     </BusTimer>
                 </BusTitle>
 
-                {isMobile ? (
-                    <>
-                        {/* 모바일 */}
-                        <Stack
-                            justify={isMobile ? 'space-between' : 'center'}
-                            style={{ width: '100%', padding: '0 15px' }}
-                        >
-                            <Select
-                                value={value}
-                                onChange={e => setValue(e.target.value as string)}
-                                displayEmpty
-                                variant="standard"
-                                sx={selectMap}
-                                MenuProps={selectMapProps}
-                                renderValue={(selected: string) => {
-                                    if (!selected) return '선택해주세요';
-
-                                    const selectedBus = busData.find(bus => bus.stops.join(' > ') === selected);
-                                    if (!selectedBus) return selected; // fallback
-
-                                    return (
-                                        <Stack align={'center'}>
-                                            <BusBadge color={selectedBus.color}>{selectedBus.type}</BusBadge>
-                                            {selected}
-                                        </Stack>
-                                    );
-                                }}
-                            >
-                                <MenuItem value="" disabled>
-                                    선택해주세요
-                                </MenuItem>
-                                {busData.map((bus, idx) => (
-                                    <MenuItem key={idx} value={bus.stops.join(' > ')}>
-                                        <BusBadge color={bus.color}>{bus.type}</BusBadge> {bus.stops.join(' > ')}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-
-                            <Stack align={'center'} gap={5}>
-                                <IconBox>
-                                    <Bus size={'1.3rem'} />
-                                </IconBox>
-                                <SubText>1대 운영</SubText>
-                            </Stack>
-                        </Stack>
-                    </>
-                ) : (
+                {!isMobile && (
                     // 데스크탑
                     <BusList>
                         {busData.map((bus, idx) => (
@@ -172,10 +128,61 @@ const BusDetailPage = () => {
                 </BusListUl>
                 <strong>셔틀버스</strong>
             </BusLineTitle>
+            {isMobile && (
+                <>
+                    <Stack justify={'space-between'} style={{ width: '100%', padding: '0 15px' }}>
+                        <Select
+                            value={value}
+                            onChange={e => setValue(e.target.value as string)}
+                            displayEmpty
+                            variant="standard"
+                            sx={selectMap}
+                            MenuProps={selectMapProps}
+                            renderValue={(selected: string) => {
+                                if (!selected) return '선택해주세요';
+
+                                const selectedBus = busData.find(bus => bus.stops.join(' > ') === selected);
+                                if (!selectedBus) return selected; // fallback
+
+                                return (
+                                    <Stack align={'center'}>
+                                        <BusBadge color={selectedBus.color}>{selectedBus.type}</BusBadge>
+                                        {selected}
+                                    </Stack>
+                                );
+                            }}
+                        >
+                            <MenuItem value="" disabled>
+                                선택해주세요
+                            </MenuItem>
+                            {busData.map((bus, idx) => (
+                                <MenuItem key={idx} value={bus.stops.join(' > ')}>
+                                    <BusBadge color={bus.color}>{bus.type}</BusBadge> {bus.stops.join(' > ')}
+                                </MenuItem>
+                            ))}
+                        </Select>
+
+                        <Stack align={'center'} gap={5}>
+                            <IconBox>
+                                <Bus size={'1.3rem'} />
+                            </IconBox>
+                            <SubText>1대</SubText>
+                        </Stack>
+                    </Stack>
+
+                    {/*[D] color.pink 라고 작성해놓은 부분 선택된 노선에 맞게 색상 변경 부탁드립니다.*/}
+                    <BusTabMenu color={color.pink}>
+                        <li className={'active'}>잠실</li>
+                        <li>천호</li>
+                    </BusTabMenu>
+                </>
+            )}
             <BusDetailBox>
+                {/*[D] color.pink 라고 작성해놓은 부분 선택된 노선에 맞게 색상 변경 부탁드립니다.*/}
                 <BusBox color={color.pink}>
                     <BusBoxList>
                         <BusBoxItem>
+                            {/*[D] color.pink 라고 작성해놓은 부분 선택된 노선에 맞게 색상 변경 부탁드립니다.*/}
                             <Clock4 color={color.pink} />
                             <dl>
                                 <dt>출발 시간</dt>
@@ -183,6 +190,7 @@ const BusDetailPage = () => {
                             </dl>
                         </BusBoxItem>
                         <BusBoxItem>
+                            {/*[D] color.pink 라고 작성해놓은 부분 선택된 노선에 맞게 색상 변경 부탁드립니다.*/}
                             <Hourglass color={color.pink} />
                             <dl>
                                 <dt>평균 소요 시간</dt>
@@ -190,6 +198,7 @@ const BusDetailPage = () => {
                             </dl>
                         </BusBoxItem>
                         <BusBoxItem>
+                            {/*[D] color.pink 라고 작성해놓은 부분 선택된 노선에 맞게 색상 변경 부탁드립니다.*/}
                             <CalendarCheck color={color.pink} />
                             <dl>
                                 <dt>예정 도착 시간</dt>

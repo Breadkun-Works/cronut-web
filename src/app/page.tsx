@@ -116,8 +116,8 @@ export default function Home() {
                 }
             })
             .catch(error => {
-                console.log('미세먼지 가져오기 재시도 실패.');
-                console.log(error);
+                console.log('미세먼지 가져오기 재시도 실패:', error);
+                setDustRequestCompleted(true);
             });
 
         const retryDustData = async (retryCount: number) => {
@@ -154,18 +154,23 @@ export default function Home() {
     }, [company, refreshButton]);
 
     useEffect(() => {
-        fetchWeatherData(company).then(weatherResponse => {
-            if (weatherResponse) {
-                setWeather({
-                    SKY: weatherResponse.SKY,
-                    PTY: weatherResponse.PTY,
-                    RAIN: weatherResponse.POP,
-                    REH: weatherResponse.REH,
-                    TMP: weatherResponse.TMP
-                });
+        fetchWeatherData(company)
+            .then(weatherResponse => {
+                if (weatherResponse) {
+                    setWeather({
+                        SKY: weatherResponse.SKY,
+                        PTY: weatherResponse.PTY,
+                        RAIN: weatherResponse.POP,
+                        REH: weatherResponse.REH,
+                        TMP: weatherResponse.TMP
+                    });
+                    setWeatherRequestCompleted(true);
+                }
+            })
+            .catch(error => {
+                console.log('날씨 데이터 가져오기 재시도 실패:', error);
                 setWeatherRequestCompleted(true);
-            }
-        });
+            });
         const retryWeatherData = async (retryCount: number) => {
             try {
                 await fetchWeatherData(company);

@@ -59,5 +59,6 @@ export const fetchDustDataTest = async (company: string) => {
     } catch (error) {
         console.log('미세먼지 가져오기 실패.');
         console.log(error);
+        throw error;
     }
 };

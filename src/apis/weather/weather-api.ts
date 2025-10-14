@@ -75,5 +75,6 @@ export const fetchWeatherData = async (company: string) => {
     } catch (error) {
         console.log('날씨 가져오기 실패.');
         console.log(error);
+        throw error;
     }
 };
